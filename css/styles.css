@@ -255,6 +255,7 @@ body {
     display: flex;
     align-items: center;
     gap: 20px;
+    position: relative;
 }
 
 .plan-info {
@@ -2383,6 +2384,230 @@ body {
     
     .feature-item {
         padding: 20px;
+    }
+}
+
+/* 더보기 버튼 */
+.more-menu-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.more-menu-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.more-menu-btn .dots {
+    display: grid;
+    grid-template-columns: repeat(3, 4px);
+    grid-template-rows: repeat(3, 4px);
+    gap: 3px;
+    width: 18px;
+    height: 18px;
+}
+
+.more-menu-btn .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #666;
+}
+
+/* 더보기 드롭다운 메뉴 */
+.more-menu-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 340px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+    padding: 20px;
+    overflow: visible;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.95);
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.25s ease;
+    pointer-events: none;
+}
+
+.more-menu-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.more-menu-section {
+    margin-bottom: 24px;
+}
+
+.more-menu-section:last-child {
+    margin-bottom: 0;
+}
+
+.more-menu-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.more-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    text-decoration: none;
+    color: var(--text-dark);
+    min-width: 0;
+}
+
+.more-menu-item:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.more-menu-item.active {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.more-menu-item-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.more-menu-item-icon i {
+    font-size: 18px;
+    color: #666;
+}
+
+.more-menu-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.more-menu-item-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 2px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+}
+
+.more-menu-item-desc {
+    font-size: 12px;
+    color: #999;
+    line-height: 1.4;
+}
+
+.more-menu-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.08);
+    margin: 16px 0;
+}
+
+/* 언어 설정 */
+.language-setting-item {
+    position: relative;
+}
+
+.language-dropdown-menu {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: 8px;
+    width: 100%;
+    min-width: 200px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    z-index: 1001;
+    padding: 8px 0;
+    display: none;
+}
+
+.language-setting-item:hover .language-dropdown-menu {
+    display: block;
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-size: 14px;
+    color: var(--text-dark);
+    border-radius: 6px;
+    margin-bottom: 4px;
+}
+
+.language-option:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.language-option.active {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+.language-option .fa-check {
+    color: #667eea;
+    font-size: 12px;
+}
+
+.language-option.active .fa-check {
+    display: inline-block !important;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .more-menu-dropdown {
+        width: 280px;
+        right: -10px;
+    }
+    
+    .more-menu-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .more-menu-btn .dots {
+        width: 16px;
+        height: 16px;
+        gap: 2px;
+    }
+    
+    .more-menu-btn .dot {
+        width: 3px;
+        height: 3px;
     }
 }
 
