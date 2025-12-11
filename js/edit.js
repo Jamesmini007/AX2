@@ -566,13 +566,16 @@
             const languageTabsContainer = DOMCache.languageTabs;
             if (!languageTabsContainer) return;
             
-            languageTabsContainer.innerHTML = availableLanguages.map((lang, index) => {
+            // 'auto' 언어(자동 감지) 제외하고 렌더링
+            const languagesToRender = availableLanguages.filter(lang => lang.code !== 'auto');
+            
+            languageTabsContainer.innerHTML = languagesToRender.map((lang, index) => {
                 const isActive = index === 0 || lang.code === currentLang;
                 
                 return `
                     <div class="lang-tab ${isActive ? 'active' : ''}" data-lang="${lang.code}">
                         ${lang.isOriginal ? '<i class="fas fa-language" style="font-size: 1rem; color: #808080;"></i>' : `<span class="lang-flag">${lang.flag}</span>`}
-                        ${lang.isOriginal ? `<span>${lang.name === '자동 감지' ? '자동 감지' : lang.name} (원본)</span>` : `<span>${lang.name}</span>`}
+                        ${lang.isOriginal ? `<span>${lang.name} (원본)</span>` : `<span>${lang.name}</span>`}
                     </div>
                 `;
             }).join('');
@@ -595,29 +598,49 @@
                 });
             });
             
-            // 초기 언어 설정
-            if (availableLanguages.length > 0) {
-                currentLang = availableLanguages[0].code;
+            // 초기 언어 설정 (auto가 아닌 첫 번째 언어로 설정)
+            if (languagesToRender.length > 0) {
+                if (currentLang === 'auto' || !languagesToRender.find(lang => lang.code === currentLang)) {
+                    currentLang = languagesToRender[0].code;
+                }
             }
         }
         
-        // 트랜스크립션 렌더링 (탭 기반 - 선택된 언어만 표시) (최적화)
+        // 트랜스크립션 렌더링 (원본/번역 좌우 분리 레이아웃)
         function renderTranscriptions() {
             const list = DOMCache.transcriptionList;
             if (!list) return;
             
-            // 현재 선택된 언어의 정보 가져오기
-            const currentLangInfo = availableLanguages.find(lang => lang.code === currentLang) || availableLanguages[0];
+            // 원본 언어 찾기 (항상 isOriginal인 언어)
+            const originalLangInfo = availableLanguages.find(lang => lang.isOriginal) || availableLanguages[0];
+            const originalLangCode = originalLangInfo.code;
+            
+            // 번역 언어 찾기 (현재 선택된 언어가 원본이 아니면 그것을 사용, 아니면 첫 번째 번역 언어 사용)
+            let translationLangInfo;
+            const selectedLangInfo = availableLanguages.find(lang => lang.code === currentLang);
+            
+            if (selectedLangInfo && !selectedLangInfo.isOriginal) {
+                // 선택된 언어가 번역 언어인 경우
+                translationLangInfo = selectedLangInfo;
+            } else {
+                // 선택된 언어가 원본이거나 없으면 첫 번째 번역 언어 사용
+                translationLangInfo = availableLanguages.find(lang => !lang.isOriginal) || availableLanguages[1] || availableLanguages[0];
+            }
+            
+            const translationLangCode = translationLangInfo.code;
             
             list.innerHTML = transcriptions.map(segment => {
                 const duration = (segment.endTime - segment.startTime).toFixed(2);
                 const startTime = formatTime(segment.startTime);
                 const endTime = formatTime(segment.endTime);
                 
-                // 현재 선택된 언어의 텍스트만 가져오기
-                const langCode = currentLangInfo.code;
-                const text = segment[langCode] || segment[getLanguageFieldName(langCode)] || '';
-                const placeholder = currentLangInfo.isOriginal ? `${currentLangInfo.name} 자막을 입력하세요` : `${currentLangInfo.name} subtitle`;
+                // 원본 텍스트
+                const originalText = segment[originalLangCode] || segment[getLanguageFieldName(originalLangCode)] || '';
+                const originalPlaceholder = `${originalLangInfo.name} 자막을 입력하세요`;
+                
+                // 번역 텍스트
+                const translationText = segment[translationLangCode] || segment[getLanguageFieldName(translationLangCode)] || '';
+                const translationPlaceholder = `${translationLangInfo.name} subtitle`;
                 
                 return `
                     <div class="transcription-item" data-segment-id="${segment.id}">
@@ -637,12 +660,24 @@
                             </button>
                         </div>
                         <div class="text-content">
-                            <div class="text-editor">
+                            <div class="text-editor original-text">
                                 <div class="text-label">
-                                    ${currentLangInfo.name} ${currentLangInfo.isOriginal ? '<span style="font-size: 0.7rem; color: #999;">(원본)</span>' : ''}
-                                    <span class="char-count" data-lang="${langCode}" data-segment-id="${segment.id}">${(text || '').length}</span>
+                                    <span class="lang-flag">${originalLangInfo.flag}</span>
+                                    <span>${originalLangInfo.name}</span>
+                                    <span class="char-count" data-lang="${originalLangCode}" data-segment-id="${segment.id}">${(originalText || '').length}</span>
                                 </div>
-                                <textarea class="text-input" data-lang="${langCode}" data-segment-id="${segment.id}" placeholder="${placeholder}">${text}</textarea>
+                                <textarea class="text-input" data-lang="${originalLangCode}" data-segment-id="${segment.id}" placeholder="${originalPlaceholder}">${originalText}</textarea>
+                            </div>
+                            <div class="arrow-icon">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                            <div class="text-editor translation-text">
+                                <div class="text-label">
+                                    <span class="lang-flag">${translationLangInfo.flag}</span>
+                                    <span>${translationLangInfo.name}</span>
+                                    <span class="char-count" data-lang="${translationLangCode}" data-segment-id="${segment.id}">${(translationText || '').length}</span>
+                                </div>
+                                <textarea class="text-input" data-lang="${translationLangCode}" data-segment-id="${segment.id}" placeholder="${translationPlaceholder}">${translationText}</textarea>
                             </div>
                         </div>
                     </div>

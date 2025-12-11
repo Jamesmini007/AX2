@@ -307,9 +307,11 @@
                 if (href) {
                     const tabPath = href.split('/').pop() || 'index.html';
                     
-                    if (tabPath === 'index.html' && (currentPage === 'index.html' || currentPage === 'edit.html')) {
+                    if (tabPath === 'index.html' && currentPage === 'index.html') {
                         tab.classList.add('active');
-                    } else if (tabPath === 'mypage.html' && currentPage === 'mypage.html') {
+                    } else if (tabPath === 'mypage.html' && (currentPage === 'mypage.html' || currentPage === 'edit.html')) {
+                        tab.classList.add('active');
+                    } else if (tabPath === 'pricing.html' && currentPage === 'pricing.html') {
                         tab.classList.add('active');
                     } else {
                         tab.classList.remove('active');
