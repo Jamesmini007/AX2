@@ -1128,7 +1128,7 @@
                 loadData();
                 // URL 정리 (히스토리 업데이트)
                 if (window.history && window.history.replaceState) {
-                    window.history.replaceState({}, '', 'mypage.html');
+                    window.history.replaceState({}, '', 'storage.html');
                 }
             }, 500);
         }

@@ -20,30 +20,73 @@
 
     // 로그인 버튼 업데이트
     function updateLoginButton() {
-        const loginButtons = document.querySelectorAll('.login-btn');
+        const isLoggedInState = isLoggedIn();
+        const userInfoContainer = document.getElementById('userInfoContainer');
+        const authButtons = document.getElementById('authButtons');
         
-        loginButtons.forEach(btn => {
-            if (isLoggedIn()) {
-                // 로그인 상태: 로그아웃 버튼으로 변경
-                btn.textContent = '로그아웃';
-                btn.href = '#';
-                btn.onclick = function(e) {
-                    e.preventDefault();
-                    handleLogout();
-                };
-                btn.style.cursor = 'pointer';
-            } else {
-                // 로그아웃 상태: 로그인 버튼으로 유지
-                btn.textContent = '로그인';
-                // 현재 경로에 따라 login.html 경로 결정
-                const isInHtmlFolder = window.location.pathname.includes('/html/');
-                btn.href = isInHtmlFolder ? 'login.html' : 'html/login.html';
-                btn.onclick = null;
+        if (isLoggedInState) {
+            // 로그인 상태: 사용자 정보 표시
+            if (userInfoContainer) {
+                userInfoContainer.style.display = 'flex';
             }
-        });
+            if (authButtons) {
+                authButtons.style.display = 'none';
+            }
+            
+            // 사용자 이름 업데이트
+            const user = getCurrentUser();
+            const userNameElements = document.querySelectorAll('#userName, #userNameMenu');
+            userNameElements.forEach(el => {
+                if (el && user) {
+                    el.textContent = user.name ? user.name + '님' : '게스트님';
+                }
+            });
+            
+            // 사용자 메뉴 초기화
+            initializeUserMenu();
+        } else {
+            // 로그아웃 상태: 로그인 버튼 표시
+            if (userInfoContainer) {
+                userInfoContainer.style.display = 'none';
+            }
+            if (authButtons) {
+                authButtons.style.display = 'flex';
+            }
+        }
 
         // 가입하기 버튼 표시/숨김 처리
         updateSignupButton();
+    }
+    
+    // 사용자 메뉴 초기화
+    function initializeUserMenu() {
+        const userMenuTrigger = document.getElementById('userMenuTrigger');
+        const userMenuDropdown = document.getElementById('userMenuDropdown');
+        const userMenuWrapper = userMenuTrigger ? userMenuTrigger.closest('.user-menu-wrapper') : null;
+        const logoutItem = document.getElementById('logoutItem');
+        
+        if (!userMenuTrigger || !userMenuWrapper) return;
+        
+        // 드롭다운 토글
+        userMenuTrigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userMenuWrapper.classList.toggle('active');
+        });
+        
+        // 외부 클릭 시 드롭다운 닫기
+        document.addEventListener('click', function(e) {
+            if (userMenuWrapper && !userMenuWrapper.contains(e.target)) {
+                userMenuWrapper.classList.remove('active');
+            }
+        });
+        
+        // 로그아웃 버튼 클릭
+        if (logoutItem) {
+            logoutItem.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleLogout();
+            });
+        }
     }
 
     // 가입하기 버튼 업데이트

@@ -102,7 +102,7 @@
             if (!videoId) {
                 logger.error('비디오 ID가 없습니다.');
                 alert('영상을 찾을 수 없습니다.\n마이페이지로 이동합니다.');
-                window.location.href = 'mypage.html';
+                window.location.href = 'storage.html';
                 return;
             }
             
@@ -117,7 +117,7 @@
                 if (!currentVideo) {
                     logger.error('비디오를 찾을 수 없습니다:', videoId);
                     alert('강의를 찾을 수 없습니다.\n마이페이지로 이동합니다.');
-                    window.location.href = 'mypage.html';
+                    window.location.href = 'storage.html';
                     return;
                 }
                 
@@ -1009,7 +1009,7 @@
                 
                 // 저장 완료 후 마이페이지로 이동
                 setTimeout(() => {
-                    window.location.href = 'mypage.html';
+                    window.location.href = 'storage.html';
                 }, 1000);
             } else {
                 alert('저장 중 오류가 발생했습니다.');

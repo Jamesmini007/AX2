@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>강의 기록 - 실시간 강의 서비스 - AX2</title>
+    <title>AX2 마이페이지</title>
     <link rel="stylesheet" href="../css/mypage.css">
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,7 +30,7 @@
                 </h2>
                 <div class="free-plan-badge">
                     <i class="fas fa-gift"></i>
-                    <span>1시간 무료 강의 제공</span>
+                    <span>1시간 무료 영상 제공</span>
                 </div>
             </div>
             <div class="storage-content">
@@ -57,7 +57,7 @@
                         </div>
                         <div class="stat-content">
                             <div class="stat-value" id="total-videos">0</div>
-                            <div class="stat-label">저장된 강의</div>
+                            <div class="stat-label">저장된 영상</div>
                         </div>
                     </div>
                     <div class="stat-item">
@@ -66,7 +66,7 @@
                         </div>
                         <div class="stat-content">
                             <div class="stat-value" id="total-duration">0분</div>
-                            <div class="stat-label">총 강의 시간</div>
+                            <div class="stat-label">총 영상 시간</div>
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
         <!-- 영상 목록 -->
         <div class="videos-section">
             <div class="section-header">
-                <div class="section-title">최근 강의</div>
+                <div class="section-title">최근 영상</div>
                 <div class="filter-controls">
                     <button class="filter-btn active" data-filter="all">전체</button>
                     <button class="filter-btn" data-filter="recent">최근</button>
@@ -93,16 +93,16 @@
     <div class="modal" id="edit-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">강의 편집</div>
+                <div class="modal-title">영상 편집</div>
                 <button class="modal-close" onclick="closeEditModal()">&times;</button>
             </div>
             <div class="form-group">
-                <label class="form-label">강의 제목</label>
-                <input type="text" class="form-input" id="edit-title" placeholder="강의 제목을 입력하세요">
+                <label class="form-label">영상 제목</label>
+                <input type="text" class="form-input" id="edit-title" placeholder="영상 제목을 입력하세요">
             </div>
             <div class="form-group">
                 <label class="form-label">설명</label>
-                <textarea class="form-input" id="edit-description" rows="4" placeholder="강의 설명을 입력하세요"></textarea>
+                <textarea class="form-input" id="edit-description" rows="4" placeholder="영상 설명을 입력하세요"></textarea>
             </div>
             <div class="form-group">
                 <label class="form-label">태그</label>
@@ -126,81 +126,12 @@
         </div>
     </div>
 
+
     <script src="../js/navbar.js" defer></script>
     <script src="../js/auth-state.js" defer></script>
-    <script src="../js/live_lecture_history.js" defer></script>
+    <script src="../js/mypage.js" defer></script>
     <script src="../js/script.js" defer></script>
     <script src="../js/more-menu.js" defer></script>
-    <script>
-        // 더보기 메뉴 토글
-        document.addEventListener('DOMContentLoaded', function() {
-            const moreMenuBtn = document.getElementById('moreMenuBtn');
-            const moreMenuDropdown = document.getElementById('moreMenuDropdown');
-            
-            if (moreMenuBtn && moreMenuDropdown) {
-                moreMenuBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    moreMenuDropdown.classList.toggle('active');
-                });
-                
-                // 외부 클릭 시 메뉴 닫기
-                document.addEventListener('click', function(e) {
-                    if (!moreMenuBtn.contains(e.target) && !moreMenuDropdown.contains(e.target)) {
-                        moreMenuDropdown.classList.remove('active');
-                    }
-                });
-            }
-            
-            // 언어 설정 기능
-            const languageOptions = document.querySelectorAll('.language-dropdown-menu .language-option');
-            const currentLang = localStorage.getItem('siteLanguage') || 'ko';
-            
-            languageOptions.forEach(option => {
-                const lang = option.getAttribute('data-lang');
-                if (lang === currentLang) {
-                    option.classList.add('active');
-                    option.querySelector('.fa-check').style.display = 'inline-block';
-                } else {
-                    option.classList.remove('active');
-                    option.querySelector('.fa-check').style.display = 'none';
-                }
-                
-                option.addEventListener('click', function() {
-                    const selectedLang = this.getAttribute('data-lang');
-                    localStorage.setItem('siteLanguage', selectedLang);
-                    
-                    languageOptions.forEach(opt => {
-                        opt.classList.remove('active');
-                        opt.querySelector('.fa-check').style.display = 'none';
-                    });
-                    
-                    this.classList.add('active');
-                    this.querySelector('.fa-check').style.display = 'inline-block';
-                });
-            });
-            
-            // 현재 페이지에 따라 활성 탭 설정
-            const tabs = document.querySelectorAll('.service-tab');
-            const currentPath = window.location.pathname;
-            const currentPage = currentPath.split('/').pop() || 'index.html';
-            
-            tabs.forEach(tab => {
-                const href = tab.getAttribute('href');
-                if (href) {
-                    const tabPath = href.split('/').pop() || 'index.html';
-                    
-                    if (tabPath === 'index.html' && currentPage === 'index.html') {
-                        tab.classList.add('active');
-                    } else if (tabPath === 'storage.html' && currentPage === 'storage.html') {
-                        tab.classList.add('active');
-                    } else {
-                        tab.classList.remove('active');
-                    }
-                }
-            });
-        });
-    </script>
 </body>
 </html>
-
 

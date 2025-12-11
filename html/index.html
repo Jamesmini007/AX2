@@ -35,10 +35,10 @@
                 </div>
                 <div class="service-tabs">
                     <a href="index.html" class="service-tab active">
-                        <span>자동 번역/다국어 자막</span>
+                        <span>자막생성</span>
                     </a>
-                    <a href="mypage.html" class="service-tab">
-                        <span>저장공간</span>
+                    <a href="guide.html" class="service-tab">
+                        <span>사용방법</span>
                     </a>
                     <a href="pricing.html" class="service-tab">
                         <span>요금제/결제</span>
@@ -49,8 +49,45 @@
                 <div class="plan-info">
                     <span class="highlight">Free</span> <span id="remaining-time">0분 남음</span>
                 </div>
-                <a href="login.html" class="login-btn">로그인</a>
-                <a href="signup.html" class="signup-btn">가입하기</a>
+                <!-- 로그인 상태일 때 표시되는 사용자 정보 -->
+                <div class="user-info-container" id="userInfoContainer" style="display: none;">
+                    <button class="free-plan-badge-nav">Free</button>
+                    <div class="user-menu-wrapper">
+                        <div class="user-menu-trigger" id="userMenuTrigger">
+                            <span class="user-name" id="userName">게스트님</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="user-menu-dropdown" id="userMenuDropdown">
+                            <div class="user-menu-header">
+                                <div class="user-name-menu" id="userNameMenu">게스트님</div>
+                            </div>
+                            <div class="user-menu-divider"></div>
+                            <div class="user-menu-items">
+                                <a href="mypage.html?tab=info" class="user-menu-item" id="editInfoItem">
+                                    <i class="fas fa-user"></i>
+                                    <span>정보수정</span>
+                                </a>
+                                <a href="#" class="user-menu-item" id="changePasswordItem">
+                                    <i class="fas fa-lock"></i>
+                                    <span>비밀번호변경</span>
+                                </a>
+                                <a href="pricing.html" class="user-menu-item" id="paymentInfoItem">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>결제정보</span>
+                                </a>
+                                <a href="#" class="user-menu-item" id="logoutItem">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>로그아웃</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 로그아웃 상태일 때 표시되는 버튼 -->
+                <div class="auth-buttons" id="authButtons">
+                    <a href="login.html" class="login-btn">로그인</a>
+                    <a href="signup.html" class="signup-btn">가입하기</a>
+                </div>
                 <div class="more-menu-btn" id="moreMenuBtn">
                     <div class="dots">
                         <div class="dot"></div>
@@ -329,6 +366,52 @@
     <script>
         // 더보기 메뉴와 언어 설정은 more-menu.js에서 처리됨
         document.addEventListener('DOMContentLoaded', function() {
+            // 더보기 메뉴 토글
+            const moreMenuBtn = document.getElementById('moreMenuBtn');
+            const moreMenuDropdown = document.getElementById('moreMenuDropdown');
+            
+            if (moreMenuBtn && moreMenuDropdown) {
+                moreMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    moreMenuDropdown.classList.toggle('active');
+                });
+                
+                // 외부 클릭 시 메뉴 닫기
+                document.addEventListener('click', function(e) {
+                    if (!moreMenuBtn.contains(e.target) && !moreMenuDropdown.contains(e.target)) {
+                        moreMenuDropdown.classList.remove('active');
+                    }
+                });
+            }
+            
+            // 언어 설정 기능
+            const languageOptions = document.querySelectorAll('.language-dropdown-menu .language-option');
+            const currentLang = localStorage.getItem('siteLanguage') || 'ko';
+            
+            languageOptions.forEach(option => {
+                const lang = option.getAttribute('data-lang');
+                if (lang === currentLang) {
+                    option.classList.add('active');
+                    option.querySelector('.fa-check').style.display = 'inline-block';
+                } else {
+                    option.classList.remove('active');
+                    option.querySelector('.fa-check').style.display = 'none';
+                }
+                
+                option.addEventListener('click', function() {
+                    const selectedLang = this.getAttribute('data-lang');
+                    localStorage.setItem('siteLanguage', selectedLang);
+                    
+                    languageOptions.forEach(opt => {
+                        opt.classList.remove('active');
+                        opt.querySelector('.fa-check').style.display = 'none';
+                    });
+                    
+                    this.classList.add('active');
+                    this.querySelector('.fa-check').style.display = 'inline-block';
+                });
+            });
+            
             // 현재 페이지에 따라 활성 탭 설정
             const tabs = document.querySelectorAll('.service-tab');
             const currentPath = window.location.pathname;
@@ -341,7 +424,9 @@
                     
                     if (tabPath === 'index.html' && currentPage === 'index.html') {
                         tab.classList.add('active');
-                    } else if (tabPath === 'mypage.html' && currentPage === 'mypage.html') {
+                    } else if (tabPath === 'guide.html' && currentPage === 'guide.html') {
+                        tab.classList.add('active');
+                    } else if (tabPath === 'pricing.html' && currentPage === 'pricing.html') {
                         tab.classList.add('active');
                     } else {
                         tab.classList.remove('active');

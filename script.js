@@ -943,7 +943,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // 마이페이지로 이동 (새로고침 강제)
             setTimeout(() => {
-                window.location.href = 'html/mypage.html?refresh=true&saved=' + videoId;
+                window.location.href = 'html/storage.html?refresh=true&saved=' + videoId;
             }, 300);
             
         } catch (error) {
@@ -1156,9 +1156,9 @@ document.addEventListener('DOMContentLoaded', () => {
         item.addEventListener('click', (e) => {
             const page = item.dataset.page;
             
-            // 마이페이지인 경우 mypage.html로 이동
+            // 마이페이지인 경우 storage.html로 이동
             if (page === 'projects') {
-                window.location.href = 'html/mypage.html';
+                window.location.href = 'html/storage.html';
                 return;
             }
             
