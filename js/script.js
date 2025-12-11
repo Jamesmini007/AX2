@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 현재 페이지 URL을 저장하여 로그인 후 돌아올 수 있도록
         const currentUrl = window.location.href;
         sessionStorage.setItem('redirectAfterLogin', currentUrl);
-        window.location.href = 'login.html';
+        window.location.href = 'html/login.html';
     }
     
     async function handleFile(file) {
@@ -943,7 +943,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // 마이페이지로 이동 (새로고침 강제)
             setTimeout(() => {
-                window.location.href = 'mypage.html?refresh=true&saved=' + videoId;
+                window.location.href = 'html/mypage.html?refresh=true&saved=' + videoId;
             }, 300);
             
         } catch (error) {
@@ -1158,7 +1158,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // 마이페이지인 경우 mypage.html로 이동
             if (page === 'projects') {
-                window.location.href = 'mypage.html';
+                window.location.href = 'html/mypage.html';
                 return;
             }
             
