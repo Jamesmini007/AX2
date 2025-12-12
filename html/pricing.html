@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>요금제/결제 - AX2</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .pricing-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .pricing-subtitle {
+            font-size: 18px;
+            color: var(--text-light);
+        }
+
+        .duration-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .duration-tab {
+            padding: 10px 20px;
+            border: 1px solid #E5E7EB;
+            border-radius: 20px;
+            background: white;
+            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .duration-tab:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .duration-tab.active {
+            background: #FFD700;
+            border-color: #FFD700;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .duration-note {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #E5E7EB;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .pricing-card-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .pricing-card.free .pricing-card-title {
+            color: var(--text-dark);
+        }
+
+        .pricing-card.student .pricing-card-title {
+            color: #14B8A6;
+        }
+
+        .pricing-card.general .pricing-card-title {
+            color: #3B82F6;
+        }
+
+        .pricing-card.pro .pricing-card-title {
+            color: #8B5CF6;
+        }
+
+        .pricing-card-description {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 24px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .pricing-card-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .pricing-card-price .price-unit {
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .pricing-card-price.disabled {
+            font-size: 18px;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .pricing-card-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+
+        .pricing-card.free .pricing-card-button {
+            background: #374151;
+            color: white;
+        }
+
+        .pricing-card.free .pricing-card-button:hover {
+            background: #1F2937;
+        }
+
+        .pricing-card.student .pricing-card-button {
+            background: #14B8A6;
+            color: white;
+        }
+
+        .pricing-card.student .pricing-card-button:hover {
+            background: #0D9488;
+        }
+
+        .pricing-card.general .pricing-card-button {
+            background: #3B82F6;
+            color: white;
+        }
+
+        .pricing-card.general .pricing-card-button:hover {
+            background: #2563EB;
+        }
+
+        .pricing-card.pro .pricing-card-button {
+            background: #8B5CF6;
+            color: white;
+        }
+
+        .pricing-card.pro .pricing-card-button:hover {
+            background: #7C3AED;
+        }
+
+        .pricing-card-button:disabled {
+            background: #E5E7EB;
+            color: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .pricing-container {
+                padding: 40px 15px;
+            }
+
+            .pricing-title {
+                font-size: 24px;
+            }
+
+            .pricing-subtitle {
+                font-size: 16px;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 결제 모달 스타일 */
+        .payment-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .payment-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .payment-modal {
+            background: white;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 12px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .payment-modal-overlay.active .payment-modal {
+            transform: translateY(0);
+        }
+
+        .payment-modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .payment-modal-close {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+
+        .payment-modal-close:hover {
+            background: #f5f5f5;
+        }
+
+        .payment-modal-body {
+            padding: 24px;
+        }
+
+        .payment-section {
+            margin-bottom: 28px;
+        }
+
+        .payment-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+
+        .selected-plan-box {
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .selected-plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .selected-plan-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #14B8A6;
+        }
+
+        .selected-plan-name.general {
+            color: #3B82F6;
+        }
+
+        .selected-plan-name.pro {
+            color: #8B5CF6;
+        }
+
+        .selected-plan-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .selected-plan-price .unit {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .plan-notice {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .plan-agreement {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #1a1a2e;
+        }
+
+        .plan-agreement input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .discount-badge {
+            background: #FFD700;
+            color: #1a1a2e;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .payment-method-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            color: #1a1a2e;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .payment-method-btn:hover {
+            border-color: #667eea;
+        }
+
+        .payment-method-btn.active {
+            background: #1a1a2e;
+            border-color: #1a1a2e;
+            color: white;
+        }
+
+        .payment-method-btn img {
+            height: 20px;
+        }
+
+        .pay-icons {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-left: 8px;
+        }
+
+        .npay-icon {
+            background: #03C75A;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .kakaopay-icon {
+            background: #FFE500;
+            color: #3C1E1E;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .payment-form-group {
+            margin-bottom: 20px;
+        }
+
+        .payment-form-label {
+            display: block;
+            font-size: 14px;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .payment-form-label .required {
+            color: #EF4444;
+        }
+
+        .payment-form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1a1a2e;
+            transition: border-color 0.2s ease;
+        }
+
+        .payment-form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .payment-form-input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .phone-inputs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .phone-inputs .payment-form-input {
+            flex: 1;
+            text-align: center;
+        }
+
+        .terms-box {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .terms-box a {
+            color: #3B82F6;
+            text-decoration: underline;
+        }
+
+        .terms-agreement {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .terms-agreement input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .payment-modal-footer {
+            padding: 0 24px 24px;
+        }
+
+        .payment-submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: #1a1a2e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .payment-submit-btn:hover {
+            background: #2d2d44;
+        }
+
+        .payment-submit-btn:disabled {
+            background: #E5E7EB;
+            color: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            .payment-modal {
+                margin: 10px;
+                max-height: calc(100vh - 20px);
+            }
+
+            .payment-method-btn {
+                min-width: calc(50% - 5px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 모바일 메뉴 버튼 -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" style="display: none;">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- 사이드바 오버레이 -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <!-- 배경 효과 -->
+    <div class="background-effects">
+        <div class="gradient-cloud cloud-1"></div>
+        <div class="gradient-cloud cloud-2"></div>
+        <div class="gradient-cloud cloud-3"></div>
+        <canvas id="particles-canvas"></canvas>
+        <canvas id="confetti-canvas"></canvas>
+        <div class="reflection-light"></div>
+    </div>
+
+    <!-- 상단 네비게이션 -->
+    <nav class="glass-nav">
+        <div class="nav-content">
+            <div class="nav-left">
+                <div class="logo" onclick="location.href='index.html'">
+                    <img src="../assets/image/AX2_logo.png" alt="AX2" class="logo-img">
+                </div>
+                <div class="service-tabs">
+                    <a href="index.html" class="service-tab">
+                        <span data-i18n="nav-auto-translate">자막생성</span>
+                    </a>
+                    <a href="used.html" class="service-tab">
+                        <span data-i18n="nav-usage">사용방법</span>
+                    </a>
+                    <a href="pricing.html" class="service-tab active">
+                        <span data-i18n="nav-pricing">요금제/결제</span>
+                    </a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <a href="login.html" class="login-btn" data-i18n="nav-login">로그인</a>
+                <a href="signup.html" class="signup-btn" data-i18n="nav-signup">가입하기</a>
+                <div class="more-menu-btn" id="moreMenuBtn">
+                    <div class="dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="more-menu-dropdown" id="moreMenuDropdown">
+                    <div class="more-menu-dropdown-content">
+                        <ul class="menu-comp">
+                            <li>
+                                <div class="menu-comp__products">
+                                    <ul class="nav__group">
+                                        <li class="nav__title" data-i18n="menu-other-products">기타 제품</li>
+                                        <li class="navbar__item navbar__item--md">
+                                            <a href="index.html" data-i18n-title="nav-auto-translate">
+                                                <div class="navbar__item__icon"><i class="fas fa-language"></i></div>
+                                                <div class="navbar__item__content">
+                                                    <div class="navbar__item__title" data-i18n="menu-subtitle-gen">자막생성</div>
+                                                    <div class="navbar__item__description" data-i18n="menu-subtitle-desc">AI 기반 실시간 번역</div>
+                                                </div>
+                                                <div class="navbar__item__go"><i class="fas fa-arrow-right"></i></div>
+                                            </a>
+                                        </li>
+                                        <li class="navbar__item navbar__item--md">
+                                            <a href="live_lecture.html" data-i18n-title="menu-lecture-trans">
+                                                <div class="navbar__item__icon"><i class="fas fa-video"></i></div>
+                                                <div class="navbar__item__content">
+                                                    <div class="navbar__item__title" data-i18n="menu-lecture-trans">강의 번역</div>
+                                                    <div class="navbar__item__description" data-i18n="menu-lecture-desc">라이브 번역 및 자막</div>
+                                                </div>
+                                                <div class="navbar__item__go"><i class="fas fa-arrow-right"></i></div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="menu-comp__business">
+                                    <ul class="nav__group">
+                                        <li class="nav__title" data-i18n="menu-solutions">솔루션</li>
+                                        <li class="navbar__item navbar__item--lg">
+                                            <a href="#" data-i18n-title="menu-business">
+                                                <div class="navbar__item__icon"><i class="fas fa-briefcase"></i></div>
+                                                <div class="navbar__item__content">
+                                                    <div class="navbar__item__title" data-i18n="menu-business">비즈니스</div>
+                                                    <div class="navbar__item__description" data-i18n="menu-business-desc">비즈니스 팀을 위한 PDF 편집 및 워크플로 간소화</div>
+                                                </div>
+                                                <div class="navbar__item__go"><i class="fas fa-arrow-right"></i></div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <ul class="nav__group">
+                                        <li class="nav__title" data-i18n="menu-applications">응용 프로그램</li>
+                                        <li class="navbar__item navbar__item--md">
+                                            <a href="#" data-i18n-title="menu-desktop">
+                                                <div class="navbar__item__icon"><i class="fas fa-desktop"></i></div>
+                                                <div class="navbar__item__content">
+                                                    <div class="navbar__item__title" data-i18n="menu-desktop">데스크톱 앱</div>
+                                                    <div class="navbar__item__description" data-i18n="menu-desktop-desc">Mac 및 Windows에서 사용 가능</div>
+                                                </div>
+                                                <div class="navbar__item__go"><i class="fas fa-arrow-right"></i></div>
+                                            </a>
+                                        </li>
+                                        <li class="navbar__item navbar__item--md">
+                                            <a href="#" data-i18n-title="menu-mobile">
+                                                <div class="navbar__item__icon"><i class="fas fa-mobile-alt"></i></div>
+                                                <div class="navbar__item__content">
+                                                    <div class="navbar__item__title" data-i18n="menu-mobile">모바일 앱</div>
+                                                    <div class="navbar__item__description" data-i18n="menu-mobile-desc">iOS 및 안드로이드에서 사용 가능</div>
+                                                </div>
+                                                <div class="navbar__item__go"><i class="fas fa-arrow-right"></i></div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- 도움 서브메뉴 패널 - 솔루션 부분에 표시 -->
+                                <div class="submenu-panel submenu-panel--help" id="helpSubmenuPanel">
+                                    <ul class="help-menu-list">
+                                        <li class="navbar__item navbar__item--xs">
+                                            <a href="used.html" data-i18n-title="help-usage">
+                                                <div class="navbar__item__icon"><i class="fas fa-book"></i></div>
+                                                <div class="navbar__item__title" data-i18n="help-usage">사용방법</div>
+                                            </a>
+                                        </li>
+                                        <li class="navbar__item navbar__item--xs">
+                                            <a href="#" data-i18n-title="help-faq">
+                                                <div class="navbar__item__icon"><i class="fas fa-question-circle"></i></div>
+                                                <div class="navbar__item__title" data-i18n="help-faq">자주 묻는 질문</div>
+                                            </a>
+                                        </li>
+                                        <li class="navbar__item navbar__item--xs">
+                                            <a href="#" data-i18n-title="help-tools">
+                                                <div class="navbar__item__icon"><i class="fas fa-tools"></i></div>
+                                                <div class="navbar__item__title" data-i18n="help-tools">도구</div>
+                                            </a>
+                                        </li>
+                                        <li class="navbar__item navbar__item--xs">
+                                            <a href="#" data-i18n-title="help-legal">
+                                                <div class="navbar__item__icon"><i class="fas fa-gavel"></i></div>
+                                                <div class="navbar__item__title" data-i18n="help-legal">법률 & 개인 정보 보호</div>
+                                            </a>
+                                        </li>
+                                        <li class="navbar__item navbar__item--xs">
+                                            <a href="#" data-i18n-title="help-contact">
+                                                <div class="navbar__item__icon"><i class="fas fa-envelope"></i></div>
+                                                <div class="navbar__item__title" data-i18n="help-contact">문의</div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- 언어 서브메뉴 패널 - 솔루션 부분에 표시 -->
+                                <div class="submenu-panel submenu-panel--language" id="languageSubmenuPanel">
+                                    <ul class="language-menu-list">
+                                        <li class="navbar__item navbar__item--xs">
+                                            <div class="language-item" data-lang="ko">
+                                                <div class="navbar__item__icon"><i class="fas fa-globe"></i></div>
+                                                <div class="navbar__item__title">한국어</div>
+                                                <i class="fas fa-check language-check"></i>
+                                            </div>
+                                        </li>
+                                        <li class="navbar__item navbar__item--xs">
+                                            <div class="language-item" data-lang="ja">
+                                                <div class="navbar__item__icon"><i class="fas fa-globe"></i></div>
+                                                <div class="navbar__item__title">日本語</div>
+                                                <i class="fas fa-check language-check" style="display: none;"></i>
+                                            </div>
+                                        </li>
+                                        <li class="navbar__item navbar__item--xs">
+                                            <div class="language-item" data-lang="zh">
+                                                <div class="navbar__item__icon"><i class="fas fa-globe"></i></div>
+                                                <div class="navbar__item__title">中文 (简体)</div>
+                                                <i class="fas fa-check language-check" style="display: none;"></i>
+                                            </div>
+                                        </li>
+                                        <li class="navbar__item navbar__item--xs">
+                                        </li>
+                                        <li class="navbar__item navbar__item--xs">
+                                            <div class="language-item" data-lang="fr">
+                                                <div class="navbar__item__icon"><i class="fas fa-globe"></i></div>
+                                                <div class="navbar__item__title">Français</div>
+                                                <i class="fas fa-check language-check" style="display: none;"></i>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="menu-comp__general">
+                                    <ul>
+                                        <li class="navbar__item navbar__item--xs">
+                                            <a href="pricing.html" data-i18n-title="menu-pricing">
+                                                <div class="navbar__item__icon"><i class="fas fa-tag"></i></div>
+                                                <div class="navbar__item__title" data-i18n="menu-pricing">가격</div>
+                                            </a>
+                                        </li>
+                                        <li class="navbar__item navbar__item--xs">
+                                            <a href="#" data-i18n-title="menu-security">
+                                                <div class="navbar__item__icon"><i class="fas fa-shield-alt"></i></div>
+                                                <div class="navbar__item__title" data-i18n="menu-security">보안</div>
+                                            </a>
+                                        </li>
+                                        <li class="navbar__item navbar__item--xs">
+                                            <a href="#" data-i18n-title="menu-features">
+                                                <div class="navbar__item__icon"><i class="fas fa-star"></i></div>
+                                                <div class="navbar__item__title" data-i18n="menu-features">기능</div>
+                                            </a>
+                                        </li>
+                                        <li class="navbar__item navbar__item--xs">
+                                            <a href="#" data-i18n-title="menu-about">
+                                                <div class="navbar__item__icon"><i class="fas fa-heart"></i></div>
+                                                <div class="navbar__item__title" data-i18n="menu-about">회사 소개</div>
+                                            </a>
+                                        </li>
+                                        <li class="divider divider--break"></li>
+                                        <li class="nav-has-dropdown">
+                                            <div class="navbar__item navbar__item--xs help-setting-item" id="helpSettingBtn">
+                                                <div>
+                                                    <div class="navbar__item__icon"><i class="fas fa-chevron-left"></i></div>
+                                                    <div class="navbar__item__title" data-i18n="menu-help">도움</div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="nav-has-dropdown">
+                                            <div class="navbar__item navbar__item--xs language-setting-item" id="languageSettingBtn">
+                                                <div>
+                                                    <div class="navbar__item__icon"><i class="fas fa-chevron-left"></i></div>
+                                                    <div class="navbar__item__title" data-i18n="menu-language">언어</div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-container">
+        <div class="pricing-container">
+            <div class="pricing-header">
+                <h1 class="pricing-title">무료로 부담 없이 사용하고,<br>유료로 더 큰 혜택을 누리는 AX2 요금제</h1>
+            </div>
+
+         
+            
+            <div class="duration-tabs">
+                <button class="duration-tab" data-duration="1week">1주일</button>
+                <button class="duration-tab active" data-duration="1month">1개월</button>
+                <button class="duration-tab" data-duration="3months">3개월</button>
+                <button class="duration-tab" data-duration="1year">1년</button>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- 무료 플랜 -->
+                <div class="pricing-card free">
+                    <div class="pricing-card-title">무료</div>
+                    <div class="pricing-card-description">AX2 회원인 모든 이용자</div>
+                    <div class="pricing-card-price">0<span class="price-unit">원</span></div>
+                </div>
+
+                <!-- 학생 플랜 -->
+                <div class="pricing-card student">
+                    <div class="pricing-card-title">학생</div>
+                    <div class="pricing-card-description">중·고등학생 및 동일연령 청소년<br>대학생, 대학원생</div>
+                    <div class="pricing-card-price" id="student-price">15,000<span class="price-unit">원</span></div>
+                    <button class="pricing-card-button">결제하기</button>
+                </div>
+
+                <!-- 일반 플랜 -->
+                <div class="pricing-card general">
+                    <div class="pricing-card-title">일반</div>
+                    <div class="pricing-card-description">학생 외 개인 사용자<br>개인 사업자, 자영업자</div>
+                    <div class="pricing-card-price" id="general-price">29,000<span class="price-unit">원</span></div>
+                    <button class="pricing-card-button">결제하기</button>
+                </div>
+
+                <!-- 프로 플랜 -->
+                <div class="pricing-card pro">
+                    <div class="pricing-card-title">프로</div>
+                    <div class="pricing-card-description">고급 개인 사용자<br>기업·공공기관·대학교·에이전시</div>
+                    <div class="pricing-card-price" id="pro-price">49,000<span class="price-unit">원</span></div>
+                    <button class="pricing-card-button">결제하기</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 결제 모달 -->
+    <div class="payment-modal-overlay" id="paymentModal">
+        <div class="payment-modal">
+            <div class="payment-modal-header">
+                <span class="payment-modal-title">결제</span>
+                <button class="payment-modal-close" onclick="closePaymentModal()">&times;</button>
+            </div>
+            <div class="payment-modal-body">
+                <!-- 선택한 요금제 -->
+                <div class="payment-section">
+                    <div class="payment-section-title">선택한 요금제</div>
+                    <div class="selected-plan-box">
+                        <div class="selected-plan-header">
+                            <span class="selected-plan-name" id="modalPlanName">학생요금제 1개월</span>
+                            <span class="selected-plan-price" id="modalPlanPrice">15,000<span class="unit">원</span></span>
+                        </div>
+                        <div class="plan-notice">
+                            해당 요금제는 학생이 학과 수업용으로만 사용 가능합니다.<br>
+                            학생이 아니거나, 학생이더라도 학과 수업용이 아닐 경우 저작권의 보호를 받지 못하며, 통지 없이 서비스가 중지될 수 있습니다.<br>
+                            이미 <strong>잔여기간에 따른 환불은 되지 않습니다.</strong> (저작권 규정 1조 사항에 의거)
+                        </div>
+                        <label class="plan-agreement">
+                            <input type="checkbox" id="planAgreement">
+                            위 내용에 동의합니다.
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 결제 수단 선택 -->
+                <div class="payment-section">
+                    <div class="payment-section-title">결제 수단 선택</div>
+                    <div class="discount-badge">0.5% 즉시 할인!</div>
+                    <div class="payment-methods">
+                        <button class="payment-method-btn active" data-method="account">퀵 계좌이체</button>
+                        <button class="payment-method-btn" data-method="transfer">무통장입금</button>
+                        <button class="payment-method-btn" data-method="card">신용카드</button>
+                        <button class="payment-method-btn" data-method="phone">휴대폰</button>
+                    </div>
+                    <div class="payment-methods" style="margin-top: 10px;">
+                        <button class="payment-method-btn" data-method="culture">문화상품권</button>
+                        <button class="payment-method-btn" data-method="book">도서문화상품권</button>
+                    </div>
+                </div>
+
+                <!-- 결제정보 -->
+                <div class="payment-section">
+                    <div class="payment-section-title">결제정보</div>
+                    <div class="payment-form-group">
+                        <label class="payment-form-label">성명/단체명 <span class="required">*</span></label>
+                        <input type="text" class="payment-form-input" id="paymentName" placeholder="">
+                    </div>
+                    <div class="payment-form-group">
+                        <label class="payment-form-label">연락처(휴대폰/유선전화) <span class="required">*</span></label>
+                        <div class="phone-inputs">
+                            <input type="text" class="payment-form-input" id="phone1" maxlength="3" placeholder="">
+                            <input type="text" class="payment-form-input" id="phone2" maxlength="4" placeholder="">
+                            <input type="text" class="payment-form-input" id="phone3" maxlength="4" placeholder="">
+                        </div>
+                    </div>
+                    <div class="payment-form-group">
+                        <label class="payment-form-label">이메일</label>
+                        <input type="email" class="payment-form-input" id="paymentEmail" placeholder="pub001@4csoft.com" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+                    </div>
+                </div>
+
+                <!-- 약관 -->
+                <div class="terms-box">
+                    • 회원이 구매한 유료서비스는 디지털 콘텐츠 특성상 결제취소 되지 않습니다.<br>
+                    &nbsp;&nbsp;따라서 신중하게 판단하여 결제를 하여 주시기 바랍니다. (상세한 사항은 아래 약관에서 확인)<br>
+                    • <a href="#">이용약관 제 12조(유료서비스)</a>, <a href="#">제13조(결제취소 및 환불)</a>, <a href="#">제15조(환불절차)</a>, <a href="#">제16조(과오금의환불)</a><br>
+                    • 무통장입금, 퀵계좌이체 결제취소 시 PG사 결제대행수수료를 공제한 금액이 환불됩니다.<br>
+                    • 핸드폰 결제는 결제한 월이 지날 경우 취소 및 환불이 불가능합니다.<br>
+                    • <a href="#">결제증빙서류증 현금영수증</a>(소득공제용/지출증빙용)은 결제하기 과정에서 발행됩니다.
+                </div>
+
+                <label class="terms-agreement">
+                    <input type="checkbox" id="termsAgreement">
+                    위 상품의 구매 조건을 확인하였으며 결제에 동의합니다.
+                </label>
+            </div>
+            <div class="payment-modal-footer">
+                <button class="payment-submit-btn" id="paymentSubmitBtn" onclick="submitPayment()">
+                    <span id="submitBtnPrice">15,000</span>원 결제하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth-state.js" defer></script>
+    <script src="../script.js" defer></script>
+    <script src="../js/more-menu.js" defer></script>
+    <script>
+        // 가격 데이터
+        const pricingData = {
+            '1week': {
+                student: 7000,
+                general: 12000,
+                pro: 19000
+            },
+            '1month': {
+                student: 15000,
+                general: 29000,
+                pro: 49000
+            },
+            '3months': {
+                student: 40000,
+                general: 80000,
+                pro: 140000
+            },
+            '1year': {
+                student: null,
+                general: 320000,
+                pro: 560000
+            }
+        };
+
+        // 기간 탭 클릭 이벤트
+        document.querySelectorAll('.duration-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // 모든 탭의 active 클래스 제거
+                document.querySelectorAll('.duration-tab').forEach(t => t.classList.remove('active'));
+                // 클릭한 탭에 active 클래스 추가
+                this.classList.add('active');
+                
+                const duration = this.getAttribute('data-duration');
+                updatePrices(duration);
+            });
+        });
+
+        // 가격 업데이트 함수
+        function updatePrices(duration) {
+            const prices = pricingData[duration];
+            
+            // 학생 플랜
+            const studentPriceEl = document.getElementById('student-price');
+            const studentButton = document.querySelector('.pricing-card.student .pricing-card-button');
+            if (prices.student) {
+                studentPriceEl.innerHTML = prices.student.toLocaleString() + '<span class="price-unit">원</span>';
+                studentPriceEl.classList.remove('disabled');
+                studentButton.disabled = false;
+            } else {
+                studentPriceEl.textContent = '지원하지 않음';
+                studentPriceEl.classList.add('disabled');
+                studentButton.disabled = true;
+            }
+
+            // 일반 플랜
+            const generalPriceEl = document.getElementById('general-price');
+            const generalButton = document.querySelector('.pricing-card.general .pricing-card-button');
+            if (prices.general) {
+                generalPriceEl.innerHTML = prices.general.toLocaleString() + '<span class="price-unit">원</span>';
+                generalPriceEl.classList.remove('disabled');
+                generalButton.disabled = false;
+            } else {
+                generalPriceEl.textContent = '지원하지 않음';
+                generalPriceEl.classList.add('disabled');
+                generalButton.disabled = true;
+            }
+
+            // 프로 플랜
+            const proPriceEl = document.getElementById('pro-price');
+            const proButton = document.querySelector('.pricing-card.pro .pricing-card-button');
+            if (prices.pro) {
+                proPriceEl.innerHTML = prices.pro.toLocaleString() + '<span class="price-unit">원</span>';
+                proPriceEl.classList.remove('disabled');
+                proButton.disabled = false;
+            } else {
+                proPriceEl.textContent = '지원하지 않음';
+                proPriceEl.classList.add('disabled');
+                proButton.disabled = true;
+            }
+        }
+
+        // 현재 페이지에 따라 활성 탭 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            // 더보기 메뉴 토글
+            const moreMenuBtn = document.getElementById('moreMenuBtn');
+            const moreMenuDropdown = document.getElementById('moreMenuDropdown');
+            
+            if (moreMenuBtn && moreMenuDropdown) {
+                moreMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    moreMenuDropdown.classList.toggle('active');
+                });
+                
+                // 외부 클릭 시 메뉴 닫기
+                document.addEventListener('click', function(e) {
+                    if (!moreMenuBtn.contains(e.target) && !moreMenuDropdown.contains(e.target)) {
+                        moreMenuDropdown.classList.remove('active');
+                    }
+                });
+            }
+            
+            const tabs = document.querySelectorAll('.service-tab');
+            const currentPath = window.location.pathname;
+            const currentPage = currentPath.split('/').pop() || 'index.html';
+            
+            tabs.forEach(tab => {
+                const href = tab.getAttribute('href');
+                if (href) {
+                    const tabPath = href.split('/').pop() || 'index.html';
+                    
+                    if (tabPath === 'pricing.html' && currentPage === 'pricing.html') {
+                        tab.classList.add('active');
+                    } else if (tabPath === 'index.html' && currentPage === 'index.html') {
+                        tab.classList.add('active');
+                    } else if (tabPath === 'used.html' && currentPage === 'used.html') {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                }
+            });
+
+            // 결제하기 버튼 클릭 이벤트
+            document.querySelectorAll('.pricing-card-button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.disabled) return;
+                    
+                    // 로그인 상태 확인
+                    if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+                        alert('결제하기 위해서는 로그인을 먼저 해주세요.');
+                        return;
+                    }
+                    
+                    const card = this.closest('.pricing-card');
+                    let planType = '';
+                    let planColor = '';
+                    
+                    if (card.classList.contains('student')) {
+                        planType = '학생';
+                        planColor = '';
+                    } else if (card.classList.contains('general')) {
+                        planType = '일반';
+                        planColor = 'general';
+                    } else if (card.classList.contains('pro')) {
+                        planType = '프로';
+                        planColor = 'pro';
+                    }
+                    
+                    const duration = document.querySelector('.duration-tab.active').textContent;
+                    const priceEl = card.querySelector('.pricing-card-price');
+                    const priceText = priceEl.textContent.replace('원', '').trim();
+                    
+                    openPaymentModal(planType, duration, priceText, planColor);
+                });
+            });
+
+            // 결제 수단 선택
+            document.querySelectorAll('.payment-method-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.payment-method-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+
+        // 결제 모달 열기
+        function openPaymentModal(planType, duration, price, colorClass) {
+            const modal = document.getElementById('paymentModal');
+            const planNameEl = document.getElementById('modalPlanName');
+            const planPriceEl = document.getElementById('modalPlanPrice');
+            const submitBtnPrice = document.getElementById('submitBtnPrice');
+            
+            planNameEl.textContent = `${planType}요금제 ${duration}`;
+            planNameEl.className = 'selected-plan-name ' + colorClass;
+            planPriceEl.innerHTML = `${price}<span class="unit">원</span>`;
+            submitBtnPrice.textContent = price;
+            
+            // 체크박스 초기화
+            document.getElementById('planAgreement').checked = false;
+            document.getElementById('termsAgreement').checked = false;
+            
+            // 로그인한 사용자 이메일 자동 입력
+            if (typeof getCurrentUser === 'function') {
+                const user = getCurrentUser();
+                if (user && user.email) {
+                    document.getElementById('paymentEmail').value = user.email;
+                }
+            }
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 결제 모달 닫기
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('paymentModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePaymentModal();
+            }
+        });
+
+        // 결제 제출
+        function submitPayment() {
+            const planAgreement = document.getElementById('planAgreement').checked;
+            const termsAgreement = document.getElementById('termsAgreement').checked;
+            const name = document.getElementById('paymentName').value.trim();
+            const phone1 = document.getElementById('phone1').value.trim();
+            const phone2 = document.getElementById('phone2').value.trim();
+            const phone3 = document.getElementById('phone3').value.trim();
+            
+            if (!planAgreement) {
+                alert('요금제 내용에 동의해주세요.');
+                return;
+            }
+            
+            if (!termsAgreement) {
+                alert('구매 조건에 동의해주세요.');
+                return;
+            }
+            
+            if (!name) {
+                alert('성명/단체명을 입력해주세요.');
+                return;
+            }
+            
+            if (!phone1 || !phone2 || !phone3) {
+                alert('연락처를 입력해주세요.');
+                return;
+            }
+            
+            // 현재 선택된 요금제 정보 가져오기
+            const planNameEl = document.getElementById('modalPlanName');
+            const planText = planNameEl.textContent; // 예: "학생요금제 1개월"
+            const priceText = document.getElementById('submitBtnPrice').textContent;
+            let planType = 'Free';
+            
+            if (planText.includes('학생')) {
+                planType = '학생';
+            } else if (planText.includes('일반')) {
+                planType = '일반';
+            } else if (planText.includes('프로')) {
+                planType = '프로';
+            }
+            
+            // 기간 추출
+            let duration = '1개월';
+            if (planText.includes('1주일')) duration = '1주일';
+            else if (planText.includes('1개월')) duration = '1개월';
+            else if (planText.includes('3개월')) duration = '3개월';
+            else if (planText.includes('1년')) duration = '1년';
+            
+            // 구독 정보 저장
+            const subscriptionInfo = {
+                planType: planType,
+                planName: planText,
+                duration: duration,
+                subscribedAt: new Date().toISOString(),
+                paymentName: name,
+                paymentPhone: `${phone1}-${phone2}-${phone3}`
+            };
+            localStorage.setItem('subscription', JSON.stringify(subscriptionInfo));
+            localStorage.setItem('currentPlan', planType);
+            
+            // currentUser에 이름 저장
+            var currentUserData = localStorage.getItem('currentUser');
+            if (currentUserData) {
+                var currentUser = JSON.parse(currentUserData);
+                currentUser.name = name;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+            
+            // 결제 내역 저장
+            const paymentHistory = JSON.parse(localStorage.getItem('paymentHistory') || '[]');
+            paymentHistory.unshift({
+                planType: planType,
+                duration: duration,
+                price: priceText + '원',
+                paymentDate: new Date().toISOString(),
+                paymentMethod: document.querySelector('.payment-method-btn.active')?.textContent || '자동결제'
+            });
+            localStorage.setItem('paymentHistory', JSON.stringify(paymentHistory));
+            
+            // 결제 처리 (실제로는 PG사 연동 필요)
+            alert('결제가 완료되었습니다!');
+            closePaymentModal();
+            
+            // 페이지 새로고침하여 요금제 표시 업데이트
+            location.reload();
+        }
+    </script>
+</body>
+</html>
+
