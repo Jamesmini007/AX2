@@ -9,14 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- 모바일 메뉴 버튼 -->
-    <button class="mobile-menu-btn" id="mobileMenuBtn" style="display: none;">
-        <i class="fas fa-bars"></i>
-    </button>
-    
-    <!-- 사이드바 오버레이 -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    
     <!-- 상단 네비게이션 -->
     <nav class="glass-nav">
         <div class="nav-content">
@@ -245,10 +237,10 @@
         </div>
     </div>
 
+    <script src="../js/i18n.js" defer></script>
     <script src="../js/auth-state.js" defer></script>
     <script src="../js/live_lecture_history.js" defer></script>
     <script src="../script.js" defer></script>
-    <script src="../js/more-menu.js" defer></script>
     <script>
         // 더보기 메뉴 토글
         document.addEventListener('DOMContentLoaded', function() {

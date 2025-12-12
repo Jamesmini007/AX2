@@ -670,8 +670,8 @@
         .comparison-insurance {
             font-size: 13px;
             color: #666;
-            padding: 16px 0;
-            margin-top: 20px;
+            padding: 20px 24px;
+            margin-top: 30px;
         }
 
         @media (max-width: 768px) {
@@ -694,14 +694,6 @@
     </style>
 </head>
 <body>
-    <!-- 모바일 메뉴 버튼 -->
-    <button class="mobile-menu-btn" id="mobileMenuBtn" style="display: none;">
-        <i class="fas fa-bars"></i>
-    </button>
-    
-    <!-- 사이드바 오버레이 -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    
     <!-- 배경 효과 -->
     <div class="background-effects">
         <div class="gradient-cloud cloud-1"></div>
@@ -712,7 +704,7 @@
         <div class="reflection-light"></div>
     </div>
 
-    <!-- 상단 네비게이션 -->
+    <!-- 네비게이션 바 플레이스홀더 -->
     <div id="nav-placeholder"></div>
 
     <!-- 메인 컨텐츠 -->
@@ -1085,10 +1077,10 @@
                         <li>• 견적서 및 사업자등록증 사본은 '결제하기' 버튼을 누른 뒤 '결제정보' 화면에서 직접 다운로드 가능합니다.</li>
                     </ul>
                 </div>
-                
-                <div class="comparison-insurance">
-                    서울보증보험을 통한 이행(지급)보증보험가입됨. 증권번호:100-000-202503640815
-                </div>
+            </div>
+            
+            <div class="comparison-insurance">
+                서울보증보험을 통한 이행(지급)보증보험가입됨. 증권번호:100-000-202503640815
             </div>
         </div>
     </main>
@@ -1181,11 +1173,10 @@
         </div>
     </div>
 
-    <script src="../js/nav-bar.js"></script>
     <script src="../js/i18n.js" defer></script>
+    <script src="../js/nav-bar.js" defer></script>
     <script src="../js/auth-state.js" defer></script>
     <script src="../script.js" defer></script>
-    <script src="../js/more-menu.js" defer></script>
     <script>
         // 가격 데이터
         const pricingData = {
