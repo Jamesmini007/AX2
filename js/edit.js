@@ -757,7 +757,7 @@
                                 <div class="output-label">
                                     <span>${currentLangInfo.name || langInfo.name}</span>
                                 </div>
-                                <textarea class="text-input" data-lang="${langCode}" data-segment-id="${segment.id}" placeholder="${placeholder}" readonly>${outputText}</textarea>
+                                <textarea class="text-input" data-lang="${langCode}" data-segment-id="${segment.id}" placeholder="${placeholder}">${outputText}</textarea>
                             </div>
                         </div>
                     </div>
