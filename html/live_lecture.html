@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AX2 | 실시간 강의 번역 서비스</title>
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/mypage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .content-section {
+            width: 100%;
+        }
+
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .pricing-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .pricing-subtitle {
+            font-size: 18px;
+            color: var(--text-light);
+        }
+
+        .duration-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .duration-tab {
+            padding: 10px 20px;
+            border: 1px solid #E5E7EB;
+            border-radius: 20px;
+            background: white;
+            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .duration-tab:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .duration-tab.active {
+            background: #FFD700;
+            border-color: #FFD700;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .duration-note {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #E5E7EB;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .pricing-card-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .pricing-card.free .pricing-card-title {
+            color: var(--text-dark);
+        }
+
+        .pricing-card.student .pricing-card-title {
+            color: #14B8A6;
+        }
+
+        .pricing-card.general .pricing-card-title {
+            color: #3B82F6;
+        }
+
+        .pricing-card.pro .pricing-card-title {
+            color: #8B5CF6;
+        }
+
+        .pricing-card-description {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 24px;
+            flex: 1;
+        }
+
+        .pricing-card-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .pricing-card-price.disabled {
+            font-size: 18px;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .pricing-card-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+
+        .pricing-card.free .pricing-card-button {
+            background: #374151;
+            color: white;
+        }
+
+        .pricing-card.free .pricing-card-button:hover {
+            background: #1F2937;
+        }
+
+        .pricing-card.student .pricing-card-button {
+            background: #14B8A6;
+            color: white;
+        }
+
+        .pricing-card.student .pricing-card-button:hover {
+            background: #0D9488;
+        }
+
+        .pricing-card.general .pricing-card-button {
+            background: #3B82F6;
+            color: white;
+        }
+
+        .pricing-card.general .pricing-card-button:hover {
+            background: #2563EB;
+        }
+
+        .pricing-card.pro .pricing-card-button {
+            background: #8B5CF6;
+            color: white;
+        }
+
+        .pricing-card.pro .pricing-card-button:hover {
+            background: #7C3AED;
+        }
+
+        .pricing-card-button:disabled {
+            background: #E5E7EB;
+            color: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .pricing-container {
+                padding: 40px 15px;
+            }
+
+            .pricing-title {
+                font-size: 24px;
+            }
+
+            .pricing-subtitle {
+                font-size: 16px;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 플레이스홀더 -->
+    <div id="nav-placeholder"></div>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-container">
+        <!-- 실시간 강의 섹션 -->
+        <div class="content-section" id="lecture-section">
+            <div class="content-wrapper">
+                <!-- 중앙: 실시간 강의 컨텐츠 -->
+                <div class="left-panel">
+                    <!-- 제목 및 부제목 -->
+                    <div class="upload-section-header">
+                        <h1 class="upload-title">실시간 강의</h1>
+                        <p class="upload-subtitle">라이브 강의를 시작하고 실시간으로 번역 및 자막을 제공하세요</p>
+                    </div>
+                    
+                    <!-- 실시간 강의 메인 영역 -->
+                    <div class="live-lecture-container">
+                        <div class="live-lecture-card">
+                            <div class="live-lecture-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h2 class="live-lecture-title">새로운 강의 시작하기</h2>
+                            <p class="live-lecture-description">
+                                실시간 강의를 시작하여 참여자들에게 다국어 자막을 제공할 수 있습니다.
+                            </p>
+                            <button class="live-lecture-btn" onclick="startLiveLecture()">
+                                <i class="fas fa-play"></i>
+                                강의 시작
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 저장공간 섹션 -->
+        <div class="content-section" id="storage-section" style="display: none;">
+            <div class="container">
+                <!-- 저장공간 대시보드 -->
+                <div class="storage-dashboard">
+                    <div class="dashboard-header">
+                        <h2 class="dashboard-title">
+                            <i class="fas fa-database"></i>
+                            저장공간 관리
+                        </h2>
+                        <div class="free-plan-badge">
+                            <i class="fas fa-gift"></i>
+                            <span>1시간 무료 영상 제공</span>
+                        </div>
+                    </div>
+                    <div class="storage-content">
+                        <div class="storage-info">
+                            <div class="storage-usage">
+                                <div class="storage-label">
+                                    <span>사용 중</span>
+                                    <span class="storage-value" id="storage-used">0 GB</span>
+                                </div>
+                                <div class="storage-label">
+                                    <span>전체</span>
+                                    <span class="storage-value" id="storage-total">1 GB</span>
+                                </div>
+                            </div>
+                            <div class="storage-progress-bar">
+                                <div class="storage-progress-fill" id="storage-progress-fill" style="width: 0%"></div>
+                            </div>
+                            <div class="storage-percentage" id="storage-percentage">0% 사용</div>
+                        </div>
+                        <div class="storage-stats">
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="total-videos">0</div>
+                                    <div class="stat-label">저장된 영상</div>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="total-duration">0분</div>
+                                    <div class="stat-label">총 영상 시간</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 영상 목록 -->
+                <div class="videos-section">
+                    <div class="section-header">
+                        <div class="section-title">최근 영상</div>
+                        <div class="filter-controls">
+                            <button class="filter-btn active" data-filter="all">전체</button>
+                            <button class="filter-btn" data-filter="recent">최근</button>
+                            <button class="filter-btn" data-filter="expiring">만료 예정</button>
+                        </div>
+                    </div>
+                    <div class="video-grid" id="video-grid">
+                        <!-- 영상 카드들이 여기에 동적으로 추가됩니다 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 요금제 섹션 -->
+        <div class="content-section" id="pricing-section" style="display: none;">
+            <div class="pricing-container">
+                <div class="pricing-header">
+                    <h1 class="pricing-title">무료로 부담 없이 사용하고,<br>유료로 더 큰 혜택을 누리는 AX2 요금제</h1>
+                </div>
+
+                <div class="duration-tabs">
+                    <button class="duration-tab" data-duration="1day">1일(24시간)</button>
+                    <button class="duration-tab" data-duration="1week">1주일</button>
+                    <button class="duration-tab active" data-duration="1month">1개월</button>
+                    <button class="duration-tab" data-duration="3months">3개월</button>
+                    <button class="duration-tab" data-duration="1year">1년</button>
+                </div>
+
+                <div class="pricing-grid">
+                    <!-- 무료 플랜 -->
+                    <div class="pricing-card free">
+                        <div class="pricing-card-title">무료</div>
+                        <div class="pricing-card-description">AX2 회원인 모든 이용자</div>
+                        <div class="pricing-card-price">0원</div>
+                        <button class="pricing-card-button">체험하기</button>
+                    </div>
+
+                    <!-- 학생 플랜 -->
+                    <div class="pricing-card student">
+                        <div class="pricing-card-title">학생</div>
+                        <div class="pricing-card-description">중·고등학생 및 동일연령 청소년<br>대학생, 대학원생</div>
+                        <div class="pricing-card-price" id="student-price-lecture">15,000원</div>
+                        <button class="pricing-card-button">결제하기</button>
+                    </div>
+
+                    <!-- 일반 플랜 -->
+                    <div class="pricing-card general">
+                        <div class="pricing-card-title">일반</div>
+                        <div class="pricing-card-description">학생 외 개인 사용자<br>개인 사업자, 자영업자</div>
+                        <div class="pricing-card-price" id="general-price-lecture">29,000원</div>
+                        <button class="pricing-card-button">결제하기</button>
+                    </div>
+
+                    <!-- 프로 플랜 -->
+                    <div class="pricing-card pro">
+                        <div class="pricing-card-title">프로</div>
+                        <div class="pricing-card-description">고급 개인 사용자<br>기업·공공기관·대학교·에이전시</div>
+                        <div class="pricing-card-price" id="pro-price-lecture">49,000원</div>
+                        <button class="pricing-card-button">결제하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/i18n.js" defer></script>
+    <script src="../js/nav-bar.js" defer></script>
+    <script src="../js/auth-state.js" defer></script>
+    <script src="../script.js" defer></script>
+    <script src="../js/mypage.js" defer></script>
+    <script>
+        // 가격 데이터
+        const pricingData = {
+            '1day': {
+                student: null,
+                general: null,
+                pro: 4200
+            },
+            '1week': {
+                student: null,
+                general: null,
+                pro: null
+            },
+            '1month': {
+                student: 15000,
+                general: 29000,
+                pro: 49000
+            },
+            '3months': {
+                student: null,
+                general: null,
+                pro: null
+            },
+            '1year': {
+                student: null,
+                general: null,
+                pro: null
+            }
+        };
+
+        // 탭 전환 기능
+        document.addEventListener('DOMContentLoaded', function() {
+            // 더보기 메뉴 토글
+            const moreMenuBtn = document.getElementById('moreMenuBtn');
+            const moreMenuDropdown = document.getElementById('moreMenuDropdown');
+            
+            if (moreMenuBtn && moreMenuDropdown) {
+                moreMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    moreMenuDropdown.classList.toggle('active');
+                });
+                
+                // 외부 클릭 시 메뉴 닫기
+                document.addEventListener('click', function(e) {
+                    if (!moreMenuBtn.contains(e.target) && !moreMenuDropdown.contains(e.target)) {
+                        moreMenuDropdown.classList.remove('active');
+                    }
+                });
+            }
+            
+            const tabs = document.querySelectorAll('.service-tab[data-tab]');
+            const sections = {
+                'lecture': document.getElementById('lecture-section'),
+                'storage': document.getElementById('storage-section'),
+                'pricing': document.getElementById('pricing-section')
+            };
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // 모든 탭의 active 클래스 제거 (data-tab이 있는 탭만)
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // 클릭한 탭에 active 클래스 추가
+                    this.classList.add('active');
+                    
+                    // 모든 섹션 숨기기
+                    Object.values(sections).forEach(section => {
+                        if (section) section.style.display = 'none';
+                    });
+                    
+                    // 선택한 섹션 표시
+                    if (sections[targetTab]) {
+                        sections[targetTab].style.display = 'block';
+                    }
+                });
+            });
+
+            // 기간 탭 클릭 이벤트
+            document.querySelectorAll('.duration-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 모든 탭의 active 클래스 제거
+                    document.querySelectorAll('.duration-tab').forEach(t => t.classList.remove('active'));
+                    // 클릭한 탭에 active 클래스 추가
+                    this.classList.add('active');
+                    
+                    const duration = this.getAttribute('data-duration');
+                    updatePrices(duration);
+                });
+            });
+            
+            // 언어 설정 기능
+            const languageOptions = document.querySelectorAll('.language-dropdown-menu .language-option');
+            const currentLang = localStorage.getItem('siteLanguage') || 'ko';
+            
+            languageOptions.forEach(option => {
+                const lang = option.getAttribute('data-lang');
+                if (lang === currentLang) {
+                    option.classList.add('active');
+                    option.querySelector('.fa-check').style.display = 'inline-block';
+                } else {
+                    option.classList.remove('active');
+                    option.querySelector('.fa-check').style.display = 'none';
+                }
+                
+                option.addEventListener('click', function() {
+                    const selectedLang = this.getAttribute('data-lang');
+                    localStorage.setItem('siteLanguage', selectedLang);
+                    
+                    languageOptions.forEach(opt => {
+                        opt.classList.remove('active');
+                        opt.querySelector('.fa-check').style.display = 'none';
+                    });
+                    
+                    this.classList.add('active');
+                    this.querySelector('.fa-check').style.display = 'inline-block';
+                });
+            });
+
+            // 초기 가격 설정 (1개월)
+            updatePrices('1month');
+        });
+
+        // 가격 업데이트 함수
+        function updatePrices(duration) {
+            const prices = pricingData[duration];
+            
+            // 학생 플랜
+            const studentPriceEl = document.getElementById('student-price-lecture');
+            const studentButton = document.querySelector('.pricing-card.student .pricing-card-button');
+            if (prices && prices.student) {
+                studentPriceEl.textContent = prices.student.toLocaleString() + '원';
+                studentPriceEl.classList.remove('disabled');
+                if (studentButton) studentButton.disabled = false;
+            } else if (studentPriceEl) {
+                studentPriceEl.textContent = '지원하지 않음';
+                studentPriceEl.classList.add('disabled');
+                if (studentButton) studentButton.disabled = true;
+            }
+
+            // 일반 플랜
+            const generalPriceEl = document.getElementById('general-price-lecture');
+            const generalButton = document.querySelector('.pricing-card.general .pricing-card-button');
+            if (prices && prices.general) {
+                generalPriceEl.textContent = prices.general.toLocaleString() + '원';
+                generalPriceEl.classList.remove('disabled');
+                if (generalButton) generalButton.disabled = false;
+            } else if (generalPriceEl) {
+                generalPriceEl.textContent = '지원하지 않음';
+                generalPriceEl.classList.add('disabled');
+                if (generalButton) generalButton.disabled = true;
+            }
+
+            // 프로 플랜
+            const proPriceEl = document.getElementById('pro-price-lecture');
+            const proButton = document.querySelector('.pricing-card.pro .pricing-card-button');
+            if (prices && prices.pro) {
+                proPriceEl.textContent = prices.pro.toLocaleString() + '원';
+                proPriceEl.classList.remove('disabled');
+                if (proButton) proButton.disabled = false;
+            } else if (proPriceEl) {
+                proPriceEl.textContent = '지원하지 않음';
+                proPriceEl.classList.add('disabled');
+                if (proButton) proButton.disabled = true;
+            }
+        }
+
+        // 모바일 메뉴 토글
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
+        if (mobileMenuBtn && sidebar && sidebarOverlay) {
+            if (window.innerWidth <= 768) {
+                mobileMenuBtn.style.display = 'block';
+            }
+            
+            window.addEventListener('resize', () => {
+                if (window.innerWidth <= 768) {
+                    mobileMenuBtn.style.display = 'block';
+                } else {
+                    mobileMenuBtn.style.display = 'none';
+                    sidebar.classList.remove('mobile-open');
+                    sidebarOverlay.classList.remove('active');
+                }
+            });
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('mobile-open');
+                sidebarOverlay.classList.toggle('active');
+            });
+            
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            });
+        }
+
+        // 강의 시작 함수
+        function startLiveLecture() {
+            // 실시간 강의실 생성
+            const lectureRoom = {
+                id: 'lecture_' + Date.now(),
+                createdAt: new Date().toISOString(),
+                status: 'ready',
+                title: '새로운 강의',
+                participants: []
+            };
+            
+            // 로컬 스토리지에 강의실 정보 저장
+            localStorage.setItem('ax2_current_lecture', JSON.stringify(lectureRoom));
+            
+            // 실시간 강의실로 이동
+            window.location.href = 'poly_talk.html';
+        }
+    </script>
+</body>
+</html>
+

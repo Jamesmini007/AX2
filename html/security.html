@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AX2 | 보안 및 개인정보 보호</title>
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .security-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        /* 보안 섹션 */
+        .security-section {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .security-section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .security-section-title i {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .security-section-title i.purple { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+        .security-section-title i.blue { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+        .security-section-title i.green { background: linear-gradient(135deg, #14B8A6, #34D399); }
+        .security-section-title i.orange { background: linear-gradient(135deg, #F59E0B, #FBBF24); }
+        .security-section-title i.red { background: linear-gradient(135deg, #EF4444, #F87171); }
+
+        .security-content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .security-content ul {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .security-content li {
+            margin-bottom: 8px;
+        }
+
+        .security-content strong {
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+
+        /* 하이라이트 박스 */
+        .highlight-box {
+            background: #f8f9fa;
+            border-left: 4px solid #8B5CF6;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .highlight-box.warning {
+            border-left-color: #F59E0B;
+            background: #fffbf0;
+        }
+
+        .highlight-box.success {
+            border-left-color: #14B8A6;
+            background: #f0fdfa;
+        }
+
+        .highlight-box-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .highlight-box-content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 보안 배지 */
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8B5CF6;
+            margin: 4px 4px 4px 0;
+        }
+
+        .security-badge i {
+            font-size: 11px;
+        }
+
+        /* 네비게이션 바는 styles.css의 기본 스타일 사용 */
+        /* 배경 효과는 styles.css에서 제거됨 */
+
+        body {
+            background: #ffffff !important;
+        }
+
+        @media (max-width: 768px) {
+            .security-container {
+                margin: 80px auto 40px;
+                padding: 0 15px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .security-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 플레이스홀더 -->
+    <div id="nav-placeholder"></div>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="security-container">
+        <h1 class="page-title">보안</h1>
+        <p class="page-subtitle">AX2는 사용자의 데이터와 개인정보를 보호하기 위해 최선을 다하고 있습니다.</p>
+
+        <!-- 데이터 보호 -->
+        <div class="security-section">
+            <div class="security-section-title">
+                <i class="fas fa-shield-alt blue"></i>
+                <span>데이터 보호 정책</span>
+            </div>
+            <div class="security-content">
+                <p>AX2는 사용자의 개인정보와 업로드된 영상 데이터를 최우선으로 보호합니다.</p>
+                
+                <div class="highlight-box warning">
+                    <div class="highlight-box-title">
+                        <i class="fas fa-clock"></i>
+                        <span>자동 데이터 삭제</span>
+                    </div>
+                    <div class="highlight-box-content">
+                        <strong>업로드된 모든 영상 파일과 생성된 자막 데이터는 처리 완료 후 2시간이 지나면 자동으로 완전히 삭제됩니다.</strong> 이는 사용자의 개인정보 보호와 데이터 보안을 위한 필수 조치입니다.
+                    </div>
+                </div>
+
+                <ul>
+                    <li><strong>영상 파일:</strong> 업로드된 원본 영상 파일은 처리 완료 후 2시간 내 자동 삭제</li>
+                    <li><strong>자막 파일:</strong> 생성된 자막 파일도 동일하게 2시간 후 자동 삭제</li>
+                    <li><strong>임시 데이터:</strong> 처리 과정에서 생성된 모든 임시 파일도 즉시 삭제</li>
+                    <li><strong>복구 불가:</strong> 삭제된 데이터는 복구할 수 없으므로 필요한 경우 다운로드하여 보관하세요</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 데이터 암호화 -->
+        <div class="security-section">
+            <div class="security-section-title">
+                <i class="fas fa-lock purple"></i>
+                <span>데이터 암호화</span>
+            </div>
+            <div class="security-content">
+                <p>모든 데이터는 전송 및 저장 중 최고 수준의 암호화를 적용합니다.</p>
+                
+                <div class="highlight-box success">
+                    <div class="highlight-box-title">
+                        <i class="fas fa-check-circle"></i>
+                        <span>암호화 표준</span>
+                    </div>
+                    <div class="highlight-box-content">
+                        AES-256 암호화를 사용하여 데이터를 보호하며, 모든 통신은 TLS 1.3 프로토콜을 통해 암호화됩니다.
+                    </div>
+                </div>
+
+                <ul>
+                    <li><strong>전송 암호화:</strong> HTTPS/TLS 1.3을 통한 모든 데이터 전송</li>
+                    <li><strong>저장 암호화:</strong> 서버에 저장되는 모든 데이터는 AES-256 암호화</li>
+                    <li><strong>암호화 키 관리:</strong> 키는 별도의 보안 저장소에 안전하게 관리</li>
+                    <li><strong>정기 감사:</strong> 암호화 시스템은 정기적으로 보안 감사를 받습니다</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 개인정보 보호 -->
+        <div class="security-section">
+            <div class="security-section-title">
+                <i class="fas fa-user-shield green"></i>
+                <span>개인정보 보호</span>
+            </div>
+            <div class="security-content">
+                <p>AX2는 사용자의 개인정보를 수집하지 않으며, 최소한의 정보만 요구합니다.</p>
+                
+                <ul>
+                    <li><strong>최소 정보 수집:</strong> 서비스 이용에 필요한 최소한의 정보만 수집</li>
+                    <li><strong>익명 처리:</strong> 업로드된 영상은 개인 식별 정보와 분리하여 처리</li>
+                    <li><strong>제3자 공유 금지:</strong> 수집된 정보를 제3자에게 판매하거나 공유하지 않음</li>
+                    <li><strong>쿠키 정책:</strong> 필수 쿠키만 사용하며, 추적 목적의 쿠키는 사용하지 않음</li>
+                    <li><strong>개인정보 삭제:</strong> 계정 삭제 시 모든 개인정보 즉시 삭제</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 접근 제어 -->
+        <div class="security-section">
+            <div class="security-section-title">
+                <i class="fas fa-key orange"></i>
+                <span>접근 제어 및 인증</span>
+            </div>
+            <div class="security-content">
+                <p>강력한 인증 시스템으로 무단 접근을 방지합니다.</p>
+                
+                <ul>
+                    <li><strong>비밀번호 암호화:</strong> 모든 비밀번호는 bcrypt 해시 알고리즘으로 암호화 저장</li>
+                    <li><strong>2단계 인증:</strong> 선택적 2단계 인증(2FA) 지원</li>
+                    <li><strong>세션 관리:</strong> 자동 로그아웃 및 세션 타임아웃 설정</li>
+                    <li><strong>IP 주소 로깅:</strong> 보안을 위한 접근 IP 주소 기록 (2시간 후 자동 삭제)</li>
+                    <li><strong>비정상 접근 감지:</strong> 의심스러운 로그인 시도 자동 감지 및 알림</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 서버 보안 -->
+        <div class="security-section">
+            <div class="security-section-title">
+                <i class="fas fa-server red"></i>
+                <span>서버 및 인프라 보안</span>
+            </div>
+            <div class="security-content">
+                <p>최신 보안 기술과 모니터링 시스템으로 서버를 보호합니다.</p>
+                
+                <ul>
+                    <li><strong>방화벽:</strong> 다층 방화벽 시스템으로 무단 접근 차단</li>
+                    <li><strong>DDoS 방어:</strong> 분산 서비스 거부 공격 자동 차단</li>
+                    <li><strong>정기 업데이트:</strong> 보안 패치 및 시스템 업데이트 즉시 적용</li>
+                    <li><strong>침입 탐지:</strong> 24/7 실시간 보안 모니터링 및 침입 탐지 시스템</li>
+                    <li><strong>백업 및 복구:</strong> 정기적인 데이터 백업 및 재해 복구 계획</li>
+                    <li><strong>ISO 27001:</strong> 국제 정보보안 관리 표준 준수</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 보안 인증 -->
+        <div class="security-section">
+            <div class="security-section-title">
+                <i class="fas fa-certificate blue"></i>
+                <span>보안 인증 및 규정 준수</span>
+            </div>
+            <div class="security-content">
+                <p>AX2는 국제 보안 표준과 개인정보 보호 규정을 준수합니다.</p>
+                
+                <div style="margin: 20px 0;">
+                    <span class="security-badge"><i class="fas fa-check"></i> GDPR 준수</span>
+                    <span class="security-badge"><i class="fas fa-check"></i> 개인정보보호법 준수</span>
+                    <span class="security-badge"><i class="fas fa-check"></i> ISO 27001</span>
+                    <span class="security-badge"><i class="fas fa-check"></i> SOC 2 Type II</span>
+                </div>
+
+                <ul>
+                    <li><strong>GDPR:</strong> 유럽 일반 데이터 보호 규정 완전 준수</li>
+                    <li><strong>개인정보보호법:</strong> 대한민국 개인정보 보호법 준수</li>
+                    <li><strong>정기 감사:</strong> 연 1회 외부 보안 감사 실시</li>
+                    <li><strong>보안 취약점 신고:</strong> 보안 취약점 발견 시 즉시 신고 및 보상 프로그램 운영</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 사용자 권한 -->
+        <div class="security-section">
+            <div class="security-section-title">
+                <i class="fas fa-user-check green"></i>
+                <span>사용자 권한 및 책임</span>
+            </div>
+            <div class="security-content">
+                <p>사용자도 보안 유지에 협조해주시기 바랍니다.</p>
+                
+                <ul>
+                    <li><strong>강력한 비밀번호:</strong> 최소 8자 이상, 영문, 숫자, 특수문자 조합 사용 권장</li>
+                    <li><strong>정기 비밀번호 변경:</strong> 3개월마다 비밀번호 변경 권장</li>
+                    <li><strong>공용 네트워크 주의:</strong> 공용 Wi-Fi 사용 시 VPN 사용 권장</li>
+                    <li><strong>의심스러운 활동 신고:</strong> 이상한 활동 발견 시 즉시 고객센터로 신고</li>
+                    <li><strong>데이터 다운로드:</strong> 중요한 자막 파일은 즉시 다운로드하여 보관</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <div class="highlight-box-title">
+                        <i class="fas fa-info-circle"></i>
+                        <span>중요 안내</span>
+                    </div>
+                    <div class="highlight-box-content">
+                        업로드된 영상과 생성된 자막은 보관 기간이 만료되면 자동으로 삭제됩니다. 모든 영상은 7일 동안 보관되며, 보관 확장 옵션(Storage Plus/Pro)을 구매하시면 더 긴 기간 보관이 가능합니다. 만료 3일 전부터 알림이 표시됩니다. 필요한 파일은 반드시 다운로드하여 보관하시기 바랍니다. 삭제된 데이터는 복구할 수 없습니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 보안 문의 -->
+        <div class="security-section">
+            <div class="security-section-title">
+                <i class="fas fa-envelope orange"></i>
+                <span>보안 관련 문의</span>
+            </div>
+            <div class="security-content">
+                <p>보안 관련 문의사항이나 취약점을 발견하신 경우 아래로 연락해주세요.</p>
+                
+                <ul>
+                    <li><strong>보안 이메일:</strong> security@ax2.com</li>
+                    <li><strong>일반 문의:</strong> support@ax2.com</li>
+                    <li><strong>응답 시간:</strong> 보안 관련 문의는 24시간 이내 응답</li>
+                    <li><strong>보상 프로그램:</strong> 보안 취약점 신고 시 보상 프로그램 운영</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/i18n.js" defer></script>
+    <script src="../js/nav-bar.js" defer></script>
+    <script src="../js/auth-state.js" defer></script>
+    <script src="../script.js" defer></script>
+</body>
+</html>

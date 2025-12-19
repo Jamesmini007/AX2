@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AX2 | 블로그</title>
+    <meta name="description" content="AX2 블로그에서 번역 기술, 업데이트, 그리고 유용한 자막 제작 팁을 확인해보세요.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="./blog.html">
+    <meta property="og:title" content="AX2 블로그">
+    <meta property="og:description" content="AX2 블로그에서 번역 기술, 업데이트, 그리고 유용한 자막 제작 팁을 확인해보세요.">
+    <meta property="og:image" content="../assets/image/Caption.png">
+
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        bg: '#FDFCF8',
+                        primary: '#4F46E5',
+                        secondary: '#F472B6',
+                        accent: '#FCD34D',
+                        dark: '#1F2937',
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -10px rgba(79, 70, 229, 0.1)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+                        'float': '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FDFCF8;
+            color: #1F2937;
+            overflow-x: hidden;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #4F46E5 0%, #EC4899 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .hover-card {
+            transition: box-shadow 0.3s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <nav class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+        <div class="bg-white/80 backdrop-blur-xl border border-white/50 rounded-full px-6 py-3 shadow-lg flex items-center gap-8 max-w-2xl w-full justify-between">
+            <a href="../company.html" class="font-extrabold text-xl tracking-tight flex items-center gap-2">
+                <img src="../assets/image/Caption.png" alt="AX2" class="h-8 w-auto">
+            </a>
+            
+            <div class="hidden md:flex items-center gap-6 text-sm font-bold text-gray-600">
+                <a href="../company.html" class="hover:text-purple-600 transition-colors">홈</a>
+                <a href="blog.html" class="hover:text-purple-600 transition-colors text-purple-600">블로그</a>
+                <a href="../poem/index.html" class="hover:text-purple-600 transition-colors">도입하기</a>
+            </div>
+            <a href="../../index.html" class="bg-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-purple-700 transition-colors shadow-lg shadow-purple-500/30">
+                무료체험하기
+            </a>
+        </div>
+    </nav>
+
+    <header class="relative pt-40 pb-20 px-4 overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl -z-10">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
+            <div class="absolute top-20 right-10 w-72 h-72 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
+            <div class="absolute -bottom-8 left-1/2 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-4000"></div>
+        </div>
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-100 shadow-sm mb-8 cursor-pointer">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-600">최신 소식</span>
+                <span class="text-sm font-medium text-gray-600">번역 기술과 팁을 공유합니다 📝</span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1] text-dark">
+                AX2 <span class="text-gradient">블로그</span>
+            </h1>
+            <p class="text-xl text-gray-500 mb-10 max-w-2xl mx-auto font-medium leading-relaxed">
+                번역 기술, 업데이트, 그리고 유용한 팁을 만나보세요.
+            </p>
+        </div>
+    </header>
+
+    <section class="py-24 px-4 max-w-7xl mx-auto">
+        <!-- 카테고리 필터 -->
+        <div class="flex flex-wrap items-center justify-center gap-4 mb-16">
+            <button class="filter-btn active px-6 py-2.5 rounded-full bg-purple-600 text-white text-sm font-bold hover:bg-purple-700 transition-all shadow-lg" data-category="전체">
+                전체
+            </button>
+            <button class="filter-btn px-6 py-2.5 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-bold hover:bg-gray-50 transition-all" data-category="업데이트">
+                업데이트
+            </button>
+            <button class="filter-btn px-6 py-2.5 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-bold hover:bg-gray-50 transition-all" data-category="튜토리얼">
+                튜토리얼
+            </button>
+            <button class="filter-btn px-6 py-2.5 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-bold hover:bg-gray-50 transition-all" data-category="기술">
+                기술
+            </button>
+            <button class="filter-btn px-6 py-2.5 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-bold hover:bg-gray-50 transition-all" data-category="뉴스">
+                뉴스
+            </button>
+        </div>
+
+        <!-- 블로그 포스트 그리드 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="blogGrid">
+            <!-- 포스트 1 -->
+            <article class="blog-post bg-white border border-gray-100 rounded-[2rem] overflow-hidden hover-card shadow-soft" data-category="업데이트">
+                <div class="h-48 relative overflow-hidden">
+                    <img src="../assets/image/transrator.png" alt="AI 번역 기능" class="w-full h-full object-cover">
+                    <div class="absolute top-4 left-4">
+                        <span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-bold text-purple-600">업데이트</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                        <span>2025년 1월 3일</span>
+                        <span>•</span>
+                        <span>5분 읽기</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">AI 번역 기능이 출시되었습니다</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        실시간 AI 번역 기능이 추가되었습니다. 이제 더욱 빠르고 정확한 번역을 경험해보세요.
+                    </p>
+                    <a href="blog-ai-translation-launch.html" class="inline-flex items-center gap-2 text-purple-600 font-bold text-sm">
+                        더 읽기
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </article>
+
+            <!-- 포스트 2 -->
+            <article class="blog-post bg-white border border-gray-100 rounded-[2rem] overflow-hidden hover-card shadow-soft" data-category="뉴스">
+                <div class="h-48 relative overflow-hidden">
+                    <img src="../assets/image/language.png" alt="30개 이상의 언어 지원 시작" class="w-full h-full object-cover">
+                    <div class="absolute top-4 left-4">
+                        <span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-bold text-purple-600">뉴스</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                        <span>2025년 1월 8일</span>
+                        <span>•</span>
+                        <span>6분 읽기</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">30개 이상의 언어 지원 시작</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        이제 30개 이상의 언어를 지원합니다. 전 세계 어디서나 AX2를 활용할 수 있습니다.
+                    </p>
+                    <a href="blog-30-languages.html" class="inline-flex items-center gap-2 text-purple-600 font-bold text-sm hover:gap-3 transition-all">
+                        더 읽기
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </article>
+
+            <!-- 포스트 3 -->
+            <article class="blog-post bg-white border border-gray-100 rounded-[2rem] overflow-hidden hover-card shadow-soft" data-category="기술">
+                <div class="h-48 relative overflow-hidden">
+                    <img src="../assets/image/higher.png" alt="번역 정확도를 높이는 5가지 팁" class="w-full h-full object-cover">
+                    <div class="absolute top-4 left-4">
+                        <span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-bold text-accent">기술</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                        <span>2025년 1월 10일</span>
+                        <span>•</span>
+                        <span>12분 읽기</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">번역 정확도를 높이는 5가지 팁</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        더 나은 번역 결과를 얻기 위한 실용적인 팁들을 공유합니다. 전문가들이 사용하는 방법들을 알아보세요.
+                    </p>
+                    <a href="blog-translation-tips.html" class="inline-flex items-center gap-2 text-purple-600 font-bold text-sm hover:gap-3 transition-all">
+                        더 읽기
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </article>
+
+            <!-- 포스트 4 -->
+            <article class="blog-post bg-white border border-gray-100 rounded-[2rem] overflow-hidden hover-card shadow-soft" data-category="튜토리얼">
+                <div class="h-48 relative overflow-hidden">
+                    <img src="../assets/image/firstguide.png" alt="첫 번째 자막 만들기 가이드" class="w-full h-full object-cover">
+                    <div class="absolute top-4 left-4">
+                        <span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-bold text-secondary">튜토리얼</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                        <span>2025년 1월 12일</span>
+                        <span>•</span>
+                        <span>8분 읽기</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">첫 번째 자막 만들기 가이드</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        AX2를 사용하여 영상 자막을 만드는 방법을 단계별로 알아보세요. 초보자도 쉽게 따라할 수 있습니다.
+                    </p>
+                    <a href="blog-first-subtitle-guide.html" class="inline-flex items-center gap-2 text-purple-600 font-bold text-sm hover:gap-3 transition-all">
+                        더 읽기
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div class="flex items-center justify-center gap-4 mt-16">
+            <button class="px-6 py-2 rounded-full bg-purple-600 text-white font-bold">1</button>
+        </div>
+    </section>
+
+    <!-- 최종 CTA 섹션 -->
+    <section class="py-24 px-4 max-w-7xl mx-auto bg-[#FDFCF8]">
+        <div class="max-w-4xl mx-auto bg-gradient-to-br from-purple-600 to-pink-500 rounded-[2.5rem] p-12 md:p-16 text-center text-white relative overflow-hidden">
+            <!-- 배경 장식 -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+            
+            <div class="relative z-10">
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
+                    지금 바로 시작하세요
+                </h2>
+                <p class="text-xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+                    영상만 업로드하면 AI가 자동으로 번역해드립니다. 별도의 설정 없이 바로 사용할 수 있습니다.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="../../index.html" class="bg-white text-purple-600 px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition-colors shadow-xl w-full sm:w-auto">
+                        무료로 시작하기
+                    </a>
+                    <a href="../../html/faq.html" class="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-white/20 transition-colors border border-white/20 w-full sm:w-auto">
+                        자세히 알아보기
+                    </a>
+                </div>
+                <div class="mt-10 flex items-center justify-center gap-8 text-sm text-white/80">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        <span>즉시 시작 가능</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        <span>무료 플랜 제공</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 px-4 text-center">
+        <div class="flex items-center justify-center gap-2 mb-8">
+             <img src="../assets/image/Caption.png" alt="AX2" class="h-8 w-auto">
+        </div>
+        
+        <!-- 다른 솔루션 섹션 -->
+        <div class="max-w-3xl mx-auto mb-12">
+            <h3 class="text-2xl font-bold text-dark mb-4">우리의 다른 솔루션도 체험해보세요</h3>
+            <p class="text-gray-500 mb-6">AX2 외에도 다양한 솔루션을 제공하고 있습니다</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="https://lx2.kr" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-purple-600 text-purple-600 rounded-full font-bold hover:bg-purple-600 hover:text-white transition-colors shadow-md">
+                    <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                    <span>LX2 학습관리시스템</span>
+                </a>
+                <a href="https://www.4csoft.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-600 rounded-full font-bold hover:border-purple-600 hover:text-purple-600 transition-colors shadow-md">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    <span>더 많은 솔루션 보기</span>
+                </a>
+            </div>
+        </div>
+        
+        <p class="text-gray-400 text-sm">© 2025 AX2 Inc. All rights reserved.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // 필터 기능 구현
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const blogPosts = document.querySelectorAll('.blog-post');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const selectedCategory = this.getAttribute('data-category');
+
+                    // 모든 버튼의 active 클래스 제거 및 스타일 초기화
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.className = 'filter-btn px-6 py-2.5 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-bold hover:bg-gray-50 transition-all';
+                    });
+
+                    // 클릭된 버튼에 active 클래스 추가 및 스타일 적용
+                    this.classList.add('active');
+                    this.className = 'filter-btn active px-6 py-2.5 rounded-full bg-purple-600 text-white text-sm font-bold hover:bg-purple-700 transition-all shadow-lg';
+
+                    // 포스트 필터링
+                    blogPosts.forEach(post => {
+                        const postCategory = post.getAttribute('data-category');
+                        
+                        if (selectedCategory === '전체' || postCategory === selectedCategory) {
+                            post.style.display = 'block';
+                            // 애니메이션 효과
+                            post.style.opacity = '0';
+                            post.style.transform = 'translateY(20px)';
+                            setTimeout(() => {
+                                post.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                                post.style.opacity = '1';
+                                post.style.transform = 'translateY(0)';
+                            }, 10);
+                        } else {
+                            post.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

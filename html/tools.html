@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AX2 | 개발자 도구 및 API</title>
+    <meta name="description" content="AX2 자막 생성 서비스를 위한 다양한 도구와 유틸리티를 확인하세요. API, SDK, 통합 도구 등을 제공합니다.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.4csoft.com/html/tools.html">
+    <meta property="og:title" content="포씨소프트 | 도구">
+    <meta property="og:description" content="AX2 자막 생성 서비스를 위한 다양한 도구와 유틸리티를 확인하세요. API, SDK, 통합 도구 등을 제공합니다.">
+    <meta property="og:image" content="https://www.4csoft.com/assets/images/common/og-img.png">
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tools-container {
+            max-width: 1200px;
+            margin: 100px auto 60px;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 60px;
+            text-align: center;
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 도구 섹션 */
+        .tool-section {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .tool-section:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .tool-section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .tool-section-title i {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .tool-section-title i { background: #6B7280; }
+
+        .tool-content {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .tool-content > p {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+
+        .tool-content ul {
+            margin: 20px 0;
+            padding-left: 28px;
+        }
+
+        .tool-content li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 8px;
+        }
+
+        .tool-content li::marker {
+            color: #FF9800;
+        }
+
+        .tool-content strong {
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+        /* 도구 카드 그리드 */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        @media (max-width: 1200px) {
+            .tool-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .tool-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .tool-card:hover .tool-card-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .tool-card-icon { background: #6B7280; }
+
+        .tool-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .tool-card-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* 하이라이트 박스 */
+        .highlight-box {
+            background: #f8f9fa;
+            border-left: 4px solid #FF9800;
+            padding: 20px 24px;
+            margin: 28px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .highlight-box.success {
+            border-left-color: #4CAF50;
+            background: #E8F5E9;
+        }
+
+        .highlight-box-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .highlight-box-content {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        /* 네비게이션 바는 styles.css의 기본 스타일 사용 */
+        /* 배경 효과는 styles.css에서 제거됨 */
+
+        body {
+            background: #ffffff !important;
+        }
+
+        @media (max-width: 768px) {
+            .tools-container {
+                margin: 80px auto 40px;
+                padding: 0 15px;
+            }
+
+            .page-title {
+                font-size: 32px;
+            }
+
+            .page-subtitle {
+                font-size: 16px;
+                margin-bottom: 40px;
+            }
+
+            .tool-section {
+                padding: 24px;
+                margin-bottom: 24px;
+            }
+
+            .tool-section-title {
+                font-size: 20px;
+            }
+
+            .tool-section-title i {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .tool-card {
+                padding: 24px;
+            }
+
+            .tool-card-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 플레이스홀더 -->
+    <div id="nav-placeholder"></div>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="tools-container">
+        <h1 class="page-title">도구</h1>
+        <p class="page-subtitle">AX2 자막 생성 서비스를 위한 다양한 도구와 유틸리티를 확인하세요.</p>
+
+        <!-- API 및 SDK -->
+        <div class="tool-section">
+            <div class="tool-section-title">
+                <i class="fas fa-plug"></i>
+                <span>API 및 SDK</span>
+            </div>
+            <div class="tool-content">
+                <p>AX2 자막 생성 기능을 다른 애플리케이션에 통합할 수 있는 API와 SDK를 제공합니다.</p>
+                
+                <div class="tool-grid">
+                    <div class="tool-card">
+                        <div class="tool-card-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="tool-card-title">RESTful API</div>
+                        <div class="tool-card-desc">영상 업로드, 자막 생성 작업 관리, 결과 조회, 크레딧 확인 등 다양한 기능을 REST API로 제공합니다.</div>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-card-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="tool-card-title">자막 생성 API</div>
+                        <div class="tool-card-desc">영상 파일을 업로드하고 자막을 생성하며, 생성된 자막을 SRT, VTT, ASS 등 다양한 형식으로 다운로드할 수 있습니다.</div>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-card-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="tool-card-title">SDK</div>
+                        <div class="tool-card-desc">Python, JavaScript, Java 등 다양한 언어용 SDK를 제공하여 쉽게 통합할 수 있습니다.</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box success">
+                    <div class="highlight-box-title">
+                        <span>통합 가이드</span>
+                    </div>
+                    <div class="highlight-box-content">
+                        API 문서와 통합 예제 코드를 제공하여 빠르게 시작할 수 있습니다. 개발자 포털에서 상세한 가이드를 확인하세요.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 개발자 도구 -->
+        <div class="tool-section">
+            <div class="tool-section-title">
+                <i class="fas fa-tools"></i>
+                <span>개발자 도구</span>
+            </div>
+            <div class="tool-content">
+                <p>개발자를 위한 다양한 도구와 유틸리티를 제공합니다.</p>
+                
+                <ul>
+                    <li><strong>API 테스트 도구:</strong> 브라우저에서 직접 API를 테스트할 수 있는 인터랙티브 도구</li>
+                    <li><strong>웹훅 설정:</strong> 자막 생성 작업 완료 시 자동으로 알림을 받을 수 있는 웹훅 설정</li>
+                    <li><strong>인증 토큰 관리:</strong> API 키 생성 및 관리 도구</li>
+                    <li><strong>사용량 모니터링:</strong> API 사용량과 크레딧 소비를 실시간으로 모니터링</li>
+                    <li><strong>에러 로그:</strong> API 호출 오류 및 디버깅 정보 확인</li>
+                    <li><strong>코드 예제:</strong> 다양한 언어와 프레임워크별 통합 예제 코드</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 통합 도구 -->
+        <div class="tool-section">
+            <div class="tool-section-title">
+                <i class="fas fa-puzzle-piece"></i>
+                <span>통합 도구</span>
+            </div>
+            <div class="tool-content">
+                <p>다양한 플랫폼과 서비스에 쉽게 통합할 수 있는 도구를 제공합니다.</p>
+                
+                <div class="tool-grid">
+                    <div class="tool-card">
+                        <div class="tool-card-icon">
+                            <i class="fas fa-chrome"></i>
+                        </div>
+                        <div class="tool-card-title">브라우저 확장</div>
+                        <div class="tool-card-desc">Chrome, Firefox, Edge용 브라우저 확장 프로그램으로 웹사이트에서 바로 자막 생성 기능을 사용할 수 있습니다.</div>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-card-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="tool-card-title">모바일 SDK</div>
+                        <div class="tool-card-desc">iOS와 Android용 네이티브 SDK를 제공하여 모바일 앱에 자막 생성 기능을 통합할 수 있습니다.</div>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-card-icon">
+                            <i class="fas fa-slack"></i>
+                        </div>
+                        <div class="tool-card-title">협업 도구 통합</div>
+                        <div class="tool-card-desc">Slack, Microsoft Teams, Zoom 등 협업 도구와 통합하여 영상 회의 녹화본에 자동으로 자막을 생성할 수 있습니다.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 유틸리티 도구 -->
+        <div class="tool-section">
+            <div class="tool-section-title">
+                <i class="fas fa-wrench"></i>
+                <span>유틸리티 도구</span>
+            </div>
+            <div class="tool-content">
+                <p>실시간 번역 서비스를 더욱 편리하게 사용할 수 있는 유틸리티 도구입니다.</p>
+                
+                <ul>
+                    <li><strong>자막 형식 변환기:</strong> 생성된 자막을 SRT, VTT, ASS, SCC 등 다양한 자막 형식으로 변환</li>
+                    <li><strong>크레딧 계산기:</strong> 예상 영상 길이와 번역 언어 수를 입력하면 필요한 크레딧을 계산</li>
+                    <li><strong>언어 감지 도구:</strong> 영상 파일을 업로드하여 원본 언어를 자동으로 감지</li>
+                    <li><strong>자막 품질 테스트:</strong> 자막 정확도와 동기화를 테스트할 수 있는 도구</li>
+                    <li><strong>배치 처리 도구:</strong> 여러 영상 파일을 한 번에 업로드하고 자막을 생성</li>
+                    <li><strong>백업 및 복구:</strong> 생성된 자막 프로젝트 데이터를 백업하고 복구하는 도구</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 지원 및 문서 -->
+        <div class="tool-section">
+            <div class="tool-section-title">
+                <i class="fas fa-book"></i>
+                <span>지원 및 문서</span>
+            </div>
+            <div class="tool-content">
+                <p>도구 사용을 위한 상세한 문서와 지원 자료를 제공합니다.</p>
+                
+                <div class="tool-grid">
+                    <div class="tool-card">
+                        <div class="tool-card-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="tool-card-title">API 문서</div>
+                        <div class="tool-card-desc">상세한 API 레퍼런스와 엔드포인트 설명을 제공합니다.</div>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-card-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="tool-card-title">튜토리얼</div>
+                        <div class="tool-card-desc">단계별 가이드와 실습 예제로 빠르게 시작할 수 있습니다.</div>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-card-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="tool-card-title">커뮤니티</div>
+                        <div class="tool-card-desc">개발자 커뮤니티에서 질문하고 답변을 받을 수 있습니다.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/i18n.js" defer></script>
+    <script src="../js/nav-bar.js" defer></script>
+    <script src="../js/auth-state.js" defer></script>
+    <script src="../script.js" defer></script>
+</body>
+</html>
+
+

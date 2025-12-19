@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AX2 | AI 자동 번역 자막 생성</title>
+    <link rel="icon" type="image/png" href="assets/image/AX.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 네비게이션 바 플레이스홀더 -->
+    <div id="nav-placeholder"></div>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-container">
+        <div class="content-wrapper">
+            <!-- 중앙: 드롭존 및 영상 미리보기 -->
+            <div class="left-panel">
+                <!-- 제목 및 부제목 -->
+                <div class="upload-section-header">
+                    <h1 class="upload-title" data-i18n="main-title">강의 영상을 업로드하세요</h1>
+                    <p class="upload-subtitle" data-i18n="main-subtitle">AI가 자동으로 자막을 생성하고 번역합니다.</p>
+                </div>
+                
+                <!-- 드롭존 (업로드 전) -->
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone-content">
+                        <div class="upload-icon-wrapper">
+                            <img src="assets/image/cloud.png" alt="업로드" class="upload-icon">
+                        </div>
+                        <p class="drop-zone-text" data-i18n="upload-drag">여기로 파일을 드래그하거나 클릭하세요</p>
+                        <p class="drop-zone-file-info" data-i18n="upload-info">MP4, MOV, AVI (최대 2GB)</p>
+                    </div>
+                    <input type="file" id="fileInput" accept="video/*" style="display: none;">
+                </div>
+
+            </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 번역 설정 모달 -->
+    <div class="translation-modal" id="translationModal" style="display: none;">
+        <div class="modal-backdrop" id="modalBackdrop"></div>
+        <div class="modal-content-wrapper">
+            <div class="right-panel" id="rightPanel">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <i class="fas fa-cog"></i>
+                        번역 설정
+                    </h2>
+                    <button class="modal-close-btn" id="closeTranslationModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <!-- 비디오 미리보기 -->
+                <div class="video-preview-container" id="videoPreviewContainer" style="display: none;">
+                    <video class="video-preview" id="videoPreview" controls preload="metadata">
+                        <source src="" type="video/mp4">
+                    </video>
+                    <div class="video-preview-info">
+                        <span class="video-preview-name" id="videoPreviewName"></span>
+                        <span class="video-preview-size" id="videoPreviewSize"></span>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <!-- Original Language -->
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <i class="fas fa-microphone"></i>
+                            원본 언어
+                        </label>
+                        <div class="select-wrapper">
+                            <select class="glass-select" id="originalLang">
+                                <option value="auto">자동 감지</option>
+                                <option value="ko">한국어</option>
+                                <option value="en">영어</option>
+                                <option value="ja">일본어</option>
+                                <option value="zh">중국어(간체)</option>
+                                <option value="zh-TW">중국어(번체)</option>
+                                <option value="es">스페인어</option>
+                                <option value="fr">프랑스어</option>
+                                <option value="de">독일어</option>
+                                <option value="pt">포르투갈어</option>
+                                <option value="it">이탈리아어</option>
+                                <option value="ru">러시아어</option>
+                                <option value="vi">베트남어</option>
+                                <option value="th">태국어</option>
+                                <option value="id">인도네시아어</option>
+                                <option value="hi">힌디어</option>
+                                <option value="ar">아랍어</option>
+                                <option value="tr">터키어</option>
+                                <option value="pl">폴란드어</option>
+                                <option value="nl">네덜란드어</option>
+                                <option value="sv">스웨덴어</option>
+                                <option value="no">노르웨이어</option>
+                                <option value="da">덴마크어</option>
+                                <option value="fi">핀란드어</option>
+                                <option value="cs">체코어</option>
+                                <option value="hu">헝가리어</option>
+                                <option value="el">그리스어</option>
+                                <option value="he">히브리어</option>
+                                <option value="uk">우크라이나어</option>
+                                <option value="ms">말레이어</option>
+                                <option value="ro">로마니아어</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+
+                    <!-- Target Languages -->
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <i class="fas fa-globe"></i>
+                            번역 언어
+                        </label>
+                        <div class="language-chips" id="languageChips">
+                            <button class="add-language-btn">
+                                <i class="fas fa-plus"></i>
+                                언어 추가
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Translate Now 버튼 -->
+                    <button class="translate-btn" id="translateBtn">
+                        <span>번역하기</span>
+                        <span class="credit-info" id="creditInfo" style="display: none;"></span>
+                    </button>
+
+                    <!-- 번역 진행률 표시 -->
+                    <div class="translation-progress-container" id="translationProgressContainer" style="display: none;">
+                        <div class="progress-info">
+                            <span class="progress-text" id="progressText">번역 준비 중...</span>
+                            <span class="progress-percent" id="progressPercent">0%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- 정보 텍스트 -->
+                    <div class="info-text" id="infoText">
+                        <i class="fas fa-sparkles"></i>
+                        <span>다국어 자막, 몇 초 만에 생성됩니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 언어 선택 모달 -->
+    <div class="language-modal" id="languageModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>번역 언어 선택</h3>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="language-grid">
+                    <div class="modal-language-item" data-lang="ko">
+                        <span>한국어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="en">
+                        <span>영어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="ja">
+                        <span>일본어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="zh">
+                        <span>중국어(간체)</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="zh-TW">
+                        <span>중국어(번체)</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="es">
+                        <span>스페인어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="fr">
+                        <span>프랑스어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="de">
+                        <span>독일어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="pt">
+                        <span>포르투갈어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="it">
+                        <span>이탈리아어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="ru">
+                        <span>러시아어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="vi">
+                        <span>베트남어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="th">
+                        <span>태국어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="id">
+                        <span>인도네시아어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="hi">
+                        <span>힌디어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="ar">
+                        <span>아랍어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="tr">
+                        <span>터키어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="pl">
+                        <span>폴란드어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="nl">
+                        <span>네덜란드어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="sv">
+                        <span>스웨덴어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="no">
+                        <span>노르웨이어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="da">
+                        <span>덴마크어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="fi">
+                        <span>핀란드어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="cs">
+                        <span>체코어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="hu">
+                        <span>헝가리어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="el">
+                        <span>그리스어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="he">
+                        <span>히브리어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="uk">
+                        <span>우크라이나어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="ms">
+                        <span>말레이어</span>
+                    </div>
+                    <div class="modal-language-item" data-lang="ro">
+                        <span>로마니아어</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 팝업 광고 -->
+    <div class="ad-popup-overlay" id="ad-popup-overlay">
+        <div class="ad-popup">
+            <button class="ad-popup-close" id="ad-popup-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="ad-popup-content">
+                <div class="ad-popup-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3 class="ad-popup-title">AX2 CAPTION 제품 비교</h3>
+                <p class="ad-popup-subtitle">왜 AX2 CAPTION을 선택해야 할까요?</p>
+                <div class="ad-popup-comparison-wrapper">
+                    <div class="comparison-section competitor-section">
+                        <div class="section-header">
+                            <h4>타사 제품</h4>
+                        </div>
+                        <div class="comparison-grid-2x2">
+                            <div class="comparison-card competitor-card">
+                                <div class="card-graph">
+                                    <div class="circular-progress" data-percent="70">
+                                        <svg class="progress-ring" width="120" height="120">
+                                            <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                                            <circle class="progress-ring-circle" cx="60" cy="60" r="54"></circle>
+                                        </svg>
+                                        <div class="progress-text">70%</div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <i class="fas fa-times-circle"></i>
+                                    <span>정확도</span>
+                                </div>
+                            </div>
+                            <div class="comparison-card competitor-card">
+                                <div class="card-graph">
+                                    <div class="circular-progress" data-percent="40">
+                                        <svg class="progress-ring" width="120" height="120">
+                                            <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                                            <circle class="progress-ring-circle" cx="60" cy="60" r="54"></circle>
+                                        </svg>
+                                        <div class="progress-text">40</div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <i class="fas fa-times-circle"></i>
+                                    <span>30-50개 언어</span>
+                                </div>
+                            </div>
+                            <div class="comparison-card competitor-card">
+                                <div class="card-graph">
+                                    <div class="circular-progress" data-percent="8">
+                                        <svg class="progress-ring" width="120" height="120">
+                                            <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                                            <circle class="progress-ring-circle" cx="60" cy="60" r="54"></circle>
+                                        </svg>
+                                        <div class="progress-text">50분</div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <i class="fas fa-times-circle"></i>
+                                    <span>1시간 영상 처리<br>평균 50분 소요</span>
+                                </div>
+                            </div>
+                            <div class="comparison-card competitor-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-download"></i>
+                                </div>
+                                <div class="card-content">
+                                    <i class="fas fa-times-circle"></i>
+                                    <span>프로그램 설치 필요<br>복잡한 설정</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-section ax2-section">
+                        <div class="section-header">
+                            <h4>AX2 CAPTION</h4>
+                        </div>
+                        <div class="comparison-grid-2x2">
+                            <div class="comparison-card ax2-card">
+                                <div class="card-graph">
+                                    <div class="circular-progress" data-percent="85">
+                                        <svg class="progress-ring" width="120" height="120">
+                                            <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                                            <circle class="progress-ring-circle" cx="60" cy="60" r="54"></circle>
+                                        </svg>
+                                        <div class="progress-text">85%+</div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span><strong>정확도</strong></span>
+                                </div>
+                            </div>
+                            <div class="comparison-card ax2-card">
+                                <div class="card-graph">
+                                    <div class="circular-progress" data-percent="100">
+                                        <svg class="progress-ring" width="120" height="120">
+                                            <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                                            <circle class="progress-ring-circle" cx="60" cy="60" r="54"></circle>
+                                        </svg>
+                                        <div class="progress-text">100+</div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span><strong>100개 이상 언어</strong></span>
+                                </div>
+                            </div>
+                            <div class="comparison-card ax2-card">
+                                <div class="card-graph">
+                                    <div class="circular-progress" data-percent="25">
+                                        <svg class="progress-ring" width="120" height="120">
+                                            <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                                            <circle class="progress-ring-circle" cx="60" cy="60" r="54"></circle>
+                                        </svg>
+                                        <div class="progress-text">15분</div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span><strong>1시간 영상 15분</strong><br>처리 속도</span>
+                                </div>
+                            </div>
+                            <div class="comparison-card ax2-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <div class="card-content">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span><strong>설치 불필요</strong><br>웹에서 즉시 시작</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/i18n.js" defer></script>
+    <script src="js/nav-bar.js" defer></script>
+    <script src="js/auth-state.js?v=20231211" defer></script>
+    <script src="script.js?v=20231211" defer></script>
+    
+    <!-- 챗봇 -->
+    <link rel="stylesheet" href="chatbot/chatbot.css">
+    <script src="chatbot/data.js" defer></script>
+    <script src="chatbot/chatbot.js" defer></script>
+    <script>
+        // 팝업 광고 표시
+        document.addEventListener('DOMContentLoaded', function() {
+            const popupOverlay = document.getElementById('ad-popup-overlay');
+            const closeBtn = document.getElementById('ad-popup-close');
+            const closeBtnSecondary = document.getElementById('ad-popup-close-btn');
+            
+            // 오늘 날짜 가져오기 (YYYY-MM-DD 형식)
+            function getTodayDate() {
+                const today = new Date();
+                return today.toISOString().split('T')[0];
+            }
+            
+            // 팝업을 표시해도 되는지 확인
+            function shouldShowPopup() {
+                const lastShownDate = localStorage.getItem('adPopupLastShown');
+                const today = getTodayDate();
+                
+                // 오늘 날짜와 다르면 표시 가능
+                if (lastShownDate !== today) {
+                    return true;
+                }
+                
+                return false;
+            }
+            
+            // 원형 그래프 애니메이션
+            function animateProgressBars() {
+                const progressBars = document.querySelectorAll('.circular-progress');
+                const circumference = 2 * Math.PI * 54; // radius = 54
+                
+                progressBars.forEach(function(bar, index) {
+                    const percent = parseFloat(bar.getAttribute('data-percent'));
+                    const circle = bar.querySelector('.progress-ring-circle');
+                    const offset = circumference - (percent / 100) * circumference;
+                    
+                    setTimeout(function() {
+                        circle.style.strokeDashoffset = offset;
+                    }, index * 100);
+                });
+            }
+            
+            // 팝업 닫기 처리
+            function closePopup() {
+                popupOverlay.classList.remove('active');
+                // 오늘 날짜 저장 (하루에 한 번만 표시)
+                localStorage.setItem('adPopupLastShown', getTodayDate());
+            }
+            
+            // 팝업 표시 여부 확인 후 표시
+            if (shouldShowPopup()) {
+                setTimeout(function() {
+                    popupOverlay.classList.add('active');
+                    // 그래프 애니메이션 시작
+                    setTimeout(animateProgressBars, 300);
+                }, 500);
+            }
+            
+            // 닫기 버튼 이벤트
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closePopup);
+            }
+            
+            // 배경 클릭 시 닫기
+            popupOverlay.addEventListener('click', function(e) {
+                if (e.target === popupOverlay) {
+                    closePopup();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

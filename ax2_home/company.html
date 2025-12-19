@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AX2 | AI 자동 번역 자막 생성 솔루션</title>
+    <meta name="description" content="영상만 올리면 AX2가 자동으로 번역 자막을 만들어드립니다. SRT/VTT/SCC 등 다양한 형식으로 다운로드하세요.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="./company.html">
+    <meta property="og:title" content="AX2 | 번역 자막을 손쉽게 만드는 가장 쉬운 방법">
+    <meta property="og:description" content="영상만 올리면 AX2가 자동으로 번역 자막을 만들어드립니다. SRT/VTT/SCC 등 다양한 형식으로 다운로드하세요.">
+    <meta property="og:image" content="assets/image/Caption.png">
+
+    <link rel="icon" type="image/png" href="assets/image/AX.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'], // Walla's signature font
+                    },
+                    colors: {
+                        // Walla-like palette: Warm background, Vibrant accents
+                        bg: '#FDFCF8', // Warm off-white
+                        primary: '#4F46E5', // Indigo/Blurple
+                        secondary: '#F472B6', // Pink
+                        accent: '#FCD34D', // Yellow
+                        dark: '#1F2937',
+                    },
+                    boxShadow: {
+                        // Soft, colored shadows typical of Framer sites
+                        'soft': '0 20px 40px -10px rgba(79, 70, 229, 0.1)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+                        'float': '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FDFCF8;
+            color: #1F2937;
+            overflow-x: hidden;
+        }
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, #4F46E5 0%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Custom Scrollbar hide */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Smooth transitions for cards */
+        .hover-card {
+            transition: box-shadow 0.3s ease;
+        }
+        
+        /* Scroll animation for integration icons */
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+        @keyframes scroll-right {
+            0% {
+                transform: translateX(-50%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+        .animate-scroll-left {
+            animation: scroll-left 30s linear infinite;
+            width: fit-content;
+        }
+        .animate-scroll-right {
+            animation: scroll-right 30s linear infinite;
+            width: fit-content;
+        }
+        
+        /* Update Button - 항상 보이도록 */
+        #updateNewsBtn {
+            position: fixed !important;
+            bottom: 24px !important;
+            left: 24px !important;
+            z-index: 9999 !important;
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        /* Update Popup Styles - 작은 카드 형태 */
+        .update-popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: transparent;
+            z-index: 9999;
+            display: none;
+            pointer-events: none;
+        }
+        
+        .update-popup-overlay.active {
+            display: block;
+        }
+        
+        .update-popup {
+            position: fixed;
+            bottom: 90px;
+            left: 24px;
+            background: white;
+            border-radius: 1.5rem;
+            width: 380px;
+            max-height: 500px;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+            border: 1px solid #E5E7EB;
+            z-index: 10000;
+            pointer-events: auto;
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .update-popup-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            border-bottom: 1px solid #F3F4F6;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        
+        .update-popup-content {
+            padding: 16px 20px 20px;
+        }
+        
+        .update-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .update-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        @media (max-width: 640px) {
+            .update-popup {
+                width: calc(100vw - 48px);
+                left: 24px;
+                right: 24px;
+            }
+        }
+        
+    </style>
+</head>
+<body class="antialiased">
+    <nav class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+        <div class="bg-white/80 backdrop-blur-xl border border-white/50 rounded-full px-6 py-3 shadow-lg flex items-center gap-8 max-w-2xl w-full justify-between">
+            <a href="../index.html" class="font-extrabold text-xl tracking-tight flex items-center gap-2">
+                <img src="assets/image/Caption.png" alt="AX2" class="h-8 w-auto">
+            </a>
+            
+            <div class="hidden md:flex items-center gap-6 text-sm font-bold text-gray-600">
+                <a href="company.html" class="hover:text-purple-600 transition-colors">홈</a>
+                <a href="blog/blog.html" class="hover:text-purple-600 transition-colors">블로그</a>
+                <a href="poem/index.html" class="hover:text-purple-600 transition-colors">도입하기</a>
+            </div>
+            <a href="../index.html" class="bg-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-purple-700 transition-colors shadow-lg shadow-purple-500/30">
+                무료체험하기
+            </a>
+        </div>
+    </nav>
+    <header class="relative pt-40 pb-20 px-4 overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl -z-10">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
+            <div class="absolute top-20 right-10 w-72 h-72 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
+            <div class="absolute bottom-16 left-1/2 -translate-x-1/2 w-60 h-60 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-4000"></div>
+        </div>
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-100 shadow-sm mb-8 cursor-pointer">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-600">신규 기능</span>
+                <span class="text-sm font-medium text-gray-600">AI 번역 기능이 출시되었습니다 🚀</span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1] text-dark">
+                번역 자막을 손쉽게<br>
+                <span class="text-gradient">만드는 가장 쉬운 방법</span>
+            </h1>
+            <p class="text-xl text-gray-500 mb-10 max-w-2xl mx-auto font-medium leading-relaxed">
+                영상만 올려주세요. 번역은 AX2가 알아서 합니다.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+                <a href="../index.html" class="bg-purple-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-purple-700 transition-colors shadow-xl shadow-purple-500/30 w-full sm:w-auto">
+                    무료로 시작하기
+                </a>
+                <a href="../html/used.html" class="bg-white text-dark px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-50 transition-colors shadow-md w-full sm:w-auto flex items-center justify-center gap-2">
+                    <i data-lucide="play-circle" class="w-5 h-5 text-gray-400"></i> 작동 방식 보기
+                </a>
+            </div>
+        </div>
+    </header>
+    <section class="py-24 px-4 max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-extrabold text-dark mb-4">주요 기능</h2>
+            <p class="text-xl text-gray-500">친근한 인터페이스로 감싸진 강력한 기능들</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div class="md:col-span-2 bg-[#F3F4F6] rounded-[2.5rem] p-10 relative overflow-hidden group hover-card">
+                <div class="relative z-10">
+                    <h3 class="text-3xl font-bold text-dark mb-4">실시간 번역</h3>
+                    <p class="text-lg text-gray-600 max-w-md">AX2는 빠른 처리 속도와 높은 정확도를 바탕으로, 누구나 손쉽게 고품질 번역 서비스를 이용할 수 있도록 설계되었습니다.</p>
+                </div>
+                <div class="absolute right-0 bottom-0 w-1/2 h-full">
+                     <div class="absolute bottom-10 right-10 w-40 h-40 bg-white rounded-3xl shadow-xl rotate-[-10deg] flex items-center justify-center z-20 group-hover:rotate-0 transition-transform">
+                        <i data-lucide="zap" class="w-16 h-16 text-yellow-400 fill-current"></i>
+                     </div>
+                     <div class="absolute bottom-20 right-32 w-32 h-32 bg-purple-600 rounded-full opacity-20 blur-2xl"></div>
+                </div>
+            </div>
+            <div class="bg-white border border-gray-100 rounded-[2.5rem] p-10 flex flex-col justify-between shadow-soft hover-card group">
+                <div>
+                    <div class="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center text-pink-500 mb-6">
+                        <i data-lucide="mic" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-2">음성 번역</h3>
+                    <p class="text-gray-500">목소리 번역은 영상 자막 뿐만 아니라 음성 번역에도 적용됩니다.</p>
+                </div>
+            </div>
+            <div class="bg-dark text-white rounded-[2.5rem] p-10 flex flex-col justify-center text-center shadow-xl hover-card">
+                <div class="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2">30+</div>
+                <p class="text-xl font-bold text-gray-300">지원 언어</p>
+            </div>
+            <div class="md:col-span-2 bg-white border border-gray-100 rounded-[2.5rem] p-10 flex items-center justify-between shadow-soft hover-card relative overflow-hidden">
+                <div class="relative z-10 max-w-lg">
+                    <h3 class="text-2xl font-bold text-dark mb-2">다양한 자막 형식 지원</h3>
+                    <p class="text-gray-500">SRT, VTT, ASS 등 주요 자막 형식을 지원하며 YouTube, Vimeo 등 다양한 플랫폼에 바로 사용할 수 있습니다.</p>
+                    <div class="flex gap-3 mt-6">
+                        <div class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-bold text-gray-700">SRT</div>
+                        <div class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-bold text-gray-700">VTT</div>
+                        <div class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-bold text-gray-700">ASS</div>
+                    </div>
+                </div>
+                <i data-lucide="file-text" class="absolute -right-10 -bottom-10 w-64 h-64 text-gray-50 transform rotate-12"></i>
+            </div>
+        </div>
+    </section>
+    <section class="py-24 px-4 max-w-7xl mx-auto bg-[#FDFCF8]">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-extrabold text-dark mb-4">사용 방법</h2>
+            <p class="text-xl text-gray-500">손쉽게 번역 하세요.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <!-- Step 1 -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 hover-card shadow-soft relative">
+                <div class="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-500 rounded-full flex items-center justify-center text-white font-extrabold text-xl shadow-lg">
+                    1
+                </div>
+                <div class="mt-6 mb-6">
+                    <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="upload" class="w-8 h-8 text-purple-600"></i>
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold text-dark mb-3 text-center">영상 업로드</h3>
+                <p class="text-gray-600 text-center leading-relaxed">
+                    번역하고 싶은 강의 영상을 업로드하세요. MP4, MOV 등 다양한 형식을 지원합니다.
+                </p>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 hover-card shadow-soft relative">
+                <div class="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-500 rounded-full flex items-center justify-center text-white font-extrabold text-xl shadow-lg">
+                    2
+                </div>
+                <div class="mt-6 mb-6">
+                    <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="settings" class="w-8 h-8 text-purple-500"></i>
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold text-dark mb-3 text-center">언어 선택</h3>
+                <p class="text-gray-600 text-center leading-relaxed">
+                    원본 언어와 번역할 언어를 선택하세요. 여러 언어로 동시 번역도 가능합니다.
+                </p>
+            </div>
+            
+            <!-- Step 3 -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 hover-card shadow-soft relative">
+                <div class="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-500 rounded-full flex items-center justify-center text-white font-extrabold text-xl shadow-lg">
+                    3
+                </div>
+                <div class="mt-6 mb-6">
+                    <div class="w-16 h-16 bg-pink-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="download" class="w-8 h-8 text-pink-500"></i>
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold text-dark mb-3 text-center">자막 다운로드</h3>
+                <p class="text-gray-600 text-center leading-relaxed">
+                    번역이 완료되면 SRT, VTT 형식으로 자막을 다운로드하거나 바로 공유하세요.
+                </p>
+            </div>
+        </div>
+        
+        <!-- FAQ Section -->
+        <div class="mt-24 max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-extrabold text-dark mb-4">자주 묻는 질문</h3>
+            </div>
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-white border border-gray-100 rounded-[2rem] p-6 hover-card shadow-soft">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="help-circle" class="w-5 h-5 text-purple-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-bold text-dark mb-2">영상은 어떻게 업로드하나요?</h4>
+                            <p class="text-gray-600 leading-relaxed">
+                                대시보드에서 "새 프로젝트" 버튼을 클릭하고, 드래그 앤 드롭으로 영상을 업로드하거나 파일 선택을 통해 업로드할 수 있습니다. 최대 2GB까지 지원합니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ 2 -->
+                <div class="bg-white border border-gray-100 rounded-[2rem] p-6 hover-card shadow-soft">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="help-circle" class="w-5 h-5 text-purple-500"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-bold text-dark mb-2">번역에 얼마나 걸리나요?</h4>
+                            <p class="text-gray-600 leading-relaxed">
+                                영상 길이에 따라 다르지만, 1시간 분량의 영상은 약 5-10분 내에 번역이 완료됩니다. 실시간 번역 기능을 사용하면 더욱 빠르게 처리할 수 있습니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ 3 -->
+                <div class="bg-white border border-gray-100 rounded-[2rem] p-6 hover-card shadow-soft">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="help-circle" class="w-5 h-5 text-pink-500"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-bold text-dark mb-2">어떤 자막 형식을 지원하나요?</h4>
+                            <p class="text-gray-600 leading-relaxed">
+                                SRT, VTT, ASS 등 주요 자막 형식을 모두 지원합니다. YouTube, Vimeo 등 주요 플랫폼에 바로 업로드할 수 있는 형식으로 제공됩니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-24 px-4 max-w-7xl mx-auto bg-[#FDFCF8]">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-extrabold text-dark mb-4">추가 보안 기능으로 민감한 데이터를 보호하세요</h2>
+            <p class="text-xl text-gray-500">엔터프라이즈급 보안으로 데이터를 안전하고 규정 준수하게 관리합니다.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Feature 1: Data Masking -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 hover-card shadow-soft">
+                <div class="mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-purple-600">데이터 마스킹</span>
+                </div>
+                <h3 class="text-xl font-bold text-dark mb-3">민감한 정보를 숨기고 필요한 것만 표시</h3>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    주민등록번호나 연락처 같은 민감한 데이터는 보안을 위해 자동으로 마스킹되어, 기밀 정보를 안전하게 수집하고 관리할 수 있습니다.
+                </p>
+                <div class="bg-blue-50 rounded-2xl p-6 h-32 flex items-center justify-center">
+                    <div class="w-full space-y-2">
+                        <div class="flex gap-2">
+                            <div class="flex-1 h-8 bg-white rounded px-3 flex items-center text-xs">2024-01-15</div>
+                            <div class="flex-1 h-8 bg-white rounded px-3 flex items-center text-xs">•••• •••• ••••</div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="flex-1 h-8 bg-white rounded px-3 flex items-center text-xs">John Doe</div>
+                            <div class="flex-1 h-8 bg-white rounded px-3 flex items-center text-xs">••• •••• ••••</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 2: Access Control -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 hover-card shadow-soft">
+                <div class="mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-purple-600">접근 제어</span>
+                </div>
+                <h3 class="text-xl font-bold text-dark mb-3">세밀한 권한 관리로 안전한 접근 제어</h3>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    사용자별, 프로젝트별로 세밀한 접근 권한을 설정할 수 있습니다. 중요한 번역 작업은 승인된 사용자만 접근 가능하며, 모든 접근 기록이 추적됩니다.
+                </p>
+                <div class="bg-blue-50 rounded-2xl p-6 h-32 flex items-center justify-center">
+                    <div class="w-full space-y-3">
+                        <div class="flex items-center justify-center gap-3">
+                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                                <i data-lucide="lock" class="w-5 h-5 text-purple-600"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <div class="text-sm font-bold text-dark">권한 관리</div>
+                                <div class="text-xs text-gray-500">활성화됨</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center gap-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span class="text-xs text-gray-600">보안 접근 중</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 3: Audit Log -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 hover-card shadow-soft">
+                <div class="mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-purple-600">감사 로그</span>
+                </div>
+                <h3 class="text-xl font-bold text-dark mb-3">로그 기록으로 보안과 투명성 향상</h3>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    모든 중요한 작업이 기록되며, 데이터 마스킹 해제 같은 민감한 변경사항은 사유 입력이 필요합니다. 이 환경을 통해 데이터 변경과 접근 권한을 엄격하게 추적하고 관리할 수 있습니다.
+                </p>
+                <div class="bg-blue-50 rounded-2xl p-6 h-32 flex items-center justify-center">
+                    <div class="w-full space-y-2">
+                        <div class="flex gap-2">
+                            <div class="flex-1 h-6 bg-white rounded px-2 text-xs flex items-center">2024-01-15 10:30</div>
+                            <div class="flex-1 h-6 bg-white rounded px-2 text-xs flex items-center">•••• ••••</div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="flex-1 h-6 bg-white rounded px-2 text-xs flex items-center">2024-01-15 11:15</div>
+                            <div class="flex-1 h-6 bg-white rounded px-2 text-xs flex items-center">•••• ••••</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 4: API Security -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 hover-card shadow-soft">
+                <div class="mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-purple-600">API 보안</span>
+                </div>
+                <h3 class="text-xl font-bold text-dark mb-3">안전한 API 통신으로 데이터 보호</h3>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    모든 API 요청은 인증 토큰으로 보호되며, 요청 제한과 속도 제한을 통해 무단 접근을 방지합니다. API 키 관리와 자동 갱신으로 보안을 강화합니다.
+                </p>
+                <div class="bg-blue-50 rounded-2xl p-6 h-32 flex items-center justify-center">
+                    <div class="w-full space-y-3">
+                        <div class="flex items-center justify-center gap-3">
+                            <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                <i data-lucide="key" class="w-6 h-6 text-purple-600"></i>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="text-xs font-bold text-dark">API 인증</div>
+                                <div class="text-xs text-gray-500">활성화됨</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center gap-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-xs text-gray-600">보안 연결</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 5: Secure Coding -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 hover-card shadow-soft">
+                <div class="mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-purple-600">시큐어 코딩</span>
+                </div>
+                <h3 class="text-xl font-bold text-dark mb-3">OWASP Top 10 기반 보안 코딩</h3>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    OWASP 보안 가이드라인을 준수하여 개발하며, 정기적인 코드 보안 검토와 취약점 스캔을 실시합니다. SQL Injection, XSS, CSRF 등 주요 웹 취약점으로부터 안전한 코드를 작성합니다.
+                </p>
+                <div class="bg-purple-50 rounded-2xl p-6 h-32 flex items-center justify-center">
+                    <div class="w-full space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="code" class="w-5 h-5 text-purple-600"></i>
+                                <span class="text-sm font-bold text-dark">OWASP Top 10</span>
+                            </div>
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="scan" class="w-5 h-5 text-purple-600"></i>
+                                <span class="text-sm font-bold text-dark">정기 취약점 스캔</span>
+                            </div>
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 6: Backup & Recovery -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 hover-card shadow-soft">
+                <div class="mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-purple-600">백업 및 복구</span>
+                </div>
+                <h3 class="text-xl font-bold text-dark mb-3">자동 백업으로 데이터 손실 방지</h3>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    모든 데이터는 자동으로 일일 백업되며, 최대 30일간 보관됩니다. 실수로 삭제하거나 손상된 데이터도 언제든지 복구할 수 있어 안심하고 사용할 수 있습니다.
+                </p>
+                <div class="bg-green-50 rounded-2xl p-6 h-32 flex items-center justify-center">
+                    <div class="w-full space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="database" class="w-5 h-5 text-green-600"></i>
+                                <span class="text-sm font-bold text-dark">자동 백업</span>
+                            </div>
+                            <span class="text-xs text-gray-500">매일</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="clock" class="w-5 h-5 text-green-600"></i>
+                                <span class="text-sm font-bold text-dark">보관 기간</span>
+                            </div>
+                            <span class="text-xs text-gray-500">30일</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-xs text-gray-600">백업 활성화됨</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 통합/연동 플랫폼 섹션 -->
+    <section class="py-24 px-4 max-w-7xl mx-auto bg-[#FDFCF8]">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-extrabold text-dark mb-4">주요 플랫폼과 바로 연동</h2>
+            <p class="text-xl text-gray-500">번역된 자막을 바로 업로드할 수 있는 플랫폼들</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <!-- 플랫폼 1 -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 text-center hover-card shadow-soft flex flex-col items-center justify-center">
+                <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mb-4">
+                    <i data-lucide="youtube" class="w-8 h-8 text-red-600"></i>
+                </div>
+                <h3 class="text-lg font-bold text-dark mb-2">YouTube</h3>
+                <p class="text-sm text-gray-500">SRT 형식으로 바로 업로드</p>
+            </div>
+            
+            <!-- 플랫폼 2 -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 text-center hover-card shadow-soft flex flex-col items-center justify-center">
+                <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-4">
+                    <i data-lucide="video" class="w-8 h-8 text-blue-600"></i>
+                </div>
+                <h3 class="text-lg font-bold text-dark mb-2">Vimeo</h3>
+                <p class="text-sm text-gray-500">VTT 형식 지원</p>
+            </div>
+            
+            <!-- 플랫폼 3 -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 text-center hover-card shadow-soft flex flex-col items-center justify-center">
+                <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mb-4">
+                    <i data-lucide="film" class="w-8 h-8 text-purple-600"></i>
+                </div>
+                <h3 class="text-lg font-bold text-dark mb-2">Premiere Pro</h3>
+                <p class="text-sm text-gray-500">SCC 형식으로 편집</p>
+            </div>
+            
+            <!-- 플랫폼 4 -->
+            <div class="bg-white border border-gray-100 rounded-[2rem] p-8 text-center hover-card shadow-soft flex flex-col items-center justify-center">
+                <div class="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mb-4">
+                    <i data-lucide="download" class="w-8 h-8 text-orange-600"></i>
+                </div>
+                <h3 class="text-lg font-bold text-dark mb-2">다운로드</h3>
+                <p class="text-sm text-gray-500">다양한 형식 지원</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 최종 CTA 섹션 -->
+    <section class="py-24 px-4 max-w-7xl mx-auto bg-[#FDFCF8]">
+        <div class="max-w-4xl mx-auto bg-gradient-to-br from-purple-600 to-pink-500 rounded-[2.5rem] p-12 md:p-16 text-center text-white relative overflow-hidden">
+            <!-- 배경 장식 -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+            
+            <div class="relative z-10">
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
+                    지금 바로 시작하세요
+                </h2>
+                <p class="text-xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+                    영상만 업로드하면 AI가 자동으로 번역해드립니다.<br> 별도의 설정 없이 바로 사용할 수 있습니다.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="../index.html" class="bg-white text-purple-600 px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition-colors shadow-xl w-full sm:w-auto">
+                        무료로 시작하기
+                    </a>
+                    <a href="../html/faq.html" class="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-white/20 transition-colors border border-white/20 w-full sm:w-auto">
+                        자세히 알아보기
+                    </a>
+                </div>
+                <div class="mt-10 flex items-center justify-center gap-8 text-sm text-white/80">
+                    
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        <span>즉시 시작 가능</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        <span>무료 플랜 제공</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 업데이트 소식 버튼 (왼쪽 하단 고정, 스크롤 따라다님) -->
+    <button id="updateNewsBtn" class="fixed bottom-6 left-6 z-[9999] bg-purple-600 text-white w-14 h-14 rounded-full shadow-lg hover:bg-purple-700 transition-colors flex items-center justify-center relative">
+        <i data-lucide="bell" class="w-6 h-6"></i>
+        <span id="updateBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">2</span>
+    </button>
+
+    <!-- 업데이트 팝업 카드 -->
+    <div id="updatePopup" class="update-popup-overlay">
+        <div class="update-popup">
+            <div class="update-popup-header">
+                <div>
+                    <h3 class="text-lg font-extrabold text-dark">최신 업데이트</h3>
+                    <p class="text-xs text-gray-500 mt-0.5">새로운 소식을 확인하세요</p>
+                </div>
+                <button id="closePopupBtn" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors flex-shrink-0">
+                    <i data-lucide="x" class="w-4 h-4 text-gray-600"></i>
+                </button>
+            </div>
+            <div class="update-popup-content">
+                <div id="updateList">
+                    <!-- 업데이트 항목들이 여기에 동적으로 추가됩니다 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="py-12 px-4 text-center">
+        <div class="flex items-center justify-center gap-2 mb-8">
+             <a href="../index.html">
+                 <img src="assets/image/Caption.png" alt="AX2" class="h-8 w-auto">
+             </a>
+        </div>
+        
+        <!-- 다른 솔루션 섹션 -->
+        <div class="max-w-3xl mx-auto mb-12">
+            <h3 class="text-2xl font-bold text-dark mb-4">우리의 다른 솔루션도 체험해보세요</h3>
+            <p class="text-gray-500 mb-6">AX2 외에도 다양한 솔루션을 제공하고 있습니다</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="https://lx2.kr" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-purple-600 text-purple-600 rounded-full font-bold hover:bg-purple-600 hover:text-white transition-colors shadow-md">
+                    <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                    <span>LX2 학습관리시스템</span>
+                </a>
+                <a href="https://www.4csoft.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-600 rounded-full font-bold hover:border-purple-600 hover:text-purple-600 transition-colors shadow-md">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    <span>더 많은 솔루션 보기</span>
+                </a>
+            </div>
+        </div>
+        
+        <p class="text-gray-400 text-sm">© 2025 AX2 Inc. All rights reserved.</p>
+    </footer>
+    <script src="../js/i18n.js" defer></script>
+    <script src="../js/auth-state.js" defer></script>
+    <script src="../script.js" defer></script>
+    <script>
+        lucide.createIcons();
+        
+        // 업데이트 소식 팝업 기능
+        const updateNewsBtn = document.getElementById('updateNewsBtn');
+        const updatePopup = document.getElementById('updatePopup');
+        const closePopupBtn = document.getElementById('closePopupBtn');
+        const updateList = document.getElementById('updateList');
+        
+        // 업데이트 포스트 데이터
+        const updates = [
+            {
+                date: '1월 3일',
+                category: '업데이트',
+                title: 'AI 번역 기능이 출시되었습니다',
+                description: '실시간 AI 번역 기능이 추가되었습니다. 이제 더욱 빠르고 정확한 번역을 경험해보세요.',
+                link: 'blog/blog-ai-translation-launch.html',
+                readTime: '5분 읽기'
+            },
+            {
+                date: '2025년 1월 8일',
+                category: '뉴스',
+                title: '30개 이상의 언어 지원 시작',
+                description: '이제 30개 이상의 언어를 지원합니다. 전 세계 어디서나 AX2를 활용할 수 있습니다.',
+                link: 'blog/blog-30-languages.html',
+                readTime: '6분 읽기'
+            }
+        ];
+        
+        // 업데이트 배지 업데이트
+        const updateBadge = document.getElementById('updateBadge');
+        updateBadge.textContent = updates.length;
+        
+        // 업데이트 목록 렌더링
+        function renderUpdates() {
+            updateList.innerHTML = updates.map(update => `
+                <div class="update-item">
+                    <div class="flex items-start gap-3">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                                <span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-600 text-xs font-bold whitespace-nowrap">${update.category}</span>
+                                <span class="text-xs text-gray-500 whitespace-nowrap">${update.date}</span>
+                            </div>
+                            <h4 class="text-sm font-bold text-dark mb-1.5 line-clamp-2">${update.title}</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed mb-2 line-clamp-2">${update.description}</p>
+                            <a href="${update.link}" class="inline-flex items-center gap-1.5 text-purple-600 font-bold text-xs hover:gap-2 transition-all">
+                                더 읽기
+                                <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // 아이콘 다시 생성
+            lucide.createIcons();
+        }
+        
+        // 팝업 열기/닫기 토글
+        updateNewsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (updatePopup.classList.contains('active')) {
+                updatePopup.classList.remove('active');
+            } else {
+                updatePopup.classList.add('active');
+                renderUpdates();
+            }
+        });
+        
+        // 팝업 닫기
+        closePopupBtn.addEventListener('click', () => {
+            updatePopup.classList.remove('active');
+        });
+        
+        // 외부 클릭 시 닫기
+        document.addEventListener('click', (e) => {
+            if (updatePopup.classList.contains('active')) {
+                const popup = document.querySelector('.update-popup');
+                if (popup && !popup.contains(e.target) && !updateNewsBtn.contains(e.target)) {
+                    updatePopup.classList.remove('active');
+                }
+            }
+        });
+        
+        // ESC 키로 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && updatePopup.classList.contains('active')) {
+                updatePopup.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
+
+

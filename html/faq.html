@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AX2 | 자주 묻는 질문 (FAQ)</title>
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .faq-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 60px;
+            text-align: center;
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 카테고리 탭 */
+        .category-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            padding: 12px 24px;
+            border: 1px solid #E5E7EB;
+            background: white;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-tab:hover {
+            border-color: #8B5CF6;
+            color: #8B5CF6;
+        }
+
+        .category-tab.active {
+            background: #8B5CF6;
+            border-color: #8B5CF6;
+            color: white;
+        }
+
+        .category-tab i {
+            font-size: 14px;
+        }
+
+        /* FAQ 섹션 */
+        .faq-section {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .faq-section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .faq-section-title i {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .faq-section-title i.purple { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+        .faq-section-title i.blue { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+        .faq-section-title i.green { background: linear-gradient(135deg, #14B8A6, #34D399); }
+        .faq-section-title i.orange { background: linear-gradient(135deg, #F59E0B, #FBBF24); }
+        .faq-section-title i.red { background: linear-gradient(135deg, #EF4444, #F87171); }
+
+        /* FAQ 아이템 */
+        .faq-item {
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
+            border-radius: 8px;
+        }
+
+        .faq-question:hover {
+            background: #f8f9fa;
+        }
+
+        .faq-question-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a1a2e;
+            flex: 1;
+        }
+
+        .faq-question-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8B5CF6;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 16px;
+        }
+
+        .faq-item.active .faq-question-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 20px;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 1000px;
+            padding: 0 20px 20px;
+        }
+
+        .faq-answer-content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+            padding-top: 10px;
+        }
+
+        .faq-answer-content ul {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .faq-answer-content li {
+            margin-bottom: 8px;
+        }
+
+        /* 검색 바 */
+        .search-bar {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .search-input-wrapper {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 15px;
+            color: #1a1a2e;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #8B5CF6;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+        }
+
+        /* 빈 상태 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+            color: #999;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 네비게이션 바는 styles.css의 기본 스타일 사용 */
+        /* 배경 효과는 styles.css에서 제거됨 */
+
+        body {
+            background: #ffffff !important;
+        }
+
+        @media (max-width: 768px) {
+            .faq-container {
+                margin: 80px auto 40px;
+                padding: 0 15px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .category-tabs {
+                gap: 8px;
+            }
+
+            .category-tab {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
+            .faq-section {
+                padding: 20px;
+            }
+
+            .faq-question {
+                padding: 16px;
+            }
+
+            .faq-question-text {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 플레이스홀더 -->
+    <div id="nav-placeholder"></div>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="faq-container">
+        <h1 class="page-title">자주 묻는 질문</h1>
+        <p class="page-subtitle">AX2 서비스에 대해 자주 묻는 질문과 답변을 확인하세요.</p>
+
+        <!-- 검색 바 -->
+        <div class="search-bar">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="질문을 검색해보세요...">
+            </div>
+        </div>
+
+        <!-- 카테고리 탭 -->
+        <div class="category-tabs">
+            <div class="category-tab active" data-category="all">
+                <i class="fas fa-list"></i>
+                <span>전체</span>
+            </div>
+            <div class="category-tab" data-category="general">
+                <i class="fas fa-question-circle"></i>
+                <span>일반</span>
+            </div>
+            <div class="category-tab" data-category="payment">
+                <i class="fas fa-credit-card"></i>
+                <span>결제</span>
+            </div>
+            <div class="category-tab" data-category="refund">
+                <i class="fas fa-undo"></i>
+                <span>환불</span>
+            </div>
+            <div class="category-tab" data-category="error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>오류</span>
+            </div>
+        </div>
+
+        <!-- FAQ 섹션들 -->
+        <div id="faqContent">
+            <!-- 일반 질문 -->
+            <div class="faq-section" data-category="general">
+                <div class="faq-section-title">
+                    <span>일반 질문</span>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">AX2는 어떤 서비스인가요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            AX2는 AI 기반 실시간 자막 생성 및 번역 서비스입니다. 영상 파일을 업로드하면 자동으로 자막을 생성하고 여러 언어로 번역할 수 있습니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">어떤 파일 형식을 지원하나요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            MP4, MOV, AVI 형식의 영상 파일을 지원하며, 최대 2GB까지 업로드 가능합니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">어떤 언어로 번역할 수 있나요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            한국어, 영어, 일본어, 중국어, 독일어, 프랑스어 등 50개 이상의 언어를 지원합니다. 여러 언어를 동시에 번역할 수 있습니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">자막 생성에 얼마나 걸리나요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            영상 길이에 따라 다르지만, 일반적으로 10분 영상의 경우 약 2-3분 정도 소요됩니다. 영상이 길수록 처리 시간이 증가합니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 결제 관련 -->
+            <div class="faq-section" data-category="payment">
+                <div class="faq-section-title">
+                    <span>결제 관련</span>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">어떤 결제 수단을 사용할 수 있나요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            신용카드, 체크카드, 계좌이체, 간편결제(카카오페이, 네이버페이, 페이코) 등을 지원합니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">결제는 언제 진행되나요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            구독 플랜의 경우 매월 자동 결제되며, 사용량 기반 플랜은 사용한 만큼 매월 말일 정산됩니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">결제 내역은 어디서 확인할 수 있나요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            마이페이지의 결제 내역 메뉴에서 모든 결제 내역을 확인할 수 있습니다. 이메일로도 결제 영수증이 발송됩니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 결제 오류 -->
+            <div class="faq-section" data-category="error">
+                <div class="faq-section-title">
+                    <span>결제 오류</span>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">결제가 실패했어요. 어떻게 해야 하나요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            결제 실패 시 다음 사항을 확인해주세요:
+                            <ul>
+                                <li>카드 한도 및 잔액 확인</li>
+                                <li>카드 유효기간 확인</li>
+                                <li>카드사 보안 프로그램 설치 여부</li>
+                                <li>인터넷 연결 상태 확인</li>
+                            </ul>
+                            위 사항을 확인해도 문제가 지속되면 고객센터로 문의해주세요.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">"카드 승인 거부" 오류가 발생했어요</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            카드 승인 거부는 다음과 같은 이유로 발생할 수 있습니다:
+                            <ul>
+                                <li>카드 한도 초과</li>
+                                <li>카드사 보안 정책에 의한 일시적 거부</li>
+                                <li>잘못된 카드 정보 입력</li>
+                                <li>해외 결제 차단 설정</li>
+                            </ul>
+                            카드사에 문의하거나 다른 결제 수단을 사용해보세요.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">"결제 수단을 확인할 수 없습니다" 오류</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            이 오류는 결제 정보가 올바르게 입력되지 않았거나, 결제 수단이 지원되지 않을 때 발생합니다. 카드 번호, 유효기간, CVV 번호를 다시 확인해주세요.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">결제는 되었는데 서비스가 활성화되지 않아요</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            결제는 완료되었지만 서비스 활성화까지 최대 10분 정도 소요될 수 있습니다. 잠시 후 새로고침하거나 로그아웃 후 다시 로그인해보세요. 문제가 지속되면 고객센터로 문의해주세요.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 환불 관련 -->
+            <div class="faq-section" data-category="refund">
+                <div class="faq-section-title">
+                    <span>환불 관련</span>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">환불은 어떻게 신청하나요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            마이페이지의 결제 내역에서 환불을 원하는 항목을 선택하고 환불 신청 버튼을 클릭하세요. 또는 고객센터로 직접 문의하실 수 있습니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">환불 정책은 어떻게 되나요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <ul>
+                                <li><strong>구독 플랜:</strong> 결제일로부터 7일 이내 100% 환불 가능</li>
+                                <li><strong>사용량 기반:</strong> 사용하지 않은 크레딧에 대해서만 환불 가능</li>
+                                <li><strong>부분 환불:</strong> 사용한 부분을 제외한 나머지 금액 환불</li>
+                            </ul>
+                            환불 처리는 신청 후 영업일 기준 3-5일 소요됩니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">환불 금액은 언제 돌아오나요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            환불 승인 후 결제 수단에 따라 다르지만, 일반적으로:
+                            <ul>
+                                <li>신용카드: 3-5영업일</li>
+                                <li>체크카드: 1-3영업일</li>
+                                <li>계좌이체: 1-2영업일</li>
+                            </ul>
+                            환불 진행 상황은 마이페이지에서 확인할 수 있습니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">부분 환불이 가능한가요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            네, 가능합니다. 사용하지 않은 크레딧이나 남은 구독 기간에 대해서는 부분 환불이 가능합니다. 환불 신청 시 사용 내역을 확인하여 정확한 환불 금액을 계산해드립니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-question-text">환불 후 서비스는 어떻게 되나요?</span>
+                        <i class="fas fa-chevron-down faq-question-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            환불이 완료되면 해당 플랜의 서비스가 즉시 중단됩니다. 이미 생성된 자막 파일은 계속 사용할 수 있지만, 새로운 영상 처리는 불가능합니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 검색 결과 없음 -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="empty-title">검색 결과가 없습니다</div>
+            <div class="empty-desc">다른 검색어로 시도해보세요.</div>
+        </div>
+    </div>
+
+    <script src="../js/i18n.js" defer></script>
+    <script src="../js/nav-bar.js" defer></script>
+    <script src="../js/auth-state.js" defer></script>
+    <script src="../script.js" defer></script>
+    <script>
+        // FAQ 아코디언 기능
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const faqItem = this.parentElement;
+                    const isActive = faqItem.classList.contains('active');
+                    
+                    // 모든 FAQ 아이템 닫기
+                    document.querySelectorAll('.faq-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // 클릭한 아이템만 열기/닫기
+                    if (!isActive) {
+                        faqItem.classList.add('active');
+                    }
+                });
+            });
+
+            // 카테고리 탭 기능
+            const categoryTabs = document.querySelectorAll('.category-tab');
+            const faqSections = document.querySelectorAll('.faq-section');
+            
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 탭 활성화
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // 섹션 필터링
+                    faqSections.forEach(section => {
+                        if (category === 'all' || section.getAttribute('data-category') === category) {
+                            section.style.display = 'block';
+                        } else {
+                            section.style.display = 'none';
+                        }
+                    });
+                    
+                    // 검색 결과 초기화
+                    document.getElementById('searchInput').value = '';
+                    checkEmptyState();
+                });
+            });
+
+            // 검색 기능
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                const faqItems = document.querySelectorAll('.faq-item');
+                let hasResults = false;
+                
+                faqItems.forEach(item => {
+                    const questionText = item.querySelector('.faq-question-text').textContent.toLowerCase();
+                    const answerText = item.querySelector('.faq-answer-content').textContent.toLowerCase();
+                    
+                    if (questionText.includes(searchTerm) || answerText.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        hasResults = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // 섹션 표시/숨김
+                faqSections.forEach(section => {
+                    const visibleItems = section.querySelectorAll('.faq-item[style*="block"], .faq-item:not([style*="none"])');
+                    if (visibleItems.length > 0) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+                
+                checkEmptyState();
+            });
+
+            function checkEmptyState() {
+                const visibleSections = Array.from(faqSections).filter(s => s.style.display !== 'none');
+                const emptyState = document.getElementById('emptyState');
+                
+                if (visibleSections.length === 0) {
+                    emptyState.style.display = 'block';
+                } else {
+                    emptyState.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

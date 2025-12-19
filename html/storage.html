@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AX2 | 나의 작업 및 저장된 영상</title>
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    <link rel="stylesheet" href="../css/mypage.css">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .storage-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        .storage-title {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 40px;
+        }
+        .expiry-banner-hint {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        .expiry-banner-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .expiry-banner-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .storage-info-text {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+        .storage-info-icon {
+            color: #8B5CF6;
+        }
+        .storage-extension-section {
+            display: none;
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #E5E7EB;
+        }
+        .storage-extension-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .storage-extension-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+        .storage-extension-desc {
+            font-size: 14px;
+            color: #666;
+        }
+        .storage-option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+        .storage-option-card {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .storage-option-card:hover {
+            border-color: #8B5CF6;
+        }
+        .storage-option-name {
+            font-weight: 600;
+            color: #8B5CF6;
+            margin-bottom: 8px;
+        }
+        .storage-option-size {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+        .storage-option-period {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        .storage-option-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #8B5CF6;
+        }
+        .storage-usage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .storage-info-text {
+            margin-left: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 플레이스홀더 -->
+    <div id="nav-placeholder"></div>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-container">
+        <div class="container storage-container">
+            <h1 class="account-title storage-title">나의 작업</h1>
+            
+        <!-- 만료 알림 배너 -->
+        <div class="expiry-banner" id="expiry-banner" style="display: none;">
+            <div class="expiry-banner-content">
+                <i class="fas fa-exclamation-triangle expiry-banner-icon"></i>
+                <div>
+                    <div class="expiry-banner-text" id="expiry-banner-text">⚠ 0개의 영상이 곧 삭제됩니다</div>
+                    <div class="expiry-banner-hint">만료 예정인 영상을 확인하고 필요한 경우 다운로드하세요.</div>
+                </div>
+            </div>
+            <button class="expiry-banner-close" onclick="document.getElementById('expiry-banner').style.display='none'">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- 일괄 작업 영역 -->
+        <div class="batch-actions" id="batch-actions" style="display: none;">
+            <div class="batch-actions-left">
+                <span id="selected-count" style="font-weight: 600; color: #333;">0개 선택됨</span>
+            </div>
+            <div class="batch-actions-right">
+                <button class="batch-btn batch-btn-download" onclick="batchDownload()">
+                    <i class="fas fa-download"></i> 선택 다운로드
+                </button>
+                <button class="batch-btn batch-btn-delete" onclick="batchDelete()">
+                    <i class="fas fa-trash"></i> 선택 삭제
+                </button>
+            </div>
+        </div>
+
+        <!-- 저장공간 대시보드 -->
+        <div class="storage-dashboard">
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">
+                    <i class="fas fa-database"></i>
+                    저장공간 관리
+                </h2>
+            </div>
+            <div class="storage-content">
+                <div class="storage-info">
+                    <div class="storage-usage">
+                        <div class="storage-label">
+                            <span>사용 중</span>
+                            <span class="storage-value" id="storage-used">0.00 GB</span>
+                        </div>
+                        <div class="storage-label">
+                            <span>/</span>
+                            <span class="storage-value" id="storage-total">1 GB</span>
+                        </div>
+                        <div class="storage-info-text" id="storage-info-text">
+                            <i class="fas fa-info-circle storage-info-icon"></i>
+                            <span id="storage-period-info">보관 기간: 7일 (만료 시 자동 삭제)</span>
+                        </div>
+                    </div>
+                    <div class="storage-progress-container">
+                        <div class="storage-progress-bar">
+                            <div class="storage-progress-fill" id="storage-progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="storage-percentage" id="storage-percentage">0% 사용</div>
+                    </div>
+                </div>
+                <div class="storage-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon" style="background: #8B5CF6;">
+                            <i class="fas fa-video" style="color: white;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-videos">0</div>
+                            <div class="stat-label">전체 작업</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon" style="background: #10B981;">
+                            <i class="fas fa-check-circle" style="color: white;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="completed-videos">0</div>
+                            <div class="stat-label">완료된 작업</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon" style="background: #F59E0B;">
+                            <i class="fas fa-clock" style="color: white;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-duration">0분</div>
+                            <div class="stat-label">총 영상 시간</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 영상 목록 -->
+        <div class="videos-section">
+            <div class="section-header">
+                <div class="section-title">작업 이력</div>
+                <div class="filter-controls">
+                    <button class="filter-btn active" data-filter="all">전체</button>
+                    <button class="filter-btn" data-filter="processing">처리 중</button>
+                    <button class="filter-btn" data-filter="completed">완료</button>
+                    <button class="filter-btn" data-filter="expiring">만료 예정 (D-3)</button>
+                </div>
+            </div>
+            <div class="video-grid" id="video-grid">
+                <!-- 영상 카드들이 여기에 동적으로 추가됩니다 -->
+            </div>
+        </div>
+
+        <!-- 보관 확장 옵션 (유료 사용자에게만 표시) -->
+        <div id="storage-extension-section" class="storage-extension-section">
+            <div class="storage-extension-header">
+                <div>
+                    <h3 class="storage-extension-title">보관 확장 옵션</h3>
+                    <p class="storage-extension-desc">더 많은 용량과 긴 보관 기간이 필요하신가요?</p>
+                </div>
+            </div>
+            <div class="storage-option-grid">
+                <div id="storage-plus-option" class="storage-option-card" onclick="purchaseStorageOption('plus')">
+                    <div class="storage-option-name">Storage Plus</div>
+                    <div class="storage-option-size">+5GB</div>
+                    <div class="storage-option-period">30일 보관</div>
+                    <div class="storage-option-price">구매하기</div>
+                </div>
+                <div id="storage-pro-option" class="storage-option-card" onclick="purchaseStorageOption('pro')">
+                    <div class="storage-option-name">Storage Pro</div>
+                    <div class="storage-option-size">+20GB</div>
+                    <div class="storage-option-period">90일 보관</div>
+                    <div class="storage-option-price">구매하기</div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <!-- 편집 모달 -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">영상 편집</div>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">영상 제목</label>
+                <input type="text" class="form-input" id="edit-title" placeholder="영상 제목을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label class="form-label">설명</label>
+                <textarea class="form-input" id="edit-description" rows="4" placeholder="영상 설명을 입력하세요"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">태그</label>
+                <input type="text" class="form-input" id="edit-tags" placeholder="태그를 쉼표로 구분하여 입력하세요">
+            </div>
+            <div class="form-group">
+                <label class="form-label">카테고리</label>
+                <select class="form-select" id="edit-category">
+                    <option value="">카테고리 선택</option>
+                    <option value="business">비즈니스</option>
+                    <option value="education">교육</option>
+                    <option value="technology">기술</option>
+                    <option value="marketing">마케팅</option>
+                    <option value="other">기타</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeEditModal()">취소</button>
+                <button class="btn btn-primary" onclick="saveEdit()">저장</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../js/i18n.js" defer></script>
+    <script src="../js/nav-bar.js" defer></script>
+    <script src="../js/auth-state.js" defer></script>
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/mypage.js" defer></script>
+    <script src="../script.js" defer></script>
+</body>
+</html>
+

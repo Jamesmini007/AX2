@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AX2 | 실시간 강의 번역 및 자막 생성</title>
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 기본 설정 */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            background-color: #F3F4F6; /* 깔끔한 라이트 그레이 배경 */
+            min-height: 100vh;
+            color: #1F2937; /* 진한 회색 텍스트 */
+        }
+
+        /* 깔끔한 카드 스타일 (기존 Glass 대체) */
+        .glass {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        
+        .glass-dark {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        }
+
+        .glass-card {
+            background: #FFFFFF;
+            border: 1px solid #F3F4F6;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #6366F1; /* 인디고 색상 포인트 */
+        }
+
+        /* 애니메이션 */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 드래그 앤 드롭 영역 */
+        .drop-zone {
+            border: 2px dashed #CBD5E1;
+            transition: all 0.3s ease;
+            background-color: #F8FAFC;
+        }
+        .drop-zone.drag-over {
+            border-color: #6366F1;
+            background: #EEF2FF;
+            transform: scale(1.01);
+        }
+
+        /* 스크롤바 커스텀 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+
+        /* 소셜 로그인 버튼 색상 */
+        .btn-kakao { background-color: #FEE500; color: #000; }
+        .btn-naver { background-color: #03C75A; color: #fff; }
+        .btn-google { background-color: #fff; border: 1px solid #ddd; color: #333; }
+
+        /* 포인트 버튼 스타일 */
+        .btn-primary {
+            background-color: #4F46E5; /* 인디고 600 */
+            color: white;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #4338CA; /* 인디고 700 */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- 알림 모달 (Toast) -->
+    <div id="toast" class="fixed top-5 right-5 z-50 bg-white border border-gray-200 shadow-xl px-6 py-4 rounded-xl hidden transform transition-all duration-300 translate-x-full">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-check-circle text-green-500 text-xl"></i>
+            <span id="toast-msg" class="font-medium text-gray-800">알림 메시지</span>
+        </div>
+    </div>
+
+    <!-- 페이지 컨테이너 -->
+    <div id="app" class="w-full min-h-screen relative">
+        
+        <!-- 네비게이션 바 (로그인 시 보임) -->
+        <nav id="navbar" class="hidden fixed top-0 w-full z-40 px-6 py-4">
+            <div class="glass-dark rounded-full max-w-7xl mx-auto px-6 py-3 flex justify-between items-center bg-white/90 backdrop-blur-sm">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="router.navigate('home')">
+                    <!-- 아이콘 제거됨 -->
+                    <span class="text-xl font-bold text-gray-800">AX2</span>
+                </div>
+                <div class="flex items-center gap-6 text-gray-600 font-medium">
+                    <button onclick="router.navigate('home')" class="hover:text-indigo-600 transition-colors">홈</button>
+                    <button onclick="router.navigate('mypage')" class="hover:text-indigo-600 transition-colors">마이페이지</button>
+                    <div class="h-4 w-px bg-gray-300"></div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm bg-gray-100 px-3 py-1 rounded-full text-gray-600">잔여 100분</span>
+                        <button onclick="auth.logout()" class="text-sm text-gray-500 hover:text-red-500 ml-2">로그아웃</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 1. 로그인/회원가입 페이지 -->
+        <section id="auth-page" class="w-full min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl overflow-hidden w-full max-w-5xl h-[600px] flex shadow-xl border border-gray-100 relative">
+                
+                <!-- 좌측: 브랜드 소개 -->
+                <div class="w-1/2 bg-indigo-600 text-white p-12 flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                    <div class="relative z-10">
+                        <h1 class="text-4xl font-bold mb-4">AX2</h1>
+                        <p class="text-lg text-indigo-100">AI 기반 실시간 강의 번역 및<br>자막 생성 플랫폼</p>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="bg-white/10 border border-white/20 p-4 rounded-xl backdrop-blur-md mb-4">
+                            <p class="text-sm mb-2 opacity-90">"강의 번역 시간이 1/10로 줄었어요!"</p>
+                            <div class="flex text-yellow-300 text-xs">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 우측: 폼 -->
+                <div class="w-1/2 p-12 bg-white flex flex-col justify-center relative">
+                    <!-- 언어 전환 -->
+                    <div class="absolute top-8 right-8 flex gap-2 text-sm text-gray-500">
+                        <span class="cursor-pointer font-bold text-indigo-600">한국어</span> | <span class="cursor-pointer hover:text-indigo-600">ENG</span>
+                    </div>
+
+                    <!-- 로그인 폼 -->
+                    <div id="login-form" class="fade-in">
+                        <h2 class="text-3xl font-bold mb-2 text-gray-900">로그인</h2>
+                        <p class="text-gray-500 mb-8">AX2에 오신 것을 환영합니다.</p>
+                        
+                        <div class="space-y-4">
+                            <input type="email" id="login-email" placeholder="이메일 주소" class="w-full p-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all">
+                            <input type="password" id="login-password" placeholder="비밀번호" class="w-full p-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all">
+                            <button onclick="auth.login()" class="w-full btn-primary font-bold py-4 rounded-xl shadow-lg shadow-indigo-100 hover:shadow-xl transition-all">로그인하기</button>
+                        </div>
+
+                        <div class="mt-8">
+                            <div class="relative flex py-5 items-center">
+                                <div class="flex-grow border-t border-gray-200"></div>
+                                <span class="flex-shrink-0 mx-4 text-gray-400 text-sm">SNS 계정으로 로그인</span>
+                                <div class="flex-grow border-t border-gray-200"></div>
+                            </div>
+                            <div class="flex gap-4 justify-center mt-2">
+                                <button class="w-12 h-12 rounded-full btn-google flex items-center justify-center shadow-sm border border-gray-200 hover:bg-gray-50 transition-all"><i class="fab fa-google"></i></button>
+                                <button class="w-12 h-12 rounded-full btn-kakao flex items-center justify-center shadow-sm hover:opacity-90 transition-all"><i class="fas fa-comment text-brown-800"></i></button>
+                                <button class="w-12 h-12 rounded-full btn-naver flex items-center justify-center shadow-sm hover:opacity-90 transition-all font-bold text-xs">N</button>
+                            </div>
+                        </div>
+                        <p class="mt-8 text-center text-gray-600">계정이 없으신가요? <button onclick="auth.toggleMode()" class="text-indigo-600 font-bold hover:underline">회원가입</button></p>
+                    </div>
+
+                    <!-- 회원가입 폼 (숨김) -->
+                    <div id="signup-form" class="hidden fade-in">
+                        <h2 class="text-3xl font-bold mb-2 text-gray-900">회원가입</h2>
+                        <p class="text-gray-500 mb-8">무료로 시작해보세요.</p>
+                        <div class="space-y-4">
+                            <input type="text" placeholder="이름" class="w-full p-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-indigo-500 transition-all">
+                            <input type="email" placeholder="이메일 주소" class="w-full p-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-indigo-500 transition-all">
+                            <input type="password" placeholder="비밀번호" class="w-full p-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-indigo-500 transition-all">
+                            <button onclick="auth.toggleMode()" class="w-full btn-primary font-bold py-4 rounded-xl shadow-lg shadow-indigo-100 hover:shadow-xl transition-all">가입하기</button>
+                        </div>
+                        <p class="mt-8 text-center text-gray-600">이미 계정이 있으신가요? <button onclick="auth.toggleMode()" class="text-indigo-600 font-bold hover:underline">로그인</button></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 홈 페이지 -->
+        <section id="home-page" class="hidden pt-24 px-4 pb-12 max-w-7xl mx-auto fade-in">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4 text-gray-900">강의 영상을 업로드하세요</h2>
+                <p class="text-lg text-gray-600">AI가 자동으로 자막을 생성하고 번역합니다.</p>
+            </div>
+
+            <div class="glass rounded-3xl p-12 max-w-4xl mx-auto text-center relative drop-zone" id="drop-zone">
+                <input type="file" id="file-input" class="hidden" accept="video/mp4,video/avi,video/mov,video/webm" onchange="upload.handleFileSelect(this)">
+                
+                <div id="upload-content">
+                    <div class="w-24 h-24 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <img src="../assets/image/cloud.png" alt="업로드" style="width: 48px; height: 48px; object-fit: contain;">
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">여기로 파일을 드래그하거나 클릭하세요</h3>
+                    <p class="text-gray-500 mb-6">MP4, MOV, AVI (최대 2GB)</p>
+                    <button onclick="document.getElementById('file-input').click()" class="btn-primary px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                        파일 선택
+                    </button>
+                </div>
+
+                <!-- 번역 진행 상태 (초기 숨김) -->
+                <div id="processing-status" class="hidden">
+                    <div class="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin mx-auto mb-6"></div>
+                    <h3 id="process-step" class="text-xl font-bold text-gray-800 mb-4">파일 분석 중...</h3>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2 overflow-hidden">
+                        <div id="process-bar" class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
+                    </div>
+                    <p id="process-detail" class="text-gray-500 text-sm">영상을 스캔하고 있습니다.</p>
+                </div>
+            </div>
+
+            <!-- 번역 설정 모달 (업로드 후 표시) -->
+            <div id="translate-modal" class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm hidden flex items-center justify-center">
+                <div class="bg-white rounded-2xl p-8 w-full max-w-md m-4 shadow-2xl animate-scale-in border border-gray-100">
+                    <h3 class="text-2xl font-bold mb-6 text-gray-900">번역 설정</h3>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">원본 언어</label>
+                            <select class="w-full p-3 rounded-lg border border-gray-300 bg-white focus:border-indigo-500 outline-none">
+                                <option>한국어</option>
+                                <option>English</option>
+                                <option>日本語</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">번역할 언어 (다중 선택)</label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="cursor-pointer bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200 text-indigo-700 text-sm font-medium"><input type="checkbox" checked class="hidden"> 영어</label>
+                                <label class="cursor-pointer bg-white px-3 py-1 rounded-full border border-gray-300 hover:border-indigo-300 text-gray-600 text-sm"><input type="checkbox" class="hidden"> 일본어</label>
+                                <label class="cursor-pointer bg-white px-3 py-1 rounded-full border border-gray-300 hover:border-indigo-300 text-gray-600 text-sm"><input type="checkbox" class="hidden"> 중국어</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">화자 수 설정</label>
+                            <div class="flex gap-4">
+                                <label class="flex items-center gap-2 cursor-pointer text-gray-700"><input type="radio" name="speaker" class="text-indigo-600 focus:ring-indigo-500" checked> 자동 감지</label>
+                                <label class="flex items-center gap-2 cursor-pointer text-gray-700"><input type="radio" name="speaker" class="text-indigo-600 focus:ring-indigo-500"> 1명</label>
+                                <label class="flex items-center gap-2 cursor-pointer text-gray-700"><input type="radio" name="speaker" class="text-indigo-600 focus:ring-indigo-500"> 2명 이상</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button onclick="upload.cancel()" class="flex-1 py-3 text-gray-600 hover:bg-gray-50 border border-gray-200 rounded-xl font-medium transition-colors">취소</button>
+                        <button onclick="upload.startProcess()" class="flex-1 py-3 btn-primary rounded-xl font-bold shadow-md hover:shadow-lg transition-all">번역 시작</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 마이페이지 -->
+        <section id="mypage-page" class="hidden pt-24 px-4 pb-12 max-w-7xl mx-auto fade-in">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">내 강의실</h2>
+            
+            <div id="video-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 자바스크립트로 로드됨 -->
+            </div>
+            
+            <!-- 비어있을 경우 -->
+            <div id="empty-state" class="hidden text-center py-20 bg-white rounded-3xl border border-gray-200 border-dashed">
+                <i class="fas fa-film text-4xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">아직 작업한 영상이 없습니다.</p>
+                <button onclick="router.navigate('home')" class="mt-4 text-indigo-600 font-bold hover:underline">새 영상 업로드하러 가기</button>
+            </div>
+        </section>
+
+        <!-- 4. 편집 페이지 -->
+        <section id="edit-page" class="hidden pt-24 px-4 pb-4 h-screen flex flex-col fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-4">
+                    <button onclick="router.navigate('mypage')" class="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center hover:bg-gray-50 text-gray-600 shadow-sm"><i class="fas fa-arrow-left"></i></button>
+                    <h2 id="edit-title" class="text-xl font-bold text-gray-900">강의 제목</h2>
+                    <span class="bg-green-100 text-green-700 border border-green-200 text-xs px-2 py-1 rounded font-medium">저장됨</span>
+                </div>
+                <button onclick="editor.save()" class="btn-primary px-6 py-2 rounded-full font-bold shadow-md hover:shadow-lg text-sm">저장 및 내보내기</button>
+            </div>
+
+            <div class="flex-1 flex gap-6 min-h-0"> <!-- min-h-0 for nested flex scroll -->
+                
+                <!-- 비디오 플레이어 영역 -->
+                <div class="w-2/3 bg-black rounded-2xl overflow-hidden shadow-xl relative flex flex-col justify-center items-center group ring-1 ring-gray-900/5">
+                    <video id="main-video" class="w-full h-full object-contain" controls>
+                        <source src="" type="video/mp4">
+                        비디오를 로드할 수 없습니다.
+                    </video>
+                    <!-- 자막 오버레이 -->
+                    <div id="video-subtitle-overlay" class="absolute bottom-16 w-full text-center px-8 pointer-events-none">
+                        <span class="inline-block bg-black/70 text-white text-lg px-4 py-2 rounded-lg backdrop-blur-sm transition-all duration-200">
+                            여기에 자막이 표시됩니다.
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 자막 편집기 영역 -->
+                <div class="w-1/3 bg-white rounded-2xl flex flex-col overflow-hidden border border-gray-200 shadow-lg">
+                    <div class="p-4 border-b border-gray-100 flex gap-2 bg-gray-50">
+                        <button onclick="editor.setTab('ko')" id="tab-ko" class="flex-1 py-2 rounded-lg text-sm font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">한국어 (원본)</button>
+                        <button onclick="editor.setTab('en')" id="tab-en" class="flex-1 py-2 rounded-lg text-sm font-bold text-gray-500 hover:bg-white border border-transparent hover:border-gray-200">English (번역)</button>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-4 space-y-3" id="subtitle-list">
+                        <!-- 자막 아이템들이 여기에 생성됨 -->
+                    </div>
+                    
+                    <div class="p-4 bg-gray-50 border-t border-gray-200">
+                        <div class="flex justify-between text-xs text-gray-500 mb-2">
+                            <span>단축키 가이드</span>
+                            <span>Shift + Space : 재생/일시정지</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // 전역 상태 및 유틸리티
+        const appState = {
+            user: null, // localStorage 'ax2_user'
+            currentVideoId: null,
+            videos: [], // localStorage 'ax2_videos'
+            currentTab: 'ko' // edit page tab
+        };
+
+        // DOM 요소 단축
+        const $ = (id) => document.getElementById(id);
+        const $$ = (sel) => document.querySelectorAll(sel);
+
+        /* --- 1. 라우터 (Navigation) --- */
+        const router = {
+            pages: ['auth-page', 'home-page', 'mypage-page', 'edit-page'],
+            
+            init() {
+                // 로그인 체크
+                const user = localStorage.getItem('ax2_user');
+                if (user) {
+                    appState.user = JSON.parse(user);
+                    this.navigate('home');
+                } else {
+                    this.navigate('auth');
+                }
+            },
+
+            navigate(target) {
+                // 페이지 숨기기/보이기
+                this.pages.forEach(page => {
+                    const el = $(page);
+                    if (page === `${target}-page`) {
+                        el.classList.remove('hidden');
+                        el.classList.add('fade-in');
+                    } else {
+                        el.classList.add('hidden');
+                        el.classList.remove('fade-in');
+                    }
+                });
+
+                // 네비바 토글
+                const nav = $('navbar');
+                if (target === 'auth') {
+                    nav.classList.add('hidden');
+                } else {
+                    nav.classList.remove('hidden');
+                }
+
+                // 페이지별 초기화 로직
+                if (target === 'mypage') mypage.render();
+                if (target === 'home') upload.reset();
+            }
+        };
+
+        /* --- 2. 인증 (Auth) --- */
+        const auth = {
+            login() {
+                const email = $('login-email').value;
+                if(!email) return showToast('이메일을 입력해주세요.');
+                
+                // 목업 로그인
+                const user = { email: email, name: email.split('@')[0] };
+                localStorage.setItem('ax2_user', JSON.stringify(user));
+                appState.user = user;
+                
+                showToast(`환영합니다, ${user.name}님!`);
+                router.navigate('home');
+            },
+            
+            logout() {
+                localStorage.removeItem('ax2_user');
+                appState.user = null;
+                router.navigate('auth');
+            },
+
+            toggleMode() {
+                $('login-form').classList.toggle('hidden');
+                $('signup-form').classList.toggle('hidden');
+            }
+        };
+
+        /* --- 3. 파일 업로드 및 처리 (Upload) --- */
+        const upload = {
+            file: null,
+            
+            init() {
+                const dropZone = $('drop-zone');
+                
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, preventDefaults, false);
+                });
+
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                dropZone.addEventListener('dragover', () => dropZone.classList.add('drag-over'));
+                dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+                dropZone.addEventListener('drop', (e) => {
+                    dropZone.classList.remove('drag-over');
+                    const files = e.dataTransfer.files;
+                    this.handleFiles(files);
+                });
+            },
+
+            handleFileSelect(input) {
+                this.handleFiles(input.files);
+            },
+
+            handleFiles(files) {
+                if(files.length === 0) return;
+                const file = files[0];
+                
+                // 유효성 검사
+                if(file.size > 2 * 1024 * 1024 * 1024) { // 2GB
+                    return showToast('파일 크기는 2GB를 초과할 수 없습니다.');
+                }
+                if(!file.type.startsWith('video/')) {
+                    return showToast('영상 파일만 업로드 가능합니다.');
+                }
+
+                this.file = file;
+                $('translate-modal').classList.remove('hidden');
+            },
+
+            cancel() {
+                this.file = null;
+                $('translate-modal').classList.add('hidden');
+                $('file-input').value = '';
+            },
+
+            reset() {
+                $('upload-content').classList.remove('hidden');
+                $('processing-status').classList.add('hidden');
+                this.file = null;
+            },
+
+            startProcess() {
+                $('translate-modal').classList.add('hidden');
+                $('upload-content').classList.add('hidden');
+                $('processing-status').classList.remove('hidden');
+
+                const steps = [
+                    { msg: "영상을 업로드 및 스캔 중...", progress: 20 },
+                    { msg: "음성 인식 중 (STT)...", progress: 50 },
+                    { msg: "다국어 번역 실행 중...", progress: 80 },
+                    { msg: "자막 파일 생성 및 동기화...", progress: 100 }
+                ];
+
+                let currentStep = 0;
+                const interval = setInterval(() => {
+                    if (currentStep >= steps.length) {
+                        clearInterval(interval);
+                        this.finishProcess();
+                        return;
+                    }
+                    
+                    const step = steps[currentStep];
+                    $('process-step').innerText = step.msg;
+                    $('process-bar').style.width = step.progress + '%';
+                    $('process-detail').innerText = `${step.progress}% 완료`;
+                    
+                    currentStep++;
+                }, 800); // 시뮬레이션 속도
+            },
+
+            finishProcess() {
+                // 비디오 데이터 생성 및 저장
+                const videoId = Date.now().toString();
+                // 실제 파일의 URL 생성 (브라우저 메모리에 임시 저장)
+                const videoUrl = URL.createObjectURL(this.file);
+                
+                const newVideo = {
+                    id: videoId,
+                    title: this.file.name,
+                    date: new Date().toLocaleDateString(),
+                    duration: "12:34", // Mock duration
+                    thumbnail: "https://via.placeholder.com/300x170/333/fff?text=Video+Preview",
+                    url: videoUrl, // Blob URL 저장
+                    subtitles: mockSubtitles() // 더미 자막 데이터 생성
+                };
+
+                // LocalStorage에 저장
+                const videos = JSON.parse(localStorage.getItem('ax2_videos') || '[]');
+                videos.unshift(newVideo);
+                localStorage.setItem('ax2_videos', JSON.stringify(videos));
+
+                showToast('작업이 완료되었습니다! 마이페이지로 이동합니다.');
+                setTimeout(() => router.navigate('mypage'), 1000);
+            }
+        };
+
+        /* --- 4. 마이페이지 (MyPage) --- */
+        const mypage = {
+            render() {
+                const videos = JSON.parse(localStorage.getItem('ax2_videos') || '[]');
+                const grid = $('video-grid');
+                const empty = $('empty-state');
+                
+                grid.innerHTML = '';
+                
+                if (videos.length === 0) {
+                    empty.classList.remove('hidden');
+                } else {
+                    empty.classList.add('hidden');
+                    videos.forEach(video => {
+                        const card = document.createElement('div');
+                        card.className = 'glass-card rounded-2xl overflow-hidden cursor-pointer group bg-white';
+                        card.onclick = () => editor.open(video.id);
+                        card.innerHTML = `
+                            <div class="relative h-44 bg-gray-100 flex items-center justify-center overflow-hidden border-b border-gray-100">
+                                <div class="absolute inset-0 bg-black/5 group-hover:bg-black/10 transition-all z-10"></div>
+                                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md z-20 text-indigo-600 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-play text-lg ml-1"></i>
+                                </div>
+                                <!-- 썸네일 대신 그라데이션 -->
+                                <div class="w-full h-full bg-gradient-to-br from-indigo-50 to-blue-50"></div>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-bold text-lg mb-1 truncate text-gray-800">${video.title}</h3>
+                                <div class="flex justify-between text-sm text-gray-500 mb-4">
+                                    <span>${video.date}</span>
+                                    <span>${video.duration}</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-bold border border-gray-200">KO</span>
+                                    <i class="fas fa-arrow-right text-gray-300 text-xs self-center"></i>
+                                    <span class="px-2 py-1 bg-indigo-50 text-indigo-600 rounded text-xs font-bold border border-indigo-100">EN</span>
+                                </div>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    });
+                }
+            }
+        };
+
+        /* --- 5. 편집기 (Editor) --- */
+        const editor = {
+            currentVideo: null,
+            
+            open(id) {
+                const videos = JSON.parse(localStorage.getItem('ax2_videos') || '[]');
+                this.currentVideo = videos.find(v => v.id === id);
+                
+                if (!this.currentVideo) return showToast('비디오를 찾을 수 없습니다.');
+
+                $('edit-title').innerText = this.currentVideo.title;
+                $('main-video').src = this.currentVideo.url;
+                
+                // 비디오 재생 시 자막 싱크 (간단 구현)
+                const videoEl = $('main-video');
+                const subtitleOverlay = $('video-subtitle-overlay').querySelector('span');
+                
+                videoEl.ontimeupdate = () => {
+                    const time = videoEl.currentTime;
+                    const subs = this.currentVideo.subtitles[appState.currentTab];
+                    const currentSub = subs.find(s => time >= s.start && time <= s.end);
+                    subtitleOverlay.innerText = currentSub ? currentSub.text : "";
+                    subtitleOverlay.style.opacity = currentSub ? '1' : '0';
+                    
+                    // 리스트 하이라이트
+                    if (currentSub) this.highlightSub(currentSub.id);
+                };
+
+                this.setTab('ko');
+                router.navigate('edit');
+            },
+
+            setTab(lang) {
+                appState.currentTab = lang;
+                
+                // 탭 스타일
+                if (lang === 'ko') {
+                    $('tab-ko').className = "flex-1 py-2 rounded-lg text-sm font-bold bg-indigo-100 text-indigo-700 border border-indigo-200 transition-colors";
+                    $('tab-en').className = "flex-1 py-2 rounded-lg text-sm font-bold text-gray-500 hover:bg-white border border-transparent hover:border-gray-200 transition-colors";
+                } else {
+                    $('tab-ko').className = "flex-1 py-2 rounded-lg text-sm font-bold text-gray-500 hover:bg-white border border-transparent hover:border-gray-200 transition-colors";
+                    $('tab-en').className = "flex-1 py-2 rounded-lg text-sm font-bold bg-indigo-100 text-indigo-700 border border-indigo-200 transition-colors";
+                }
+
+                this.renderSubtitles();
+            },
+
+            renderSubtitles() {
+                const list = $('subtitle-list');
+                list.innerHTML = '';
+                const subs = this.currentVideo.subtitles[appState.currentTab];
+
+                subs.forEach(sub => {
+                    const el = document.createElement('div');
+                    el.id = `sub-${sub.id}`;
+                    el.className = "p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer border border-transparent group";
+                    el.innerHTML = `
+                        <div class="flex gap-2 text-xs text-gray-400 font-mono mb-1 group-hover:text-indigo-500">
+                            <span>${formatTime(sub.start)}</span>
+                            <span>~</span>
+                            <span>${formatTime(sub.end)}</span>
+                        </div>
+                        <div class="outline-none text-gray-700 focus:bg-white focus:text-gray-900 focus:p-2 focus:rounded focus:shadow-sm focus:ring-1 focus:ring-indigo-200" contenteditable="true" onblur="editor.updateSub('${sub.id}', this.innerText)">${sub.text}</div>
+                    `;
+                    // 클릭 시 해당 시간으로 이동
+                    el.onclick = (e) => {
+                        if (e.target.getAttribute('contenteditable')) return; // 편집 중이면 이동 안함
+                        $('main-video').currentTime = sub.start;
+                    };
+                    list.appendChild(el);
+                });
+            },
+
+            updateSub(id, newText) {
+                const subs = this.currentVideo.subtitles[appState.currentTab];
+                const target = subs.find(s => s.id === id);
+                if (target) {
+                    target.text = newText;
+                    // 자동 저장 로직 (여기서는 메모리 상에서만 수정됨, save 호출 시 로컬스토리지 반영)
+                }
+            },
+
+            highlightSub(id) {
+                // 이전 하이라이트 제거
+                const prev = document.querySelector('.sub-active');
+                if (prev) prev.classList.remove('bg-indigo-50', 'border-indigo-100', 'sub-active');
+                
+                // 새 하이라이트
+                const curr = $(`sub-${id}`);
+                if (curr) {
+                    curr.classList.add('bg-indigo-50', 'border-indigo-100', 'sub-active');
+                    curr.classList.remove('border-transparent');
+                    curr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            },
+
+            save() {
+                // 로컬스토리지 업데이트
+                const videos = JSON.parse(localStorage.getItem('ax2_videos') || '[]');
+                const idx = videos.findIndex(v => v.id === this.currentVideo.id);
+                if (idx !== -1) {
+                    videos[idx] = this.currentVideo;
+                    localStorage.setItem('ax2_videos', JSON.stringify(videos));
+                    showToast('성공적으로 저장되었습니다.');
+                }
+            }
+        };
+
+        /* --- Helper Functions --- */
+        function showToast(msg) {
+            const toast = $('toast');
+            $('toast-msg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.remove('translate-x-full'), 10); // Trigger animation
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 3000);
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // Mock Data Generator
+        function mockSubtitles() {
+            return {
+                ko: [
+                    { id: '1', start: 0, end: 3, text: "안녕하세요, 오늘 강의에 오신 것을 환영합니다." },
+                    { id: '2', start: 3.5, end: 6, text: "오늘은 인공지능의 역사에 대해 알아보겠습니다." },
+                    { id: '3', start: 6.5, end: 10, text: "먼저 1950년대 튜링 테스트부터 시작해볼까요?" },
+                    { id: '4', start: 11, end: 15, text: "이 기술이 어떻게 발전했는지 놀라우실 겁니다." }
+                ],
+                en: [
+                    { id: '1', start: 0, end: 3, text: "Hello, welcome to today's lecture." },
+                    { id: '2', start: 3.5, end: 6, text: "Today we will learn about the history of AI." },
+                    { id: '3', start: 6.5, end: 10, text: "Let's start with the Turing Test in the 1950s." },
+                    { id: '4', start: 11, end: 15, text: "You'll be amazed at how this technology developed." }
+                ]
+            };
+        }
+
+        // 앱 초기화
+        window.addEventListener('DOMContentLoaded', () => {
+            upload.init();
+            router.init();
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AX2 | 개인정보 처리방침</title>
+    <meta name="description" content="AX2 자막 생성 서비스 개인정보 처리방침을 확인하세요. 개인정보 수집, 이용, 보관, 삭제에 대한 정책을 안내합니다.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.4csoft.com/html/privacy.html">
+    <meta property="og:title" content="포씨소프트 | 개인정보보호">
+    <meta property="og:description" content="AX2 자막 생성 서비스 개인정보 처리방침을 확인하세요. 개인정보 수집, 이용, 보관, 삭제에 대한 정책을 안내합니다.">
+    <meta property="og:image" content="https://www.4csoft.com/assets/images/common/og-img.png">
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .privacy-container {
+            max-width: 1200px;
+            margin: 100px auto 60px;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 60px;
+            text-align: center;
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 개인정보 섹션 */
+        .privacy-section {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .privacy-section:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .privacy-section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .privacy-section-title i {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .privacy-section-title i.purple { background: linear-gradient(135deg, #FF9800, #E65100); }
+        .privacy-section-title i.blue { background: linear-gradient(135deg, #2196F3, #1976D2); }
+        .privacy-section-title i.green { background: linear-gradient(135deg, #4CAF50, #388E3C); }
+        .privacy-section-title i.orange { background: linear-gradient(135deg, #FFC400, #FF8F00); }
+        .privacy-section-title i.teal { background: linear-gradient(135deg, #26A69A, #00897B); }
+        .privacy-section-title i.indigo { background: linear-gradient(135deg, #5C6BC0, #3F51B5); }
+        .privacy-section-title i.pink { background: linear-gradient(135deg, #FF6B9D, #E91E63); }
+
+        .privacy-content {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .privacy-content > p {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+
+        .privacy-content ul {
+            margin: 20px 0;
+            padding-left: 28px;
+        }
+
+        .privacy-content li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 8px;
+        }
+
+        .privacy-content li::marker {
+            color: #FF9800;
+        }
+
+        .privacy-content strong {
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+        .privacy-content h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 24px 0 12px;
+        }
+
+        .privacy-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin: 20px 0 10px;
+        }
+
+        /* 하이라이트 박스 */
+        .highlight-box {
+            background: #f8f9fa;
+            border-left: 4px solid #FF9800;
+            padding: 20px 24px;
+            margin: 28px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .highlight-box.warning {
+            border-left-color: #F59E0B;
+            background: #fffbf0;
+        }
+
+        .highlight-box.success {
+            border-left-color: #4CAF50;
+            background: #E8F5E9;
+        }
+
+        .highlight-box-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .highlight-box-content {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        /* 네비게이션 바는 styles.css의 기본 스타일 사용 */
+        /* 배경 효과는 styles.css에서 제거됨 */
+
+        body {
+            background: #ffffff !important;
+        }
+
+        @media (max-width: 768px) {
+            .privacy-container {
+                margin: 80px auto 40px;
+                padding: 0 15px;
+            }
+
+            .page-title {
+                font-size: 32px;
+            }
+
+            .page-subtitle {
+                font-size: 16px;
+                margin-bottom: 40px;
+            }
+
+            .privacy-section {
+                padding: 24px;
+                margin-bottom: 24px;
+            }
+
+            .privacy-section-title {
+                font-size: 20px;
+            }
+
+            .privacy-section-title i {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 플레이스홀더 -->
+    <div id="nav-placeholder"></div>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="privacy-container">
+        <h1 class="page-title">개인정보보호</h1>
+        <p class="page-subtitle">AX2는 이용자의 개인정보를 소중히 다루며, 투명하고 안전하게 관리합니다.</p>
+
+        <!-- 개인정보 처리방침 -->
+        <div class="privacy-section">
+            <div class="privacy-section-title">
+                <span>개인정보 처리방침</span>
+            </div>
+            <div class="privacy-content">
+                <p>포씨소프트(이하 "회사")는 정보통신망 이용촉진 및 정보보호 등에 관한 법률, 개인정보 보호법 등 관련 법령에 따라 이용자의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리방침을 수립·공개합니다.</p>
+                
+                <h3>제1조 (개인정보의 처리 목적)</h3>
+                <p>회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경되는 경우에는 개인정보 보호법 제18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.</p>
+                <ul>
+                    <li><strong>서비스 제공:</strong> 영상 자막 자동 생성 서비스 제공, 자막 프로젝트 관리, 크레딧 관리</li>
+                    <li><strong>회원 관리:</strong> 회원 가입, 본인 확인, 회원 자격 유지·관리, 서비스 부정 이용 방지</li>
+                    <li><strong>결제 및 환불:</strong> 크레딧 구매, 결제 처리, 환불 처리</li>
+                    <li><strong>고객 지원:</strong> 문의사항 응대, 불만 처리, 서비스 개선을 위한 의견 수렴</li>
+                </ul>
+
+                <h3>제2조 (개인정보의 처리 및 보유기간)</h3>
+                <ul>
+                    <li>회사는 법령에 따른 개인정보 보유·이용기간 또는 정보주체로부터 개인정보를 수집 시에 동의받은 개인정보 보유·이용기간 내에서 개인정보를 처리·보유합니다.</li>
+                    <li>각각의 개인정보 처리 및 보유 기간은 다음과 같습니다:
+                        <ul>
+                            <li><strong>회원 정보:</strong> 회원 탈퇴 시까지 (단, 관계 법령 위반에 따른 수사·조사 등이 진행중인 경우에는 해당 수사·조사 종료 시까지)</li>
+                            <li><strong>자막 프로젝트 데이터:</strong> 프로젝트 삭제 시까지 또는 보관 기간 만료 시까지 (기본 7일, 확장 옵션 구매 시 더 긴 기간)</li>
+                            <li><strong>결제 정보:</strong> 전자상거래법에 따라 5년간 보관</li>
+                            <li><strong>로그인 기록:</strong> 3개월간 보관</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3>제3조 (개인정보의 제3자 제공)</h3>
+                <ul>
+                    <li>회사는 정보주체의 개인정보를 제1조(개인정보의 처리 목적)에서 명시한 범위 내에서만 처리하며, 정보주체의 동의, 법률의 특별한 규정 등 개인정보 보호법 제17조 및 제18조에 해당하는 경우에만 개인정보를 제3자에게 제공합니다.</li>
+                    <li>회사는 원칙적으로 이용자의 개인정보를 외부에 제공하지 않습니다. 다만, 다음의 경우에는 예외로 합니다:
+                        <ul>
+                            <li>이용자가 사전에 동의한 경우</li>
+                            <li>법령의 규정에 의거하거나, 수사 목적으로 법령에 정해진 절차와 방법에 따라 수사기관의 요구가 있는 경우</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3>제4조 (개인정보처리의 위탁)</h3>
+                <ul>
+                    <li>회사는 원활한 개인정보 업무처리를 위하여 다음과 같이 개인정보 처리업무를 위탁하고 있습니다:
+                        <ul>
+                            <li><strong>결제 처리:</strong> 결제 대행 업체 (신용카드, 간편결제 등)</li>
+                            <li><strong>서버 호스팅:</strong> 클라우드 서비스 제공 업체</li>
+                        </ul>
+                    </li>
+                    <li>회사는 위탁계약 체결 시 개인정보 보호법 제26조에 따라 위탁업무 수행목적 외 개인정보 처리금지, 기술적·관리적 보호조치, 재위탁 제한, 수탁자에 대한 관리·감독, 손해배상 등에 관한 사항을 계약서 등 문서에 명시하고, 수탁자가 개인정보를 안전하게 처리하는지를 감독하고 있습니다.</li>
+                </ul>
+
+                <h3>제5조 (정보주체의 권리·의무 및 행사방법)</h3>
+                <ul>
+                    <li>정보주체는 회사에 대해 언제든지 다음 각 호의 개인정보 보호 관련 권리를 행사할 수 있습니다:
+                        <ul>
+                            <li>개인정보 처리정지 요구권</li>
+                            <li>개인정보 열람요구권</li>
+                            <li>개인정보 정정·삭제요구권</li>
+                            <li>개인정보 처리정지 요구권</li>
+                        </ul>
+                    </li>
+                    <li>권리 행사는 회사에 대해 서면, 전자우편, 모사전송(FAX) 등을 통하여 하실 수 있으며 회사는 이에 대해 지체 없이 조치하겠습니다.</li>
+                    <li>정보주체가 개인정보의 오류에 대한 정정을 요청한 경우, 회사는 정정을 완료하기 전까지 해당 개인정보를 이용하거나 제공하지 않습니다.</li>
+                </ul>
+
+                <h3>제6조 (처리하는 개인정보 항목)</h3>
+                <p>회사는 다음의 개인정보 항목을 처리하고 있습니다:</p>
+                <ul>
+                    <li><strong>필수 항목:</strong> 이메일, 비밀번호, 닉네임</li>
+                    <li><strong>선택 항목:</strong> 전화번호, 프로필 사진</li>
+                    <li><strong>자동 수집 항목:</strong> IP 주소, 쿠키, 접속 로그, 기기 정보</li>
+                    <li><strong>자막 프로젝트 데이터:</strong> 업로드된 영상 파일, 생성된 자막 데이터 (프로젝트 삭제 시 즉시 삭제)</li>
+                </ul>
+
+                <h3>제7조 (개인정보의 파기)</h3>
+                <ul>
+                    <li>회사는 개인정보 보유기간의 경과, 처리목적 달성 등 개인정보가 불필요하게 되었을 때에는 지체없이 해당 개인정보를 파기합니다.</li>
+                    <li>개인정보 파기의 절차 및 방법은 다음과 같습니다:
+                        <ul>
+                            <li><strong>파기절차:</strong> 이용자가 입력한 정보는 목적 달성 후 별도의 DB에 옮겨져(종이의 경우 별도의 서류) 내부 방침 및 기타 관련 법령에 따라 일정기간 저장된 후 혹은 즉시 파기됩니다.</li>
+                            <li><strong>파기방법:</strong> 전자적 파일 형태의 정보는 기록을 재생할 수 없는 기술적 방법을 사용합니다. 종이에 출력된 개인정보는 분쇄기로 분쇄하거나 소각을 통하여 파기합니다.</li>
+                        </ul>
+                    </li>
+                    <li><strong>자막 프로젝트 데이터:</strong> 프로젝트 삭제 시 즉시 완전히 삭제되며, 복구할 수 없습니다. 기본 보관 기간(7일)이 지나면 자동으로 삭제됩니다.</li>
+                </ul>
+
+                <h3>제8조 (개인정보 보호책임자)</h3>
+                <p>회사는 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 처리와 관련한 정보주체의 불만처리 및 피해구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.</p>
+                <ul>
+                    <li><strong>개인정보 보호책임자:</strong> 개인정보보호팀</li>
+                    <li><strong>연락처:</strong> privacy@ax2.com</li>
+                    <li><strong>전화:</strong> 02-1234-5678</li>
+                </ul>
+
+                <h3>제9조 (개인정보의 안전성 확보조치)</h3>
+                <p>회사는 개인정보의 안전성 확보를 위해 다음과 같은 조치를 취하고 있습니다:</p>
+                <ul>
+                    <li><strong>관리적 조치:</strong> 내부관리계획 수립·시행, 정기적 직원 교육 등</li>
+                    <li><strong>기술적 조치:</strong> 개인정보처리시스템 등의 접근권한 관리, 접근통제시스템 설치, 고유식별정보 등의 암호화, 보안프로그램 설치</li>
+                    <li><strong>물리적 조치:</strong> 전산실, 자료보관실 등의 접근통제</li>
+                </ul>
+
+                <h3>제10조 (개인정보 처리방침 변경)</h3>
+                <ul>
+                    <li>이 개인정보 처리방침은 2024년 1월 1일부터 적용됩니다.</li>
+                    <li>법령 및 방침에 따른 변경내용의 추가, 삭제 및 정정이 있는 경우에는 변경사항의 시행 7일 전부터 공지사항을 통하여 고지할 것입니다.</li>
+                </ul>
+
+                <div class="highlight-box success">
+                    <div class="highlight-box-title">
+                        <span>GDPR 준수</span>
+                    </div>
+                    <div class="highlight-box-content">
+                        회사는 유럽 일반 데이터 보호 규정(GDPR)을 준수하며, 유럽 연합 거주자의 개인정보 권리를 보호합니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 쿠키 정책 -->
+        <div class="privacy-section">
+            <div class="privacy-section-title">
+                <span>쿠키 정책</span>
+            </div>
+            <div class="privacy-content">
+                <p>회사는 이용자에게 개인화되고 맞춤화된 서비스를 제공하기 위해 쿠키를 사용합니다.</p>
+                
+                <h3>쿠키의 사용 목적</h3>
+                <ul>
+                    <li><strong>필수 쿠키:</strong> 서비스 제공을 위해 반드시 필요한 쿠키 (로그인 상태 유지, 언어 설정 등)</li>
+                    <li><strong>기능 쿠키:</strong> 사용자 편의성을 제공하는 쿠키 (화면 크기, 선호 설정 등)</li>
+                    <li><strong>분석 쿠키:</strong> 서비스 이용 통계 및 분석을 위한 쿠키</li>
+                </ul>
+
+                <h3>쿠키 설정 관리</h3>
+                <ul>
+                    <li>이용자는 웹 브라우저 설정을 통해 쿠키 저장에 대한 동의 여부를 선택할 수 있습니다.</li>
+                    <li>쿠키 저장을 거부할 경우 일부 서비스 이용에 어려움이 있을 수 있습니다.</li>
+                    <li>회사는 추적 목적의 쿠키를 사용하지 않으며, 제3자에게 개인정보를 판매하거나 공유하지 않습니다.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 개인정보 열람 및 정정 -->
+        <div class="privacy-section">
+            <div class="privacy-section-title">
+                <span>개인정보 열람 및 정정</span>
+            </div>
+            <div class="privacy-content">
+                <p>마이페이지에서 언제든지 본인의 개인정보를 열람하고 정정할 수 있습니다.</p>
+                
+                <ul>
+                    <li><strong>개인정보 열람:</strong> 마이페이지에서 본인의 개인정보를 확인할 수 있습니다.</li>
+                    <li><strong>개인정보 정정:</strong> 잘못된 정보를 수정하거나 업데이트할 수 있습니다.</li>
+                    <li><strong>회원 탈퇴:</strong> 회원 탈퇴 시 모든 개인정보는 즉시 삭제됩니다.</li>
+                    <li><strong>개인정보 처리정지:</strong> 개인정보 처리정지를 요청할 수 있습니다.</li>
+                </ul>
+
+                <div class="highlight-box success">
+                    <div class="highlight-box-title">
+                        <span>개인정보 보호책임자</span>
+                    </div>
+                    <div class="highlight-box-content">
+                        개인정보 처리와 관련한 문의사항이나 권리 행사 요청이 있으시면 privacy@ax2.com으로 연락해주세요. 영업일 기준 3-5일 이내 응답해드립니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/i18n.js" defer></script>
+    <script src="../js/nav-bar.js" defer></script>
+    <script src="../js/auth-state.js" defer></script>
+    <script src="../script.js" defer></script>
+</body>
+</html>
+

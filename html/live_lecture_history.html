@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AX2 | 강의 기록 및 이력</title>
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    <link rel="stylesheet" href="../css/mypage.css">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 상단 네비게이션 -->
+    <nav class="glass-nav">
+        <div class="nav-content">
+            <div class="nav-left">
+                <div class="logo" onclick="location.href='../index.html'">
+                    <img src="../assets/image/Caption.png" alt="AX2" class="logo-img">
+                </div>
+                <div class="service-tabs">
+                    <a href="../index.html" class="service-tab">
+                        <span>자동 번역/다국어 자막</span>
+                    </a>
+                    <a href="pricing.html" class="service-tab">
+                        <span>요금제/결제</span>
+                    </a>
+                    <a href="used.html" class="service-tab">
+                        <span>사용가이드</span>
+                    </a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="plan-info" id="plan-info-box">
+                    <span id="free-credit-info">100 크레딧</span>
+                </div>
+                <a href="login.html" class="login-btn">로그인</a>
+                <a href="signup.html" class="signup-btn">가입하기</a>
+                <div class="more-menu-btn" id="moreMenuBtn">
+                    <div class="dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="more-menu-dropdown" id="moreMenuDropdown">
+                    <div class="language-dropdown-menu" id="languageDropdownMenu">
+                        <div class="language-option" data-lang="ko">
+                            <span>한국어</span>
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="language-option" data-lang="en">
+                            <span>영어</span>
+                            <i class="fas fa-check" style="display: none;"></i>
+                        </div>
+                        <div class="language-option" data-lang="ja">
+                            <span>일본어</span>
+                            <i class="fas fa-check" style="display: none;"></i>
+                        </div>
+                        <div class="language-option" data-lang="zh">
+                            <span>중국어</span>
+                            <i class="fas fa-check" style="display: none;"></i>
+                        </div>
+                        <div class="language-option" data-lang="es">
+                            <span>스페인어</span>
+                            <i class="fas fa-check" style="display: none;"></i>
+                        </div>
+                    </div>
+                    <div class="more-menu-dropdown-content">
+                        <div class="more-menu-section">
+                            <div class="more-menu-section-title">기타 제품</div>
+                            <a href="../index.html" class="more-menu-item">
+                                <div class="more-menu-item-icon">
+                                    <i class="fas fa-language"></i>
+                                </div>
+                                <div class="more-menu-item-content">
+                                    <div class="more-menu-item-title">자동번역/다국어 자막</div>
+                                </div>
+                            </a>
+                            <a href="live_lecture.html" class="more-menu-item active">
+                                <div class="more-menu-item-icon">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <div class="more-menu-item-content">
+                                    <div class="more-menu-item-title">실시간 강의</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="more-menu-divider"></div>
+                        <div class="more-menu-section">
+                            <a href="pricing.html" class="more-menu-item">
+                                <div class="more-menu-item-icon">
+                                    <i class="fas fa-tag"></i>
+                                </div>
+                                <div class="more-menu-item-content">
+                                    <div class="more-menu-item-title">가격</div>
+                                </div>
+                            </a>
+                            <a href="#" class="more-menu-item">
+                                <div class="more-menu-item-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="more-menu-item-content">
+                                    <div class="more-menu-item-title">기능소개</div>
+                                </div>
+                            </a>
+                            <a href="../ax2_home/company.html" class="more-menu-item" target="_blank">
+                                <div class="more-menu-item-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="more-menu-item-content">
+                                    <div class="more-menu-item-title">회사소개 / 도움말</div>
+                                </div>
+                            </a>
+                            <div class="more-menu-item language-setting-item" id="languageSettingBtn">
+                                <div class="more-menu-item-icon">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <div class="more-menu-item-content">
+                                    <div class="more-menu-item-title">사이트 언어 설정</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 저장공간 대시보드 -->
+        <div class="storage-dashboard">
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">
+                    <i class="fas fa-database"></i>
+                    저장공간 관리
+                </h2>
+                <div class="free-plan-badge">
+                    <i class="fas fa-gift"></i>
+                    <span>1시간 무료 강의 제공</span>
+                </div>
+            </div>
+            <div class="storage-content">
+                <div class="storage-info">
+                    <div class="storage-usage">
+                        <div class="storage-label">
+                            <span>사용 중</span>
+                            <span class="storage-value" id="storage-used">0 GB</span>
+                        </div>
+                        <div class="storage-label">
+                            <span>전체</span>
+                            <span class="storage-value" id="storage-total">1 GB</span>
+                        </div>
+                    </div>
+                    <div class="storage-progress-bar">
+                        <div class="storage-progress-fill" id="storage-progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="storage-percentage" id="storage-percentage">0% 사용</div>
+                </div>
+                <div class="storage-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-videos">0</div>
+                            <div class="stat-label">저장된 강의</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-duration">0분</div>
+                            <div class="stat-label">총 강의 시간</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 영상 목록 -->
+        <div class="videos-section">
+            <div class="section-header">
+                <div class="section-title">최근 강의</div>
+                <div class="filter-controls">
+                    <button class="filter-btn active" data-filter="all">전체</button>
+                    <button class="filter-btn" data-filter="recent">최근</button>
+                    <button class="filter-btn" data-filter="expiring">만료 예정</button>
+                </div>
+            </div>
+            <div class="video-grid" id="video-grid">
+                <!-- 영상 카드들이 여기에 동적으로 추가됩니다 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 편집 모달 -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">강의 편집</div>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">강의 제목</label>
+                <input type="text" class="form-input" id="edit-title" placeholder="강의 제목을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label class="form-label">설명</label>
+                <textarea class="form-input" id="edit-description" rows="4" placeholder="강의 설명을 입력하세요"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">태그</label>
+                <input type="text" class="form-input" id="edit-tags" placeholder="태그를 쉼표로 구분하여 입력하세요">
+            </div>
+            <div class="form-group">
+                <label class="form-label">카테고리</label>
+                <select class="form-select" id="edit-category">
+                    <option value="">카테고리 선택</option>
+                    <option value="business">비즈니스</option>
+                    <option value="education">교육</option>
+                    <option value="technology">기술</option>
+                    <option value="marketing">마케팅</option>
+                    <option value="other">기타</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeEditModal()">취소</button>
+                <button class="btn btn-primary" onclick="saveEdit()">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/i18n.js" defer></script>
+    <script src="../js/auth-state.js" defer></script>
+    <script src="../js/live_lecture_history.js" defer></script>
+    <script src="../script.js" defer></script>
+    <script>
+        // 더보기 메뉴 토글
+        document.addEventListener('DOMContentLoaded', function() {
+            const moreMenuBtn = document.getElementById('moreMenuBtn');
+            const moreMenuDropdown = document.getElementById('moreMenuDropdown');
+            
+            if (moreMenuBtn && moreMenuDropdown) {
+                moreMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    moreMenuDropdown.classList.toggle('active');
+                });
+                
+                // 외부 클릭 시 메뉴 닫기
+                document.addEventListener('click', function(e) {
+                    if (!moreMenuBtn.contains(e.target) && !moreMenuDropdown.contains(e.target)) {
+                        moreMenuDropdown.classList.remove('active');
+                    }
+                });
+            }
+            
+            // 언어 설정 기능
+            const languageOptions = document.querySelectorAll('.language-dropdown-menu .language-option');
+            const currentLang = localStorage.getItem('siteLanguage') || 'ko';
+            
+            languageOptions.forEach(option => {
+                const lang = option.getAttribute('data-lang');
+                if (lang === currentLang) {
+                    option.classList.add('active');
+                    option.querySelector('.fa-check').style.display = 'inline-block';
+                } else {
+                    option.classList.remove('active');
+                    option.querySelector('.fa-check').style.display = 'none';
+                }
+                
+                option.addEventListener('click', function() {
+                    const selectedLang = this.getAttribute('data-lang');
+                    localStorage.setItem('siteLanguage', selectedLang);
+                    
+                    languageOptions.forEach(opt => {
+                        opt.classList.remove('active');
+                        opt.querySelector('.fa-check').style.display = 'none';
+                    });
+                    
+                    this.classList.add('active');
+                    this.querySelector('.fa-check').style.display = 'inline-block';
+                });
+            });
+            
+            // 현재 페이지에 따라 활성 탭 설정
+            const tabs = document.querySelectorAll('.service-tab');
+            const currentPath = window.location.pathname;
+            const currentPage = currentPath.split('/').pop() || 'index.html';
+            
+            tabs.forEach(tab => {
+                const href = tab.getAttribute('href');
+                if (href) {
+                    const tabPath = href.split('/').pop() || 'index.html';
+                    
+                    if (tabPath === 'index.html' && currentPage === 'index.html') {
+                        tab.classList.add('active');
+                    } else if (tabPath === 'storage.html' && currentPage === 'storage.html') {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+

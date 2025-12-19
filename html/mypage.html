@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AX2 | 마이페이지</title>
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .account-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .account-title {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 40px;
+        }
+
+        .user-info-banner {
+            background: white;
+            border-radius: 12px;
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 32px;
+        }
+
+        .user-info-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-plan-badge-large {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .user-plan-badge-large.free { background: #FFD700; color: #1a1a2e; }
+        .user-plan-badge-large.student { background: #14B8A6; }
+        .user-plan-badge-large.general { background: #8B5CF6; }
+        .user-plan-badge-large.pro { background: #8B5CF6; }
+
+        .user-welcome-text {
+            font-size: 16px;
+            color: #1a1a2e;
+        }
+
+        .user-welcome-text strong {
+            font-weight: 600;
+        }
+
+        .user-info-right {
+            display: flex;
+            gap: 32px;
+        }
+
+        .user-stat {
+            text-align: right;
+        }
+
+        .user-stat-label {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .user-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .account-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 0;
+        }
+
+        .account-tab {
+            font-size: 15px;
+            color: #666;
+            text-decoration: none;
+            padding: 16px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .account-tab:hover {
+            color: #1a1a2e;
+        }
+
+        .account-tab.active {
+            color: #1a1a2e;
+            font-weight: 600;
+            border-bottom-color: #1a1a2e;
+        }
+
+        .account-tab::before {
+            content: '•';
+            margin-right: 8px;
+            color: #ccc;
+        }
+
+        .account-tab:first-child::before {
+            display: none;
+        }
+
+        .account-section {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .form-input-wrapper {
+            display: flex;
+            gap: 12px;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 16px 20px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #1a1a2e;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #8B5CF6;
+            background: white;
+        }
+
+        .form-input:read-only {
+            background: #F9FAFB;
+            cursor: not-allowed;
+        }
+
+        .form-btn {
+            padding: 16px 24px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .form-btn:hover {
+            background: #F5F5F5;
+            border-color: #ccc;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: #1a1a2e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            margin-top: 16px;
+        }
+
+        .submit-btn:hover {
+            background: #2d2d44;
+        }
+
+        /* 탭 콘텐츠 */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .account-container {
+                padding: 40px 15px;
+            }
+
+            .user-info-banner {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .user-info-left {
+                flex-direction: column;
+            }
+
+            .user-info-right {
+                justify-content: center;
+            }
+
+            .account-tabs {
+                flex-wrap: wrap;
+                gap: 0;
+            }
+
+            .account-tab {
+                padding: 12px 16px;
+                font-size: 13px;
+            }
+
+            .account-tab::before {
+                display: none;
+            }
+
+            .form-input-wrapper {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <script>
+        // 탭 전환 함수 (전역)
+        function switchTab(tabName) {
+            // 모든 탭 비활성화
+            var tabs = document.querySelectorAll('.account-tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            var contents = document.querySelectorAll('.tab-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].style.display = 'none';
+            }
+            
+            // 선택한 탭 활성화
+            var targetTabBtn = document.querySelector('.account-tab[data-tab="' + tabName + '"]');
+            var targetContent = document.getElementById('tab-' + tabName);
+            
+            if (targetTabBtn) targetTabBtn.classList.add('active');
+            if (targetContent) targetContent.style.display = 'block';
+        }
+    </script>
+</head>
+<body>
+    <!-- 네비게이션 바 플레이스홀더 -->
+    <div id="nav-placeholder"></div>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-container">
+        <div class="account-container">
+            <h1 class="account-title">마이페이지</h1>
+
+            <!-- 사용자 정보 배너 -->
+            <div class="user-info-banner">
+                <div class="user-info-left">
+                    <span class="user-plan-badge-large" id="banner-credit-total" style="background: #8B5CF6; color: white; padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; margin-right: 12px; display: inline-block;">0 크레딧</span>
+                    <span class="user-welcome-text"><strong id="banner-user-name">사용자</strong>님의 크레딧과 정보를 확인할 수 있습니다.</span>
+                </div>
+                <div class="user-info-right">
+                    <div class="user-stat">
+                        <div class="user-stat-label">보유 크레딧:</div>
+                        <div class="user-stat-value" id="banner-credit-balance">0</div>
+                    </div>
+                    <div class="user-stat">
+                        <div class="user-stat-label">이번 달 사용:</div>
+                        <div class="user-stat-value" id="banner-monthly-usage">0 크레딧</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 탭 메뉴 -->
+            <div class="account-tabs">
+                <a href="javascript:void(0)" class="account-tab active" data-tab="info" onclick="switchTab('info')">정보수정</a>
+                <a href="javascript:void(0)" class="account-tab" data-tab="password" onclick="switchTab('password')">비밀번호 변경</a>
+                <a href="javascript:void(0)" class="account-tab" data-tab="payment" onclick="switchTab('payment')">결제정보</a>
+                <a href="javascript:void(0)" class="account-tab" data-tab="withdraw" onclick="switchTab('withdraw')">회원탈퇴</a>
+            </div>
+
+            <!-- 정보수정 탭 -->
+            <div class="tab-content" id="tab-info" style="display: block;">
+                <div class="account-section">
+                    <h2 class="section-title">정보수정</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">닉네임</label>
+                        <input type="text" class="form-input" id="user-nickname" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">이메일</label>
+                        <div class="form-input-wrapper">
+                            <input type="email" class="form-input" id="user-email" value="pub001@4csoft.com" readonly>
+                            <button class="form-btn" onclick="alert('계정 변경 기능은 준비 중입니다.')">계정변경</button>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="newsletter" checked>
+                        <label class="checkbox-label" for="newsletter">AX2 소식 받아보기</label>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 16px;">
+                        <button class="submit-btn" onclick="saveProfileInfo()" style="width: auto; padding: 18px 40px; display: inline-block;">정보수정</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 비밀번호 변경 탭 -->
+            <div class="tab-content" id="tab-password" style="display: none;">
+                <div class="account-section">
+                    <h2 class="section-title">비밀번호 변경</h2>
+                    
+                    <div style="max-width: 500px; margin: 40px auto;">
+                        <div class="form-group">
+                            <input type="password" class="form-input" id="current-password" placeholder="현재 비밀번호" style="width: 100%; box-sizing: border-box;" oninput="checkCurrentPassword(); checkPasswordFields();">
+                            <p id="password-match-msg" style="font-size: 13px; margin-top: 8px; display: none;"></p>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" class="form-input" id="new-password" placeholder="새 비밀번호" style="width: 100%; box-sizing: border-box;" oninput="checkNewPassword(); checkConfirmPassword(); checkPasswordFields();">
+                            <p id="new-password-msg" style="font-size: 13px; margin-top: 8px; display: none;"></p>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" class="form-input" id="confirm-password" placeholder="새 비밀번호 확인" style="width: 100%; box-sizing: border-box;" oninput="checkConfirmPassword(); checkPasswordFields();">
+                            <p id="confirm-password-msg" style="font-size: 13px; margin-top: 8px; display: none;"></p>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 24px;">
+                            <button class="submit-btn" style="background: #ccc; color: #fff; width: auto; padding: 18px 40px; display: inline-block; cursor: not-allowed;" onclick="changePassword()" id="password-change-btn" disabled>변경하기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 결제정보 탭 -->
+            <div class="tab-content" id="tab-payment" style="display: none;">
+                <!-- 크레딧 잔액 정보 -->
+                <div class="account-section" style="margin-bottom: 24px;">
+                    <h2 class="section-title" style="margin-bottom: 16px;">크레딧 정보</h2>
+                    <div style="background: linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%); border-radius: 12px; padding: 32px; color: white;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <div>
+                                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 8px;">보유 크레딧</div>
+                                <div style="font-size: 36px; font-weight: 700;" id="mypage-credit-balance">0</div>
+                            </div>
+                            <a href="pricing.html" style="padding: 10px 20px; background: white; color: #8B5CF6; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">충전하기</a>
+                        </div>
+                        <div style="display: flex; gap: 32px; border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 24px;">
+                            <div>
+                                <div style="font-size: 12px; opacity: 0.8; margin-bottom: 4px;">이번 달 사용</div>
+                                <div style="font-size: 18px; font-weight: 600;" id="mypage-monthly-usage">0 크레딧</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 12px; opacity: 0.8; margin-bottom: 4px;">총 충전</div>
+                                <div style="font-size: 18px; font-weight: 600;" id="mypage-total-charged">0 크레딧</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 크레딧 충전 내역 -->
+                <div class="account-section" style="margin-bottom: 24px;">
+                    <h2 class="section-title">크레딧 충전 내역</h2>
+                    <div style="overflow-x: auto;">
+                        <table class="payment-table" style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid #E5E7EB;">
+                                    <th style="padding: 12px 16px; text-align: left; color: #666; font-weight: 500;">날짜</th>
+                                    <th style="padding: 12px 16px; text-align: center; color: #666; font-weight: 500;">패키지</th>
+                                    <th style="padding: 12px 16px; text-align: center; color: #666; font-weight: 500;">충전 크레딧</th>
+                                    <th style="padding: 12px 16px; text-align: center; color: #666; font-weight: 500;">보너스</th>
+                                    <th style="padding: 12px 16px; text-align: center; color: #666; font-weight: 500;">결제금액</th>
+                                    <th style="padding: 12px 16px; text-align: center; color: #666; font-weight: 500;">결제수단</th>
+                                    <th style="padding: 12px 16px; text-align: center; color: #666; font-weight: 500;">상태</th>
+                                </tr>
+                            </thead>
+                            <tbody id="credit-charge-history-list">
+                                <!-- 충전 내역이 동적으로 추가됩니다 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <p id="no-charge-history" style="color: #666; text-align: center; padding: 40px 0; display: none;">충전 내역이 없습니다.</p>
+                </div>
+
+                <!-- 크레딧 사용 내역 -->
+                <div class="account-section">
+                    <h2 class="section-title">크레딧 사용 내역</h2>
+                    <div style="overflow-x: auto;">
+                        <table class="payment-table" style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid #E5E7EB;">
+                                    <th style="padding: 12px 16px; text-align: left; color: #666; font-weight: 500;">날짜/시간</th>
+                                    <th style="padding: 12px 16px; text-align: center; color: #666; font-weight: 500;">내역</th>
+                                    <th style="padding: 12px 16px; text-align: center; color: #666; font-weight: 500;">크레딧</th>
+                                    <th style="padding: 12px 16px; text-align: center; color: #666; font-weight: 500;">잔액</th>
+                                </tr>
+                            </thead>
+                            <tbody id="credit-usage-history-list">
+                                <!-- 사용 내역이 동적으로 추가됩니다 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <p id="no-usage-history" style="color: #666; text-align: center; padding: 40px 0; display: none;">사용 내역이 없습니다.</p>
+                </div>
+            </div>
+
+            <!-- 회원탈퇴 탭 -->
+            <div class="tab-content" id="tab-withdraw" style="display: none;">
+                <div class="account-section">
+                    <h2 class="section-title">회원탈퇴</h2>
+                    
+                    <p style="font-size: 16px; font-weight: 500; color: #1a1a2e; margin-bottom: 20px;">AX2를 이용해 주셔서 감사합니다.</p>
+                    
+                    <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+                        <div style="flex: 1; background: #f8f9fa; border: 1px solid #E5E7EB; border-radius: 8px; padding: 16px;">
+                            <span id="withdraw-email" style="color: #1a1a2e;">pub001@4csoft.com</span>
+                        </div>
+                        <div style="flex: 1;">
+                            <input type="password" id="withdraw-password" class="form-input" placeholder="비밀번호" style="width: 100%; box-sizing: border-box; margin: 0;">
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; font-size: 14px; color: #1a1a2e; margin-bottom: 8px;">탈퇴사유가 있으신가요?</label>
+                        <textarea id="withdraw-reason" style="width: 100%; box-sizing: border-box; min-height: 120px; padding: 16px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 14px; resize: vertical;" placeholder="작성해주신 내용을 바탕으로 더 나은 서비스를 제공하기 위해 노력하겠습니다."></textarea>
+                    </div>
+                    
+                    <p style="color: #EF4444; font-weight: 500; margin-bottom: 16px;">아래의 유의사항을 반드시 읽고 진행해주세요.</p>
+                    
+                    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+                        <ul style="list-style: none; padding: 0; margin: 0; color: #666; font-size: 14px; line-height: 2;">
+                            <li>• 탈퇴 후 30일 이후에 아이디가 삭제됩니다.</li>
+                            <li>• 탈퇴처리 완료 후 사용하셨던 이메일 주소로는 3년 동안 재가입 하실 수 없습니다.</li>
+                            <li>• 생성하신 자막 영상은 모두 삭제됩니다.</li>
+                            <li>• 보유 중인 크레딧은 탈퇴 시 모두 소멸되며 환불되지 않습니다.</li>
+                            <li>• 탈퇴 전 크레딧을 모두 사용하시거나 환불을 원하시는 경우 고객센터로 문의해주세요.</li>
+                            <li>• 간편로그인 사용자의 경우 AX2 비밀번호를 설정하셔야 회원탈퇴가 가능합니다.<br>&nbsp;&nbsp;AX2 비밀번호 설정은 마이페이지 - 비밀번호변경에서 설정하실 수 있습니다.</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="withdraw-agree" style="width: 20px; height: 20px; cursor: pointer;" onchange="toggleWithdrawBtn()">
+                            <span style="color: #666; font-size: 14px;">위 내용을 정확히 확인하였으며 탈퇴내용에 동의하겠습니다.</span>
+                        </label>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 16px;">
+                        <button class="submit-btn" id="withdraw-btn" style="background: #ccc; cursor: not-allowed; width: auto; padding: 18px 40px; display: inline-block;" onclick="withdrawMembership()" disabled>탈퇴하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 사용자 정보 로드 (먼저 정의)
+        function loadUserInfo() {
+            try {
+                // localStorage에서 직접 가져오기
+                var userData = localStorage.getItem('currentUser');
+                var user = userData ? JSON.parse(userData) : null;
+                var currentPlan = localStorage.getItem('currentPlan') || 'Free';
+                var subscriptionData = localStorage.getItem('subscription');
+                var subscription = subscriptionData ? JSON.parse(subscriptionData) : null;
+                
+                console.log('loadUserInfo 실행:', user, currentPlan, subscription);
+                
+                // 배지 업데이트
+                var badge = document.getElementById('banner-plan-badge');
+                if (badge) {
+                    badge.textContent = currentPlan;
+                    badge.className = 'user-plan-badge-large';
+                    if (currentPlan === '학생') badge.classList.add('student');
+                    else if (currentPlan === '일반') badge.classList.add('general');
+                    else if (currentPlan === '프로') badge.classList.add('pro');
+                    else badge.classList.add('free');
+                }
+                
+                // 사용자 이름 업데이트 (우선순위: user.name > subscription.paymentName > email)
+                var userName = '사용자';
+                var userEmail = '';
+                
+                if (user && user.name) {
+                    userName = user.name;
+                } else if (subscription && subscription.paymentName) {
+                    userName = subscription.paymentName;
+                    // currentUser에도 저장
+                    if (user) {
+                        user.name = userName;
+                        localStorage.setItem('currentUser', JSON.stringify(user));
+                    }
+                } else if (user && user.email) {
+                    userName = user.email.split('@')[0];
+                }
+                
+                if (user) {
+                    userEmail = user.email || '';
+                }
+                
+                var bannerName = document.getElementById('banner-user-name');
+                var nicknameInput = document.getElementById('user-nickname');
+                var emailInput = document.getElementById('user-email');
+                
+                if (bannerName) bannerName.textContent = userName;
+                if (nicknameInput) nicknameInput.value = userName;
+                if (emailInput && userEmail) emailInput.value = userEmail;
+                
+                // 크레딧 정보 로드
+                const creditBalance = parseInt(localStorage.getItem('creditBalance') || '0');
+                const creditHistory = JSON.parse(localStorage.getItem('creditHistory') || '[]');
+                const now = new Date();
+                const currentMonth = now.getMonth();
+                const currentYear = now.getFullYear();
+                let monthlyUsage = 0;
+                
+                creditHistory.forEach(item => {
+                    if (item.type === '사용') {
+                        const itemDate = new Date(item.date);
+                        if (itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear) {
+                            monthlyUsage += item.amount;
+                        }
+                    }
+                });
+                
+                const bannerCreditTotal = document.getElementById('banner-credit-total');
+                const bannerCreditBalance = document.getElementById('banner-credit-balance');
+                const bannerMonthlyUsage = document.getElementById('banner-monthly-usage');
+                
+                if (bannerCreditTotal) bannerCreditTotal.textContent = creditBalance.toLocaleString() + ' 크레딧';
+                if (bannerCreditBalance) bannerCreditBalance.textContent = creditBalance.toLocaleString() + ' 크레딧';
+                if (bannerMonthlyUsage) bannerMonthlyUsage.textContent = monthlyUsage.toLocaleString() + ' 크레딧';
+                
+                console.log('사용자 정보 로드 완료:', userName, userEmail, currentPlan);
+            } catch (error) {
+                console.error('loadUserInfo 오류:', error);
+            }
+        }
+
+        // 페이지 로드 시 실행
+        function initPage() {
+            loadUserInfo();
+            loadWithdrawEmail();
+            
+            // URL 파라미터로 탭 선택
+            var urlParams = new URLSearchParams(window.location.search);
+            var tabParam = urlParams.get('tab');
+            if (tabParam) {
+                switchTab(tabParam);
+            }
+            
+            // 결제 정보 로드
+            if (typeof loadPaymentInfo === 'function') {
+                loadPaymentInfo();
+            }
+        }
+        
+        // DOM이 이미 로드되었는지 확인
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initPage);
+        } else {
+            initPage();
+        }
+
+        // 프로필 정보 저장
+        function saveProfileInfo() {
+            const nickname = document.getElementById('user-nickname').value.trim();
+            if (!nickname) {
+                alert('닉네임을 입력해주세요.');
+                return;
+            }
+            
+            // 현재 사용자 정보 업데이트
+            const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+            if (user) {
+                user.name = nickname;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+            }
+            
+            alert('정보가 수정되었습니다.');
+            location.reload();
+        }
+
+        // 현재 비밀번호 확인
+        function checkCurrentPassword() {
+            var currentInput = document.getElementById('current-password').value;
+            var msgEl = document.getElementById('password-match-msg');
+            
+            if (!currentInput) {
+                msgEl.style.display = 'none';
+                return;
+            }
+            
+            var user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+            var savedPassword = '';
+            
+            // currentUser에서 비밀번호 가져오기
+            if (user && user.password) {
+                savedPassword = user.password;
+            } else if (user && user.email) {
+                // users 목록에서 비밀번호 찾기
+                var users = JSON.parse(localStorage.getItem('users') || '[]');
+                var foundUser = users.find(function(u) { return u.email === user.email; });
+                if (foundUser && foundUser.password) {
+                    savedPassword = foundUser.password;
+                    // currentUser에 비밀번호 저장
+                    user.password = savedPassword;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                }
+            }
+            
+            msgEl.style.display = 'block';
+            if (savedPassword && currentInput === savedPassword) {
+                msgEl.textContent = '비밀번호가 일치합니다.';
+                msgEl.style.color = '#14B8A6';
+            } else {
+                msgEl.textContent = '비밀번호가 일치하지 않습니다.';
+                msgEl.style.color = '#EF4444';
+            }
+        }
+
+        // 비밀번호 변경
+        function changePassword() {
+            var current = document.getElementById('current-password').value;
+            var newPw = document.getElementById('new-password').value;
+            var confirmPw = document.getElementById('confirm-password').value;
+            
+            if (!current || !newPw || !confirmPw) {
+                alert('모든 필드를 입력해주세요.');
+                return;
+            }
+            
+            // 현재 비밀번호 확인
+            var user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+            var savedPassword = '';
+            
+            if (user && user.password) {
+                savedPassword = user.password;
+            } else if (user && user.email) {
+                var users = JSON.parse(localStorage.getItem('users') || '[]');
+                var foundUser = users.find(function(u) { return u.email === user.email; });
+                if (foundUser && foundUser.password) {
+                    savedPassword = foundUser.password;
+                }
+            }
+            
+            
+            if (current !== savedPassword) {
+                alert('현재 비밀번호가 일치하지 않습니다.');
+                return;
+            }
+            
+            if (newPw !== confirmPw) {
+                alert('새 비밀번호가 일치하지 않습니다.');
+                return;
+            }
+            
+            if (!isValidPassword(newPw)) {
+                alert('비밀번호는 문자, 숫자, 특수문자의 조합으로 6~15자리로 입력해주세요.');
+                return;
+            }
+            
+            // 새 비밀번호 저장 (currentUser와 users 배열 모두)
+            if (user) {
+                user.password = newPw;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                // users 배열도 업데이트
+                var users = JSON.parse(localStorage.getItem('users') || '[]');
+                var userIndex = users.findIndex(function(u) { return u.email === user.email; });
+                if (userIndex >= 0) {
+                    users[userIndex].password = newPw;
+                    localStorage.setItem('users', JSON.stringify(users));
+                }
+            }
+            
+            alert('비밀번호가 변경되었습니다.');
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            document.getElementById('password-match-msg').style.display = 'none';
+        }
+
+        // 비밀번호 유효성 검사 (문자, 숫자, 특수문자 조합 6~15자리)
+        function isValidPassword(password) {
+            if (password.length < 6 || password.length > 15) return false;
+            
+            var hasLetter = /[a-zA-Z]/.test(password);
+            var hasNumber = /[0-9]/.test(password);
+            var hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+            
+            return hasLetter && hasNumber && hasSpecial;
+        }
+        
+        // 새 비밀번호 검사
+        function checkNewPassword() {
+            var newPw = document.getElementById('new-password').value;
+            var msgEl = document.getElementById('new-password-msg');
+            
+            if (!newPw) {
+                msgEl.style.display = 'none';
+                return;
+            }
+            
+            msgEl.style.display = 'block';
+            if (isValidPassword(newPw)) {
+                msgEl.textContent = '사용 가능한 비밀번호입니다.';
+                msgEl.style.color = '#14B8A6';
+            } else {
+                msgEl.textContent = '비밀번호는 문자, 숫자, 특수문자의 조합으로 6~15자리로 입력해주세요.';
+                msgEl.style.color = '#EF4444';
+            }
+        }
+        
+        // 비밀번호 확인 검사
+        function checkConfirmPassword() {
+            var newPw = document.getElementById('new-password').value;
+            var confirmPw = document.getElementById('confirm-password').value;
+            var msgEl = document.getElementById('confirm-password-msg');
+            
+            if (!confirmPw) {
+                msgEl.style.display = 'none';
+                return;
+            }
+            
+            msgEl.style.display = 'block';
+            if (newPw === confirmPw) {
+                msgEl.textContent = '비밀번호가 일치합니다.';
+                msgEl.style.color = '#14B8A6';
+            } else {
+                msgEl.textContent = '비밀번호가 일치하지 않습니다.';
+                msgEl.style.color = '#EF4444';
+            }
+        }
+        
+        // 비밀번호 변경 버튼 토글
+        function checkPasswordFields() {
+            var currentPw = document.getElementById('current-password').value;
+            var newPw = document.getElementById('new-password').value;
+            var confirmPw = document.getElementById('confirm-password').value;
+            var changeBtn = document.getElementById('password-change-btn');
+            
+            // 모든 필드가 입력되고, 새 비밀번호가 유효하고, 비밀번호 확인이 일치해야 함
+            if (currentPw && newPw && confirmPw && isValidPassword(newPw) && newPw === confirmPw) {
+                changeBtn.style.background = '#1a1a2e';
+                changeBtn.style.color = '#fff';
+                changeBtn.style.cursor = 'pointer';
+                changeBtn.disabled = false;
+            } else {
+                changeBtn.style.background = '#ccc';
+                changeBtn.style.color = '#fff';
+                changeBtn.style.cursor = 'not-allowed';
+                changeBtn.disabled = true;
+            }
+        }
+        
+        // 회원탈퇴 버튼 토글
+        function toggleWithdrawBtn() {
+            var agreeCheckbox = document.getElementById('withdraw-agree');
+            var withdrawBtn = document.getElementById('withdraw-btn');
+            
+            if (agreeCheckbox.checked) {
+                withdrawBtn.style.background = '#1a1a2e';
+                withdrawBtn.style.cursor = 'pointer';
+                withdrawBtn.disabled = false;
+            } else {
+                withdrawBtn.style.background = '#ccc';
+                withdrawBtn.style.cursor = 'not-allowed';
+                withdrawBtn.disabled = true;
+            }
+        }
+        
+        // 회원탈퇴 이메일 표시
+        function loadWithdrawEmail() {
+            var userData = localStorage.getItem('currentUser');
+            var user = userData ? JSON.parse(userData) : null;
+            var emailEl = document.getElementById('withdraw-email');
+            if (emailEl && user && user.email) {
+                emailEl.textContent = user.email;
+            }
+        }
+        
+        // 회원탈퇴
+        function withdrawMembership() {
+            var agreeCheckbox = document.getElementById('withdraw-agree');
+            var passwordInput = document.getElementById('withdraw-password');
+            
+            if (!agreeCheckbox.checked) {
+                alert('탈퇴내용에 동의해주세요.');
+                return;
+            }
+            
+            if (!passwordInput.value) {
+                alert('비밀번호를 입력해주세요.');
+                return;
+            }
+            
+            // 비밀번호 확인
+            var userData = localStorage.getItem('currentUser');
+            var user = userData ? JSON.parse(userData) : null;
+            var savedPassword = '';
+            
+            if (user && user.password) {
+                savedPassword = user.password;
+            } else if (user && user.email) {
+                var users = JSON.parse(localStorage.getItem('users') || '[]');
+                var foundUser = users.find(function(u) { return u.email === user.email; });
+                if (foundUser && foundUser.password) {
+                    savedPassword = foundUser.password;
+                }
+            }
+            
+            if (savedPassword && passwordInput.value !== savedPassword) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+            
+            if (confirm('정말로 탈퇴하시겠습니까?\n모든 데이터가 삭제되며 복구할 수 없습니다.')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('currentPlan');
+                localStorage.removeItem('subscription');
+                localStorage.removeItem('paymentHistory');
+                alert('회원 탈퇴가 완료되었습니다.');
+                window.location.href = '../index.html';
+            }
+        }
+
+        // 결제 정보 로드
+        function loadPaymentInfo() {
+            // 크레딧 잔액 로드
+            const creditBalance = parseInt(localStorage.getItem('creditBalance') || '0');
+            const totalCharged = parseInt(localStorage.getItem('totalCharged') || '0');
+            const creditHistory = JSON.parse(localStorage.getItem('creditHistory') || '[]');
+            
+            // 크레딧 정보 표시
+            document.getElementById('mypage-credit-balance').textContent = creditBalance.toLocaleString();
+            document.getElementById('mypage-total-charged').textContent = totalCharged.toLocaleString() + ' 크레딧';
+            
+            // 이번 달 사용 크레딧 계산
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            let monthlyUsage = 0;
+            
+            creditHistory.forEach(item => {
+                if (item.type === 'use' || item.type === '사용') {
+                    const itemDate = new Date(item.date);
+                    if (itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear) {
+                        monthlyUsage += item.amount;
+                    }
+                }
+            });
+            document.getElementById('mypage-monthly-usage').textContent = monthlyUsage.toLocaleString() + ' 크레딧';
+            
+            // 크레딧 충전 내역 표시 (pricing.html에서 저장한 paymentHistory 사용)
+            const paymentHistory = JSON.parse(localStorage.getItem('paymentHistory') || '[]');
+            const creditPayments = paymentHistory.filter(payment => payment.type === 'credit');
+            
+            const chargeList = document.getElementById('credit-charge-history-list');
+            const noChargeMsg = document.getElementById('no-charge-history');
+            
+            if (creditPayments.length > 0) {
+                // paymentHistory의 credit 항목 사용 (pricing.html에서 저장한 형식)
+                chargeList.innerHTML = creditPayments.reverse().map(payment => {
+                    const date = new Date(payment.paymentDate);
+                    const dateStr = date.getFullYear() + '.' + 
+                        String(date.getMonth() + 1).padStart(2, '0') + '.' + 
+                        String(date.getDate()).padStart(2, '0');
+                    
+                    // 패키지 정보에서 기본 크레딧과 보너스 계산
+                    const packageNames = {
+                        '스타터': 500,
+                        '베이직': 1000,
+                        '스탠다드': 5000,
+                        '프로페셔널': 10000,
+                        '엔터프라이즈': 25000,
+                        '비즈니스 플러스': 30000
+                    };
+                    const baseCredit = packageNames[payment.packageName] || payment.credit;
+                    const bonus = payment.credit - baseCredit;
+                    
+                    return `
+                        <tr style="border-bottom: 1px solid #E5E7EB;">
+                            <td style="padding: 16px; text-align: left;">${dateStr}</td>
+                            <td style="padding: 16px; text-align: center;">${payment.packageName || '-'}</td>
+                            <td style="padding: 16px; text-align: center;">${payment.credit.toLocaleString()} 크레딧</td>
+                            <td style="padding: 16px; text-align: center;">${bonus > 0 ? bonus.toLocaleString() + ' 크레딧' : '-'}</td>
+                            <td style="padding: 16px; text-align: center;">${payment.price.toLocaleString()}원</td>
+                            <td style="padding: 16px; text-align: center;">${payment.paymentMethod || '신용카드'}</td>
+                            <td style="padding: 16px; text-align: center;">완료</td>
+                        </tr>
+                    `;
+                }).join('');
+                noChargeMsg.style.display = 'none';
+            } else {
+                chargeList.innerHTML = '';
+                noChargeMsg.style.display = 'block';
+            }
+            
+            // 크레딧 사용 내역 표시 (사용, 환불 모두 포함)
+            const usageHistory = creditHistory.filter(item => 
+                item.type === '사용' || item.type === 'use' || item.type === '환불'
+            ).sort((a, b) => {
+                // 날짜 기준 내림차순 정렬 (최신순)
+                return new Date(b.date) - new Date(a.date);
+            });
+            
+            const usageList = document.getElementById('credit-usage-history-list');
+            const noUsageMsg = document.getElementById('no-usage-history');
+            
+            if (usageHistory.length > 0) {
+                usageList.innerHTML = usageHistory.map(item => {
+                    const date = new Date(item.date);
+                    const dateStr = date.getFullYear() + '.' + 
+                        String(date.getMonth() + 1).padStart(2, '0') + '.' + 
+                        String(date.getDate()).padStart(2, '0');
+                    const timeStr = String(date.getHours()).padStart(2, '0') + ':' + 
+                        String(date.getMinutes()).padStart(2, '0');
+                    
+                    // 타입에 따라 색상과 기호 결정
+                    const isRefund = item.type === '환불';
+                    const amountColor = isRefund ? '#10B981' : '#EF4444';
+                    const amountSign = isRefund ? '+' : '-';
+                    const typeBadge = isRefund 
+                        ? '<span style="background: #D1FAE5; color: #065F46; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">환불</span>'
+                        : '<span style="background: #FEE2E2; color: #991B1B; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">사용</span>';
+                    
+                    // 설명 텍스트 처리
+                    let description = item.description || '영상 자막 생성';
+                    if (item.jobId) {
+                        // 작업 ID가 있으면 더 자세한 정보 표시
+                        description = description;
+                    }
+                    
+                    return `
+                        <tr style="border-bottom: 1px solid #E5E7EB;">
+                            <td style="padding: 16px; text-align: left;">
+                                <div style="font-size: 14px; color: #1a1a2e; font-weight: 500;">${dateStr}</div>
+                                <div style="font-size: 12px; color: #666; margin-top: 2px;">${timeStr}</div>
+                            </td>
+                            <td style="padding: 16px; text-align: center;">
+                                <div style="margin-bottom: 4px;">${typeBadge}</div>
+                                <div style="font-size: 13px; color: #1a1a2e;">${description}</div>
+                            </td>
+                            <td style="padding: 16px; text-align: center; color: ${amountColor}; font-weight: 600;">
+                                ${amountSign}${item.amount.toLocaleString()} 크레딧
+                            </td>
+                            <td style="padding: 16px; text-align: center; color: #1a1a2e; font-weight: 500;">
+                                ${(item.balance || 0).toLocaleString()} 크레딧
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+                noUsageMsg.style.display = 'none';
+            } else {
+                usageList.innerHTML = '';
+                noUsageMsg.style.display = 'block';
+            }
+        }
+
+        // 구독 해지
+        function cancelSubscription() {
+            if (confirm('정말로 자동결제를 해지하시겠습니까?')) {
+                alert('자동결제가 해지되었습니다. 현재 이용기간까지는 서비스를 이용하실 수 있습니다.');
+            }
+        }
+
+        // 페이지 로드 시 결제 정보 로드
+        loadPaymentInfo();
+
+        // 서비스 탭 활성화
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.service-tab');
+            const currentPath = window.location.pathname;
+            const currentPage = currentPath.split('/').pop() || 'index.html';
+            
+            tabs.forEach(tab => {
+                const href = tab.getAttribute('href');
+                if (href) {
+                    const tabPath = href.split('/').pop() || 'index.html';
+                    
+                    if (tabPath === 'mypage.html' && currentPage === 'mypage.html') {
+                        tab.classList.add('active');
+                    } else if (tabPath === 'index.html' && currentPage === 'index.html') {
+                        tab.classList.add('active');
+                    } else if (tabPath === 'used.html' && currentPage === 'used.html') {
+                        tab.classList.add('active');
+                    } else if (tabPath === 'pricing.html' && currentPage === 'pricing.html') {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                }
+            });
+        });
+    </script>
+    <script src="../js/i18n.js" defer></script>
+    <script src="../js/nav-bar.js" defer></script>
+    <script src="../js/auth-state.js" defer></script>
+    <script src="../script.js" defer></script>
+</body>
+</html>
+

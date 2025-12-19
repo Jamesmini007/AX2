@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AX2 | 크레딧 충전 및 요금제</title>
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .pricing-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .pricing-subtitle {
+            font-size: 18px;
+            color: var(--text-light);
+        }
+
+        /* 크레딧 잔액 표시 */
+        .credit-balance-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            border: 1px solid #D1D5DB;
+            text-align: center;
+        }
+
+        .credit-balance-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .credit-balance-amount {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .credit-balance-unit {
+            font-size: 24px;
+            color: #8B5CF6;
+            font-weight: 600;
+        }
+
+        .credit-usage-info {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .credit-usage-item {
+            text-align: center;
+        }
+
+        .credit-usage-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .credit-usage-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        /* 크레딧 패키지 그리드 */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            border: 1px solid #D1D5DB;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            border-color: #8B5CF6;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .pricing-card.popular {
+            border: 2px solid #8B5CF6;
+        }
+
+        .pricing-card.popular::before {
+            content: '인기';
+            position: absolute;
+            top: -12px;
+            right: 24px;
+            background: #8B5CF6;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .pricing-card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+            color: #1a1a2e;
+        }
+
+        .pricing-card-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            text-align: center;
+            min-height: 40px;
+        }
+
+        .pricing-card-credit {
+            font-size: 36px;
+            font-weight: 700;
+            color: #8B5CF6;
+            margin-bottom: 8px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .pricing-card-credit .credit-unit {
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .pricing-card-price {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .pricing-card-price .price-unit {
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .pricing-card-bonus {
+            font-size: 13px;
+            color: #8B5CF6;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .pricing-card-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: auto;
+            background: #8B5CF6;
+            color: white;
+        }
+
+        .pricing-card-button:hover {
+            background: #7C3AED;
+        }
+
+
+
+        /* 크레딧 사용 안내 */
+        .credit-info-box {
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 40px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .credit-info-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .credit-info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .credit-info-list li {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .credit-info-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #8B5CF6;
+            font-weight: bold;
+        }
+
+        /* FAQ/문의/저작권 카드 섹션 */
+        .info-cards-section {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .info-card {
+            flex: 1;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+
+        .info-card:hover {
+            border-color: #8B5CF6;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+        }
+
+        .info-card-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .info-card-text {
+            flex: 1;
+        }
+
+        .info-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .info-card-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .info-card-icon {
+            font-size: 24px;
+            color: #666;
+            margin-left: 16px;
+        }
+
+        /* 결제 모달 스타일 */
+        .payment-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .payment-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .payment-modal {
+            background: white;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 12px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .payment-modal-overlay.active .payment-modal {
+            transform: translateY(0);
+        }
+
+        .payment-modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+        }
+
+        .payment-modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .payment-modal-close {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+
+        .payment-modal-close:hover {
+            background: #f5f5f5;
+        }
+
+        .payment-modal-body {
+            padding: 24px;
+        }
+
+        .payment-section {
+            margin-bottom: 28px;
+        }
+
+        .payment-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+
+        .selected-plan-box {
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            background: #F9FAFB;
+        }
+
+        .selected-plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .selected-plan-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #8B5CF6;
+        }
+
+        .selected-plan-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .selected-plan-price .unit {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .plan-notice {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .payment-method-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            color: #1a1a2e;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .payment-method-btn:hover {
+            border-color: #8B5CF6;
+        }
+
+        .payment-method-btn.active {
+            background: #1a1a2e;
+            border-color: #1a1a2e;
+            color: white;
+        }
+
+        .npay-icon {
+            background: #03C75A;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .kakaopay-icon {
+            background: #FFE500;
+            color: #3C1E1E;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .payment-form-group {
+            margin-bottom: 20px;
+        }
+
+        .payment-form-label {
+            display: block;
+            font-size: 14px;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .payment-form-label .required {
+            color: #EF4444;
+        }
+
+        .payment-form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1a1a2e;
+            transition: border-color 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .payment-form-input:focus {
+            outline: none;
+            border-color: #8B5CF6;
+        }
+
+        .payment-form-input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .phone-inputs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .phone-inputs .payment-form-input {
+            flex: 1;
+            text-align: center;
+        }
+
+        .terms-box {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .terms-box a {
+            color: #8B5CF6;
+            text-decoration: underline;
+        }
+
+        .terms-agreement {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .terms-agreement input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .payment-modal-footer {
+            padding: 0 24px 24px;
+        }
+
+        .payment-submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: #1a1a2e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .payment-submit-btn:hover {
+            background: #2d2d44;
+        }
+
+        .payment-submit-btn:disabled {
+            background: #E5E7EB;
+            color: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            .payment-modal {
+                margin: 10px;
+                max-height: calc(100vh - 20px);
+            }
+
+            .payment-method-btn {
+                min-width: calc(50% - 5px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .pricing-container {
+                padding: 40px 15px;
+            }
+
+            .pricing-title {
+                font-size: 24px;
+            }
+
+            .pricing-subtitle {
+                font-size: 16px;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .credit-balance-amount {
+                font-size: 36px;
+            }
+
+            .credit-usage-info {
+                gap: 20px;
+            }
+
+            .info-cards-section {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .info-card {
+                padding: 20px;
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 플레이스홀더 -->
+    <div id="nav-placeholder"></div>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-container">
+        <div class="pricing-container">
+            <div class="pricing-header">
+                <h1 class="pricing-title">크레딧 충전</h1>
+                <p class="pricing-subtitle">필요한 만큼만 충전하고 사용하세요</p>
+            </div>
+
+            <!-- 크레딧 잔액 표시 -->
+            <div class="credit-balance-section">
+                <div class="credit-balance-label">보유 크레딧</div>
+                <div class="credit-balance-amount">
+                    <span id="credit-balance">0</span>
+                    <span class="credit-balance-unit">크레딧</span>
+                </div>
+                <div class="credit-usage-info">
+                    <div class="credit-usage-item">
+                        <div class="credit-usage-label">이번 달 사용</div>
+                        <div class="credit-usage-value" id="monthly-usage">0 크레딧</div>
+                    </div>
+                    <div class="credit-usage-item">
+                        <div class="credit-usage-label">총 충전</div>
+                        <div class="credit-usage-value" id="total-charged">0 크레딧</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 크레딧 패키지 -->
+            <div class="pricing-grid" id="credit-packages">
+                <!-- 크레딧 패키지들이 여기에 동적으로 추가됩니다 -->
+            </div>
+
+            <!-- 크레딧 사용 안내 -->
+            <div class="credit-info-box">
+                <div class="credit-info-title">
+                    <i class="fas fa-info-circle" style="color: #8B5CF6;"></i>
+                    크레딧 사용 안내
+                </div>
+                <ul class="credit-info-list">
+                    <li>1 크레딧 = 6초, 10 크레딧 = 1분</li>
+                    <li>기본 자막 생성: 분당 10 크레딧</li>
+                    <li>번역 언어 1개 추가: 분당 +5 크레딧</li>
+                    <li>영상 길이는 초 단위로 올림 처리됩니다 (61초 → 2분)</li>
+                    <li>크레딧은 구매일로부터 1년간 유효합니다.</li>
+                    <li>미사용 크레딧은 자동으로 환불되지 않습니다.</li>
+                    <li>크레딧 사용 내역은 마이페이지에서 확인할 수 있습니다.</li>
+                </ul>
+            </div>
+
+            <!-- FAQ/문의/저작권 카드 섹션 -->
+            <div class="info-cards-section">
+                <a href="faq.html" class="info-card">
+                    <div class="info-card-content">
+                        <div class="info-card-text">
+                            <div class="info-card-title">FAQ</div>
+                            <div class="info-card-description">결제 관련 궁금한 사항이 있으세요?</div>
+                        </div>
+                        <div class="info-card-icon">
+                            <i class="fas fa-comment-dots"></i>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://www.4csoft.com/inquiry/index.html" class="info-card">
+                    <div class="info-card-content">
+                        <div class="info-card-text">
+                            <div class="info-card-title">1:1 문의</div>
+                            <div class="info-card-description">문의 주시면 신속히 답변드리겠습니다.</div>
+                        </div>
+                        <div class="info-card-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                    </div>
+                </a>
+                <a href="security.html" class="info-card">
+                    <div class="info-card-content">
+                        <div class="info-card-text">
+                            <div class="info-card-title">저작권 규정</div>
+                            <div class="info-card-description">반드시 알아야 할 AX2 저작권</div>
+                        </div>
+                        <div class="info-card-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- 결제 모달 -->
+    <div class="payment-modal-overlay" id="payment-modal-overlay">
+        <div class="payment-modal">
+            <div class="payment-modal-header">
+                <div class="payment-modal-title">크레딧 충전</div>
+                <button class="payment-modal-close" onclick="closePaymentModal()">&times;</button>
+            </div>
+            <div class="payment-modal-body">
+                <div class="payment-section">
+                    <div class="payment-section-title">선택한 패키지</div>
+                    <div class="selected-plan-box">
+                        <div class="selected-plan-header">
+                            <div class="selected-plan-name" id="selected-package-name">-</div>
+                            <div class="selected-plan-price">
+                                <span id="selected-package-price">-</span>
+                                <span class="unit">원</span>
+                            </div>
+                        </div>
+                        <div class="plan-notice" id="selected-package-credit">크레딧: -</div>
+                    </div>
+                </div>
+
+                <div class="payment-section">
+                    <div class="payment-section-title">결제 수단</div>
+                    <div class="payment-methods">
+                        <button class="payment-method-btn active" data-method="card">
+                            <i class="fas fa-credit-card"></i>
+                            신용카드
+                        </button>
+                        <button class="payment-method-btn" data-method="npay">
+                            <span class="npay-icon">N</span>
+                            네이버페이
+                        </button>
+                        <button class="payment-method-btn" data-method="kakaopay">
+                            <span class="kakaopay-icon">K</span>
+                            카카오페이
+                        </button>
+                    </div>
+                </div>
+
+                <div class="payment-section">
+                    <div class="payment-section-title">결제 정보</div>
+                    <div class="payment-form-group">
+                        <label class="payment-form-label">
+                            이름 <span class="required">*</span>
+                        </label>
+                        <input type="text" class="payment-form-input" id="payment-name" placeholder="이름을 입력하세요">
+                    </div>
+                    <div class="payment-form-group">
+                        <label class="payment-form-label">
+                            연락처 <span class="required">*</span>
+                        </label>
+                        <div class="phone-inputs">
+                            <input type="text" class="payment-form-input" id="phone1" placeholder="010" maxlength="3">
+                            <input type="text" class="payment-form-input" id="phone2" placeholder="1234" maxlength="4">
+                            <input type="text" class="payment-form-input" id="phone3" placeholder="5678" maxlength="4">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-section">
+                    <div class="terms-box">
+                        <strong>결제 약관 동의</strong><br>
+                        크레딧 구매 시 <a href="#">이용약관</a> 및 <a href="#">개인정보처리방침</a>에 동의한 것으로 간주됩니다.<br>
+                        구매한 크레딧은 환불이 불가능하며, 유효기간 내에 사용해주세요.
+                    </div>
+                    <div class="terms-agreement">
+                        <input type="checkbox" id="terms-agree">
+                        <label for="terms-agree">위 약관에 동의합니다</label>
+                    </div>
+                </div>
+            </div>
+            <div class="payment-modal-footer">
+                <button class="payment-submit-btn" id="payment-submit-btn" onclick="processPayment()" disabled>결제하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 크레딧 패키지 데이터
+        // 분량 계산: 기본 자막(분당 10크레딧) + 번역 1개 언어(분당 +5크레딧) = 분당 15크레딧 기준
+        const creditPackages = [
+            { id: 1, name: '스타터', credit: 500, price: 7500, bonus: 0, description: '약 33분 분량 처리 가능 (1개 언어 번역 기준)' },
+            { id: 2, name: '베이직', credit: 1000, price: 15000, bonus: 0, description: '약 66분 분량 처리 가능 (1개 언어 번역 기준)' },
+            { id: 3, name: '스탠다드', credit: 5000, price: 75000, bonus: 100, description: '가장 많이 선택 (약 340분 분량, 1개 언어 번역 기준)', popular: true },
+            { id: 4, name: '프로페셔널', credit: 10000, price: 150000, bonus: 200, description: '약 680분 분량 처리 가능 (1개 언어 번역 기준)' },
+            { id: 5, name: '엔터프라이즈', credit: 25000, price: 375000, bonus: 500, description: '약 1,700분 분량 처리 가능 (1개 언어 번역 기준)' },
+            { id: 6, name: '비즈니스 플러스', credit: 30000, price: 450000, bonus: 600, description: '약 2,040분 분량 처리 가능 (1개 언어 번역 기준)' }
+        ];
+
+        let selectedPackage = null;
+
+        // 크레딧 잔액 로드
+        function loadCreditBalance() {
+            const creditBalance = parseInt(localStorage.getItem('creditBalance') || '0');
+            const monthlyUsage = parseInt(localStorage.getItem('monthlyUsage') || '0');
+            const totalCharged = parseInt(localStorage.getItem('totalCharged') || '0');
+
+            document.getElementById('credit-balance').textContent = creditBalance.toLocaleString();
+            document.getElementById('monthly-usage').textContent = monthlyUsage.toLocaleString() + ' 크레딧';
+            document.getElementById('total-charged').textContent = totalCharged.toLocaleString() + ' 크레딧';
+        }
+
+        // 크레딧 패키지 렌더링
+        function renderCreditPackages() {
+            const container = document.getElementById('credit-packages');
+            container.innerHTML = creditPackages.map(pkg => `
+                <div class="pricing-card ${pkg.popular ? 'popular' : ''}">
+                    ${pkg.description ? `<div class="pricing-card-description">${pkg.description}</div>` : ''}
+                    <div class="pricing-card-credit">
+                        ${(pkg.credit + pkg.bonus).toLocaleString()}
+                        <span class="credit-unit">크레딧</span>
+                    </div>
+                    <div class="pricing-card-price">
+                        ${pkg.price.toLocaleString()}<span class="price-unit">원</span>
+                    </div>
+                    ${pkg.bonus > 0 ? `<div class="pricing-card-bonus">보너스 ${pkg.bonus.toLocaleString()} 크레딧</div>` : ''}
+                    <button class="pricing-card-button" onclick="selectPackage(${pkg.id})">충전하기</button>
+                </div>
+            `).join('');
+        }
+
+        // 패키지 선택
+        function selectPackage(packageId) {
+            // 로그인 상태 확인
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (!isLoggedIn) {
+                // 비로그인 상태: 로그인 유도
+                const isInHtmlFolder = window.location.pathname.includes('/html/');
+                const loginPath = isInHtmlFolder ? 'login.html' : 'html/login.html';
+                
+                if (confirm('크레딧을 충전하려면 로그인이 필요합니다.\n로그인 페이지로 이동하시겠습니까?')) {
+                    window.location.href = loginPath;
+                }
+                return;
+            }
+            
+            selectedPackage = creditPackages.find(pkg => pkg.id === packageId);
+            if (!selectedPackage) return;
+
+            document.getElementById('selected-package-name').textContent = selectedPackage.name;
+            document.getElementById('selected-package-price').textContent = selectedPackage.price.toLocaleString();
+            document.getElementById('selected-package-credit').textContent = 
+                `크레딧: ${(selectedPackage.credit + selectedPackage.bonus).toLocaleString()} 크레딧 (기본 ${selectedPackage.credit.toLocaleString()} + 보너스 ${selectedPackage.bonus.toLocaleString()})`;
+
+            document.getElementById('payment-modal-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 결제 모달 닫기
+        function closePaymentModal() {
+            document.getElementById('payment-modal-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+            selectedPackage = null;
+        }
+
+        // 결제 수단 선택
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentMethods = document.querySelectorAll('.payment-method-btn');
+            paymentMethods.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    paymentMethods.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // 약관 동의 체크박스
+            const termsCheckbox = document.getElementById('terms-agree');
+            const submitBtn = document.getElementById('payment-submit-btn');
+            
+            termsCheckbox.addEventListener('change', function() {
+                submitBtn.disabled = !this.checked;
+            });
+
+            // 모달 외부 클릭 시 닫기
+            document.getElementById('payment-modal-overlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePaymentModal();
+                }
+            });
+
+            // 크레딧 패키지 렌더링
+            renderCreditPackages();
+            loadCreditBalance();
+        });
+
+        // 결제 처리
+        function processPayment() {
+            if (!selectedPackage) return;
+
+            const name = document.getElementById('payment-name').value.trim();
+            const phone1 = document.getElementById('phone1').value.trim();
+            const phone2 = document.getElementById('phone2').value.trim();
+            const phone3 = document.getElementById('phone3').value.trim();
+
+            if (!name) {
+                alert('이름을 입력해주세요.');
+                return;
+            }
+
+            if (!phone1 || !phone2 || !phone3) {
+                alert('연락처를 입력해주세요.');
+                return;
+            }
+
+            // 크레딧 충전
+            const currentBalance = parseInt(localStorage.getItem('creditBalance') || '0');
+            const newBalance = currentBalance + selectedPackage.credit + selectedPackage.bonus;
+            localStorage.setItem('creditBalance', newBalance.toString());
+
+            // 총 충전 금액 업데이트
+            const totalCharged = parseInt(localStorage.getItem('totalCharged') || '0');
+            localStorage.setItem('totalCharged', (totalCharged + selectedPackage.credit + selectedPackage.bonus).toString());
+
+            // 사용 내역 추가
+            const creditHistory = JSON.parse(localStorage.getItem('creditHistory') || '[]');
+            creditHistory.unshift({
+                date: new Date().toISOString(),
+                type: 'charge',
+                description: `${selectedPackage.name} 패키지 충전`,
+                amount: selectedPackage.credit + selectedPackage.bonus,
+                balance: newBalance
+            });
+            localStorage.setItem('creditHistory', JSON.stringify(creditHistory));
+            
+            // 무료 크레딧 정보 업데이트
+            if (typeof updateFreeCreditInfo === 'function') {
+                updateFreeCreditInfo();
+            }
+
+            // 결제 내역 저장
+            const paymentHistory = JSON.parse(localStorage.getItem('paymentHistory') || '[]');
+            paymentHistory.unshift({
+                type: 'credit',
+                packageName: selectedPackage.name,
+                credit: selectedPackage.credit + selectedPackage.bonus,
+                price: selectedPackage.price,
+                paymentDate: new Date().toISOString(),
+                paymentMethod: document.querySelector('.payment-method-btn.active')?.textContent.trim() || '신용카드',
+                name: name,
+                phone: `${phone1}-${phone2}-${phone3}`
+            });
+            localStorage.setItem('paymentHistory', JSON.stringify(paymentHistory));
+
+            alert('크레딧 충전이 완료되었습니다!');
+            closePaymentModal();
+            loadCreditBalance();
+        }
+    </script>
+    <script src="../js/i18n.js" defer></script>
+    <script src="../js/nav-bar.js" defer></script>
+    <script src="../js/auth-state.js" defer></script>
+    <script src="../script.js" defer></script>
+</body>
+</html>

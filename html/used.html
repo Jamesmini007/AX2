@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AX2 | 사용방법 가이드</title>
+    <link rel="icon" type="image/png" href="../assets/image/AX.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        bg: '#FDFCF8',
+                        primary: '#4F46E5',
+                        secondary: '#F472B6',
+                        accent: '#FCD34D',
+                        dark: '#1F2937',
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -10px rgba(79, 70, 229, 0.1)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+                        'float': '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 배경 효과는 styles.css에서 제거됨 */
+        
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* 텍스트 색상 강화 - 뿌옇지 않게 (Tailwind 클래스 오버라이드) */
+        .text-gray-500 {
+            color: #374151;
+        }
+        .text-gray-600 {
+            color: #1F2937;
+        }
+        .text-gray-400 {
+            color: #6B7280;
+        }
+        .bg-gray-50 {
+            background-color: #F3F4F6;
+        }
+        .border-gray-200 {
+            border-color: #D1D5DB;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #4F46E5 0%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hover-card {
+            transition: box-shadow 0.3s ease;
+        }
+        .hover-card:hover {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+        .snap-section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .step-section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 0 80px 0;
+        }
+        /* 단계 제목 애니메이션 */
+        .step-title-container {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .step-section.active .step-title-container {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .step-section.fade-out .step-title-container {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        /* 스크롤 스무스하게 */
+        html {
+            scroll-padding-top: 0;
+            scroll-snap-type: y mandatory;
+        }
+        body {
+            padding-top: 70px;
+            margin: 0;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* 스크롤 진행도 인디케이터 */
+        .scroll-progress-indicator {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            padding: 20px 12px;
+            background: transparent;
+            border-radius: 30px;
+            box-shadow: none;
+            border: none;
+        }
+        .progress-step {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #6B7280;
+            border: 3px solid #6B7280;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .progress-step:hover {
+            transform: scale(1.3);
+            background: #4B5563;
+            border-color: #4B5563;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .progress-step.active {
+            background: #4F46E5 !important;
+            border-color: #4F46E5 !important;
+            transform: scale(1.5);
+            box-shadow: 0 0 0 6px rgba(79, 70, 229, 0.3), 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+        .progress-step.completed {
+            background: #4F46E5 !important;
+            border-color: #4F46E5 !important;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+        }
+        /* 스크롤 진행도에 따른 색상 변화 */
+        .progress-step[data-progress] {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .progress-line {
+            width: 3px;
+            height: 40px;
+            background: #D1D5DB;
+            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-line.active {
+            /* ::before 요소가 채우므로 배경은 회색 유지 */
+            background: #D1D5DB;
+        }
+        /* 스크롤 진행도에 따른 연결선 색상 변화 */
+        .progress-line[data-progress] {
+            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .progress-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--progress-height, 0%);
+            background: linear-gradient(to bottom, #4F46E5, #EC4899);
+            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px;
+            z-index: 1;
+        }
+        /* 진행도에 따라 연결선 배경색도 점진적으로 변화 */
+        .progress-line[data-progress="0"] {
+            background: #D1D5DB;
+        }
+        .progress-step::after {
+            content: attr(data-step);
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            background: #1F2937;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+        }
+        .progress-step.active::after {
+            opacity: 1;
+        }
+        @media (max-width: 768px) {
+            .scroll-progress-indicator {
+                right: 15px;
+            }
+            .progress-step::after {
+                display: none;
+            }
+        }
+        /* 스크롤 안내 애니메이션 */
+        .animate-bounce-slow {
+            animation: bounce-slow 2s ease-in-out infinite;
+        }
+        @keyframes bounce-slow {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(10px);
+            }
+        }
+        .scroll-indicator {
+            animation: scroll-down 1.5s ease-in-out infinite;
+        }
+        @keyframes scroll-down {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(8px);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 플레이스홀더 -->
+    <div id="nav-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section class="snap-section relative pb-20 px-4 overflow-hidden justify-center bg-white" id="hero-section">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl -z-10">
+        </div>
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-100 shadow-sm mb-8">
+                <span class="text-xs font-bold uppercase tracking-wider text-primary">사용 가이드</span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1] text-dark">
+                <span class="text-gradient">간편하고, 빠르게</span><br/>
+                번역 자막 만들기
+            </h1>
+            <p class="text-xl text-gray-700 mb-10 max-w-2xl mx-auto font-medium leading-relaxed">
+                복잡한 설정 없이 영상만 업로드하면 자동으로 번역 자막이 생성됩니다.
+            </p>
+            
+            <!-- CTA 버튼 -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+                <a href="../index.html" class="bg-gradient-to-r from-primary to-secondary text-white px-10 py-4 rounded-full text-lg font-bold hover:shadow-xl hover:-translate-y-1 transition-all shadow-lg">
+                    무료로 시작하기
+                </a>
+            </div>
+            
+            <!-- 주요 기능 강조 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-12">
+                <div class="text-center">
+                    <div class="text-4xl font-extrabold text-gradient mb-2">30+</div>
+                    <div class="text-gray-600 font-medium">지원 언어</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-extrabold text-gradient mb-2">98.7%</div>
+                    <div class="text-gray-600 font-medium">번역 정확도</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-extrabold text-gradient mb-2">1분</div>
+                    <div class="text-gray-600 font-medium">평균 처리 시간</div>
+                </div>
+            </div>
+            
+            <!-- 스크롤 안내 -->
+            <div class="mt-16 flex flex-col items-center gap-3 animate-bounce-slow">
+                <p class="text-gray-500 font-medium text-sm">스크롤하여 사용방법을 확인하세요</p>
+                <div class="scroll-indicator">
+                    <i class="fas fa-chevron-down text-primary text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 스크롤 진행도 인디케이터 -->
+    <div class="scroll-progress-indicator">
+        <div class="progress-step" data-step="시작" data-step-id="hero-section"></div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="1. 영상 업로드" data-step-id="step-1"></div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="2. 번역 설정" data-step-id="step-2"></div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="3. 편집 화면" data-step-id="step-3"></div>
+    </div>
+
+    <!-- How to Use Steps -->
+    <!-- Step 1 -->
+    <section class="step-section" id="step-1">
+            <div class="w-full max-w-7xl mx-auto px-4">
+                <div class="flex items-center gap-4 mb-8 step-title-container">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white font-extrabold text-2xl shadow-xl flex-shrink-0">
+                        1
+                    </div>
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-dark mb-2">영상 업로드</h2>
+                        <p class="text-gray-700 text-lg font-medium">번역하고 싶은 강의 영상을 업로드하세요</p>
+                    </div>
+                </div>
+                <div class="bg-white border-2 border-gray-200 rounded-[2.5rem] p-12 md:p-16 hover-card shadow-soft">
+                <div class="grid md:grid-cols-2 gap-10 md:gap-12 items-center">
+                    <div>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border-2 border-gray-200">
+                                <img src="../assets/image/cloud.png" alt="업로드" class="w-12 h-12">
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-dark mb-1">영상 업로드</h3>
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 rounded-xl p-5 mb-6 border border-blue-100">
+                            <p class="text-gray-800 leading-relaxed text-base mb-4 font-medium">
+                                <strong class="text-primary">영상 파일을 드래그하거나 클릭</strong>하여 업로드하세요. 
+                                복잡한 설정 없이 <strong>몇 초 만에</strong> 번역을 시작할 수 있습니다.
+                            </p>
+                            <div class="flex items-center gap-2 text-sm text-gray-600">
+                                <i class="fas fa-info-circle text-blue-500"></i>
+                                <span>MP4, MOV, AVI 형식 지원 (최대 2GB)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200 hover:border-primary transition-colors">
+                                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <i class="fas fa-check text-green-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900 mb-1">드래그 앤 드롭</div>
+                                    <div class="text-sm text-gray-600">파일을 끌어다 놓기만 하면 자동 업로드</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200 hover:border-primary transition-colors">
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <i class="fas fa-bolt text-blue-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900 mb-1">빠른 처리</div>
+                                    <div class="text-sm text-gray-600">업로드와 동시에 자동 분석 시작</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-2xl overflow-hidden border-2 border-gray-200">
+                        <img src="../assets/first.gif" alt="영상 업로드 가이드" class="w-full h-auto" style="object-fit: contain;">
+                    </div>
+                </div>
+            </div>
+            </div>
+    </section>
+
+    <!-- 연결선 -->
+    <div class="flex justify-center mb-16 md:mb-24" style="scroll-snap-align: none;">
+        <div class="w-1 h-16 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
+    </div>
+
+    <!-- Step 2 -->
+    <section class="step-section" id="step-2">
+            <div class="w-full max-w-7xl mx-auto px-4">
+                <div class="flex items-center gap-4 mb-8 step-title-container">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white font-extrabold text-2xl shadow-xl flex-shrink-0">
+                        2
+                    </div>
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-dark mb-2">번역 설정</h2>
+                        <p class="text-gray-700 text-lg font-medium">원본 언어와 번역할 언어를 선택하세요</p>
+                    </div>
+                </div>
+                <div class="bg-white border-2 border-gray-200 rounded-[2.5rem] p-10 md:p-12 hover-card shadow-soft">
+                <div class="grid md:grid-cols-2 gap-10 md:gap-12 items-center">
+                    <div>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border-2 border-purple-200">
+                                <img src="../assets/image/translate.png" alt="번역 설정" class="w-12 h-12 object-contain">
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-dark mb-1">번역 설정</h3>
+                                <p class="text-gray-500 text-sm">원하는 언어를 선택하세요</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-purple-50 rounded-xl p-5 mb-6 border border-purple-100">
+                            <p class="text-gray-800 leading-relaxed text-base mb-4 font-medium">
+                                <strong class="text-purple-600">원본 언어는 자동으로 감지</strong>되며, 
+                                <strong class="text-purple-600">번역할 언어를 여러 개 선택</strong>할 수 있습니다. 
+                                한 번에 여러 언어로 번역하여 <strong>글로벌 콘텐츠</strong>를 쉽게 제작하세요.
+                            </p>
+                            <div class="flex items-center gap-2 text-sm text-gray-600">
+                                <i class="fas fa-info-circle text-purple-500"></i>
+                                <span>50개 이상의 언어 지원 · 실시간 번역 가능</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-5 border-2 border-gray-200 shadow-sm">
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fas fa-magic text-purple-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900 mb-1">자동 언어 감지</div>
+                                        <div class="text-sm text-gray-600">영상의 언어를 자동으로 인식하여 설정</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fas fa-globe-americas text-blue-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900 mb-1">다중 언어 동시 번역</div>
+                                        <div class="text-sm text-gray-600">여러 언어를 한 번에 선택하여 동시 번역</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fas fa-language text-green-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900 mb-1">50개 이상 언어 지원</div>
+                                        <div class="text-sm text-gray-600">전 세계 주요 언어를 모두 지원</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-2xl overflow-hidden border-2 border-gray-200" style="max-width: 500px; margin: 0 auto;">
+                        <img src="../assets/trans_setting.gif" alt="번역 설정 가이드" class="w-full h-auto" style="object-fit: contain; max-height: 500px;">
+                    </div>
+                </div>
+            </div>
+            </div>
+    </section>
+
+    <!-- 연결선 -->
+    <div class="flex justify-center mb-16 md:mb-24" style="scroll-snap-align: none;">
+        <div class="w-1 h-16 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
+    </div>
+
+    <!-- Step 3 -->
+    <section class="step-section" id="step-3">
+            <div class="w-full max-w-7xl mx-auto px-4">
+                <div class="flex items-center gap-4 mb-8 step-title-container">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white font-extrabold text-2xl shadow-xl flex-shrink-0">
+                        3
+                    </div>
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-dark mb-2">편집 화면</h2>
+                        <p class="text-gray-700 text-lg font-medium">번역된 자막을 수정하고 편집하세요</p>
+                    </div>
+                </div>
+                <div class="bg-white border-2 border-gray-200 rounded-[2.5rem] p-10 md:p-12 hover-card shadow-soft">
+                <div class="grid md:grid-cols-2 gap-10 md:gap-12 items-center">
+                    <div>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border-2 border-orange-200">
+                                <img src="../assets/image/edit.png" alt="편집 화면" class="w-12 h-12 object-contain">
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-dark mb-1">편집 화면</h3>
+                                <p class="text-gray-500 text-sm">자막을 자유롭게 수정하세요</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-orange-50 rounded-xl p-5 mb-6 border border-orange-100">
+                            <p class="text-gray-800 leading-relaxed text-base mb-4 font-medium">
+                                번역이 완료되면 <strong class="text-orange-600">편집 화면에서 자막을 확인하고 수정</strong>할 수 있습니다.<br>
+                                번역된 자막 텍스트를 <strong class="text-orange-600">실시간으로 편집</strong>하여
+                                완성도 높은 자막을 만들어보세요.
+                            </p>
+                            
+                            <div class="flex items-center gap-2 text-sm text-gray-600">
+                                <i class="fas fa-info-circle text-orange-500"></i>
+                                <span>언어별 번역된 자막 확인 가능 · 실시간 영상 미리보기 지원</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-5 border-2 border-gray-200 shadow-sm">
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fas fa-edit text-blue-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900 mb-1">자막 텍스트 수정</div>
+                                        <div class="text-sm text-gray-600">번역된 텍스트를 직접 수정하여 정확도 향상</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fas fa-heading text-purple-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900 mb-1">제목 수정</div>
+                                        <div class="text-sm text-gray-600">자막 제목을 원하는 대로 수정 가능</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fas fa-check-circle text-green-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900 mb-1">번역된 결과 확인</div>
+                                        <div class="text-sm text-gray-600">번역된 자막을 미리보기로 확인하고 검토</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-100 rounded-2xl p-8 border-2 border-gray-200">
+                        <div class="space-y-4">
+                            <div class="bg-white rounded-xl p-6 border-2 border-gray-200">
+                                <div class="text-xs text-gray-600 mb-2 font-medium">00:00:15 - 00:00:18</div>
+                                <p class="text-sm font-semibold text-gray-900 mb-3">안녕하세요, 오늘은 AI에 대해 배워보겠습니다.</p>
+                                <div class="pt-3 border-t border-gray-200">
+                                    <p class="text-sm text-primary font-semibold">Hello, today we will learn about AI.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-xl p-6 border-2 border-gray-200">
+                                <div class="text-xs text-gray-600 mb-2 font-medium">00:00:18 - 00:00:22</div>
+                                <p class="text-sm font-semibold text-gray-900 mb-3">AI는 우리 생활의 많은 부분을 변화시키고 있습니다.</p>
+                                <div class="pt-3 border-t border-gray-200">
+                                    <p class="text-sm text-primary font-semibold">AI is changing many aspects of our lives.</p>
+                                </div>
+                            </div>
+                            <button class="w-full px-6 py-3 bg-white text-gray-800 rounded-xl text-sm font-bold hover:bg-gray-100 transition-colors border-2 border-gray-200">
+                                <i data-lucide="edit" class="w-4 h-4 inline mr-2"></i>
+                                자막 수정하기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+    </section>
+
+    <!-- Interview/FAQ Section -->
+    <section class="snap-section py-24 px-4 bg-white justify-center">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold text-dark mb-4">자주 묻는 질문</h2>
+                <p class="text-xl text-gray-500">실제 사용자들이 궁금해하는 내용들</p>
+            </div>
+            
+            <!-- FAQ 1 -->
+            <div class="bg-white border border-gray-100 rounded-[2.5rem] p-10 mb-6 hover-card shadow-soft">
+                <div class="flex items-start gap-6">
+                    <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0 border border-blue-200">
+                        <i data-lucide="help-circle" class="w-7 h-7 text-primary"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-dark mb-4">영상은 어떻게 업로드하나요?</h3>
+                        <p class="text-gray-600 leading-relaxed text-lg">
+                            대시보드에서 "새 프로젝트" 버튼을 클릭하고, 드래그 앤 드롭으로 영상을 업로드하거나 파일 선택을 통해 업로드할 수 있습니다. 최대 2GB까지 지원하며, MP4, MOV, AVI 등 주요 영상 형식을 모두 지원합니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ 2 -->
+            <div class="bg-white border border-gray-100 rounded-[2.5rem] p-10 mb-6 hover-card shadow-soft">
+                <div class="flex items-start gap-6">
+                    <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center flex-shrink-0 border border-purple-200">
+                        <i data-lucide="help-circle" class="w-7 h-7 text-purple-600"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-dark mb-4">번역에 얼마나 걸리나요?</h3>
+                        <p class="text-gray-600 leading-relaxed text-lg">
+                            영상 길이에 따라 다르지만, 1시간 분량의 영상은 약 5-10분 내에 번역이 완료됩니다. 실시간 번역 기능을 사용하면 더욱 빠르게 처리할 수 있으며, 처리 상태는 대시보드에서 실시간으로 확인할 수 있습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ 3 -->
+            <div class="bg-white border border-gray-100 rounded-[2.5rem] p-10 mb-6 hover-card shadow-soft">
+                <div class="flex items-start gap-6">
+                    <div class="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center flex-shrink-0 border border-pink-200">
+                        <i data-lucide="help-circle" class="w-7 h-7 text-pink-600"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-dark mb-4">어떤 자막 형식을 지원하나요?</h3>
+                        <p class="text-gray-600 leading-relaxed text-lg">
+                            SRT, VTT, ASS 등 주요 자막 형식을 모두 지원합니다. YouTube, Vimeo 등 주요 플랫폼에 바로 업로드할 수 있는 형식으로 제공되며, 필요에 따라 자막 스타일을 커스터마이징할 수도 있습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ 4 -->
+            <div class="bg-white border border-gray-100 rounded-[2.5rem] p-10 mb-6 hover-card shadow-soft">
+                <div class="flex items-start gap-6">
+                    <div class="w-14 h-14 bg-yellow-50 rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="help-circle" class="w-7 h-7 text-yellow-500"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-dark mb-4">여러 언어로 동시에 번역할 수 있나요?</h3>
+                        <p class="text-gray-600 leading-relaxed text-lg">
+                            네, 가능합니다! 하나의 영상을 여러 언어로 동시에 번역할 수 있어 글로벌 강의를 운영하는 데 매우 유용합니다. 예를 들어 한국어 원본을 영어, 일본어, 중국어로 동시에 번역하여 각 언어권 학생들에게 제공할 수 있습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ 5 -->
+            <div class="bg-white border border-gray-100 rounded-[2.5rem] p-10 hover-card shadow-soft">
+                <div class="flex items-start gap-6">
+                    <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center flex-shrink-0 border border-green-200">
+                        <i data-lucide="help-circle" class="w-7 h-7 text-green-600"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-dark mb-4">번역 정확도는 어느 정도인가요?</h3>
+                        <p class="text-gray-600 leading-relaxed text-lg">
+                            AX2는 최신 AI 기술을 활용하여 평균 99% 이상의 번역 정확도를 제공합니다. 특히 교육 분야 전문 용어와 문맥을 이해하여 자연스러운 번역을 생성하며, 필요시 전문가가 검토하고 수정할 수 있는 기능도 제공합니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visual Guide Section -->
+    <section class="snap-section py-24 px-4 max-w-6xl mx-auto justify-center">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-extrabold text-dark mb-4">대시보드 미리보기</h2>
+            <p class="text-xl text-gray-500">직관적인 인터페이스로 쉽게 사용할 수 있습니다</p>
+        </div>
+        
+        <div class="bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-float overflow-hidden">
+            <div class="bg-gray-100 rounded-2xl p-6 border-2 border-gray-200">
+                <!-- Mock Dashboard UI -->
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+                            <i data-lucide="video" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-dark">강의 영상 업로드</div>
+                            <div class="text-sm text-gray-500">Introduction to AI - 45분</div>
+                        </div>
+                    </div>
+                    <div class="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-bold">
+                        번역 완료
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white rounded-xl p-6 border border-gray-200">
+                        <div class="text-sm font-bold text-gray-500 mb-3">원본 (한국어)</div>
+                        <div class="space-y-2">
+                            <div class="h-3 bg-gray-200 rounded w-full"></div>
+                            <div class="h-3 bg-gray-200 rounded w-4/5"></div>
+                            <div class="h-3 bg-gray-200 rounded w-3/4"></div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-100 rounded-xl p-6 border-2 border-blue-200">
+                        <div class="text-sm font-bold text-primary mb-3">번역 (English)</div>
+                        <div class="space-y-2">
+                            <div class="h-3 bg-blue-200 rounded w-full"></div>
+                            <div class="h-3 bg-blue-200 rounded w-4/5"></div>
+                            <div class="h-3 bg-blue-200 rounded w-3/4"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <div class="flex gap-2">
+                        <button class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-200 transition-colors">
+                            <i data-lucide="download" class="w-4 h-4 inline mr-2"></i> SRT 다운로드
+                        </button>
+                        <button class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-200 transition-colors">
+                            <i data-lucide="share-2" class="w-4 h-4 inline mr-2"></i> 공유
+                        </button>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        <i data-lucide="clock" class="w-4 h-4 inline mr-1"></i> 처리 시간: 6분 23초
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="snap-section py-24 px-4 justify-center">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="bg-white border-2 border-gray-200 rounded-[2.5rem] p-12 shadow-float text-dark">
+                <h2 class="text-4xl font-extrabold mb-6">지금 바로 시작해보세요</h2>
+                <p class="text-xl text-gray-700 mb-8 font-medium">무료 체험으로 AX2의 강력한 번역 기능을 경험해보세요</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button class="bg-white text-primary px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition-all shadow-xl hover:-translate-y-1">
+                        무료로 시작하기
+                    </button>
+                    <button class="bg-gray-100 text-gray-800 px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-200 transition-all border-2 border-gray-200">
+                        데모 보기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 text-center border-t border-gray-200">
+        <div class="flex items-center justify-center gap-2 mb-8 text-dark font-extrabold text-xl">
+             <i data-lucide="layers" class="w-6 h-6 fill-current text-primary"></i> AX2
+        </div>
+        <div class="flex justify-center gap-8 mb-8 text-gray-500 font-medium">
+            <a href="../index.html" class="hover:text-primary transition-colors">홈</a>
+            <a href="features.html" class="hover:text-primary transition-colors">기능</a>
+            <a href="pricing.html" class="hover:text-primary transition-colors">요금제</a>
+        </div>
+        <p class="text-gray-400 text-sm">© 2025 AX2 Inc. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/i18n.js" defer></script>
+    <script src="../js/nav-bar.js" defer></script>
+    <script src="../js/auth-state.js?v=20231211" defer></script>
+    <script src="../script.js?v=20231211" defer></script>
+    <script src="../js/language-selector.js?v=20231211" defer></script>
+    <script>
+        // 더보기 메뉴와 언어 설정은 more-menu.js에서 처리됨
+        document.addEventListener('DOMContentLoaded', function() {
+            // 현재 페이지에 따라 활성 탭 설정
+            const tabs = document.querySelectorAll('.service-tab');
+            const currentPath = window.location.pathname;
+            const currentPage = currentPath.split('/').pop() || 'used.html';
+            
+            tabs.forEach(tab => {
+                const href = tab.getAttribute('href');
+                if (href) {
+                    const tabPath = href.split('/').pop() || 'index.html';
+                    
+                    if (tabPath === 'used.html' && currentPage === 'used.html') {
+                        tab.classList.add('active');
+                    } else if (tabPath === 'index.html' && currentPage === 'index.html') {
+                        tab.classList.add('active');
+                    } else if (tabPath === 'pricing.html' && currentPage === 'pricing.html') {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                }
+            });
+
+            // 스크롤 진행도 인디케이터 업데이트
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const progressLines = document.querySelectorAll('.progress-line');
+            const stepSections = document.querySelectorAll('.step-section');
+            const heroSection = document.getElementById('hero-section');
+            
+            function updateProgressIndicator() {
+                const scrollPosition = window.scrollY + window.innerHeight / 2;
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollProgress = Math.min(Math.max(window.scrollY / totalHeight, 0), 1);
+                let activeStepIndex = -1;
+                
+                // Hero Section 체크
+                if (heroSection) {
+                    const heroRect = heroSection.getBoundingClientRect();
+                    const heroTop = heroRect.top + window.scrollY;
+                    const heroBottom = heroTop + heroRect.height;
+                    
+                    if (scrollPosition >= heroTop && scrollPosition < heroBottom) {
+                        activeStepIndex = -1; // Hero Section이 활성
+                    }
+                }
+                
+                stepSections.forEach((section, index) => {
+                    const rect = section.getBoundingClientRect();
+                    const sectionTop = rect.top + window.scrollY;
+                    const sectionBottom = sectionTop + rect.height;
+                    const sectionHeight = rect.height;
+                    
+                    // 모든 섹션에서 active와 fade-out 클래스 제거
+                    section.classList.remove('active', 'fade-out');
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                        activeStepIndex = index;
+                        // 현재 활성 섹션에 active 클래스 추가
+                        section.classList.add('active');
+                    } else {
+                        // 비활성 섹션에 fade-out 클래스 추가
+                        section.classList.add('fade-out');
+                    }
+                });
+                
+                // 모든 단계 업데이트 (Hero Section 포함) - 스크롤 진행도에 따라 색상 변화
+                progressSteps.forEach((step, index) => {
+                    step.classList.remove('active', 'completed');
+                    
+                    // 각 섹션의 진행도 계산
+                    let stepProgress = 0;
+                    if (index === 0 && heroSection) {
+                        // Hero Section 진행도
+                        const heroRect = heroSection.getBoundingClientRect();
+                        const heroTop = heroRect.top + window.scrollY;
+                        const heroBottom = heroTop + heroRect.height;
+                        const heroHeight = heroRect.height;
+                        if (scrollPosition >= heroTop && scrollPosition <= heroBottom) {
+                            stepProgress = Math.min(Math.max((scrollPosition - heroTop) / heroHeight, 0), 1);
+                            step.classList.add('active');
+                        } else if (scrollPosition > heroBottom) {
+                            stepProgress = 1;
+                            step.classList.add('completed');
+                        }
+                    } else if (index > 0) {
+                        // Step 섹션들 (index 0은 Hero Section)
+                        const stepIndex = index - 1;
+                        if (stepSections[stepIndex]) {
+                            const sectionRect = stepSections[stepIndex].getBoundingClientRect();
+                            const sectionTop = sectionRect.top + window.scrollY;
+                            const sectionBottom = sectionTop + sectionRect.height;
+                            const sectionHeight = sectionRect.height;
+                            
+                            if (scrollPosition >= sectionTop && scrollPosition <= sectionBottom) {
+                                stepProgress = Math.min(Math.max((scrollPosition - sectionTop) / sectionHeight, 0), 1);
+                                step.classList.add('active');
+                            } else if (scrollPosition > sectionBottom) {
+                                stepProgress = 1;
+                                step.classList.add('completed');
+                            }
+                        }
+                        
+                        if (stepIndex < activeStepIndex) {
+                            step.classList.add('completed');
+                        } else if (stepIndex === activeStepIndex) {
+                            step.classList.add('active');
+                        }
+                    }
+                    
+                    // 진행도에 따라 색상 점진적 변화
+                    if (stepProgress > 0) {
+                        const grayColor = { r: 107, g: 114, b: 128 }; // #6B7280
+                        const blueColor = { r: 79, g: 70, b: 229 }; // #4F46E5
+                        
+                        const r = Math.round(grayColor.r + (blueColor.r - grayColor.r) * stepProgress);
+                        const g = Math.round(grayColor.g + (blueColor.g - grayColor.g) * stepProgress);
+                        const b = Math.round(grayColor.b + (blueColor.b - grayColor.b) * stepProgress);
+                        
+                        if (!step.classList.contains('active') && !step.classList.contains('completed')) {
+                            step.style.background = `rgb(${r}, ${g}, ${b})`;
+                            step.style.borderColor = `rgb(${r}, ${g}, ${b})`;
+                        }
+                        step.setAttribute('data-progress', stepProgress);
+                    } else {
+                        step.style.background = '';
+                        step.style.borderColor = '';
+                        step.removeAttribute('data-progress');
+                    }
+                });
+                
+                // 연결선 업데이트 - 스크롤 진행도에 따라 색상 변화
+                const isAtBottom = (window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 10;
+                
+                progressLines.forEach((line, index) => {
+                    line.classList.remove('active');
+                    
+                    let lineProgress = 0;
+                    
+                    // 페이지 끝에 도달했으면 모든 연결선을 100%로 채움
+                    if (isAtBottom) {
+                        lineProgress = 1;
+                        line.classList.add('active');
+                    } else if (activeStepIndex === -1) {
+                        // Hero Section이 활성일 때는 연결선 비활성
+                        lineProgress = 0;
+                    } else if (index < activeStepIndex) {
+                        // 완료된 연결선
+                        line.classList.add('active');
+                        lineProgress = 1;
+                    } else if (index === activeStepIndex && stepSections[activeStepIndex]) {
+                        // 현재 진행 중인 섹션의 연결선 - 섹션이 활성화되면 즉시 100% 채움
+                        lineProgress = 1;
+                        line.classList.add('active');
+                    } else if (index > activeStepIndex) {
+                        // 아직 도달하지 않은 연결선
+                        lineProgress = 0;
+                    }
+                    
+                    // 진행도에 따라 연결선 색상 점진적 변화
+                    line.style.setProperty('--progress-height', `${lineProgress * 100}%`);
+                    line.setAttribute('data-progress', lineProgress);
+                    
+                    // 배경은 항상 회색으로 유지하고, ::before 요소가 채우도록 함
+                    line.style.background = '#D1D5DB';
+                });
+            }
+            
+            // 스크롤 이벤트 리스너
+            let ticking = false;
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        updateProgressIndicator();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+            
+            // 초기 업데이트
+            updateProgressIndicator();
+            
+            // 첫 번째 섹션은 초기에 active 상태로 설정
+            if (stepSections.length > 0) {
+                stepSections[0].classList.add('active');
+            }
+            
+            // 진행도 인디케이터 클릭 시 해당 섹션으로 스크롤
+            progressSteps.forEach((step, index) => {
+                step.addEventListener('click', function() {
+                    const stepId = step.getAttribute('data-step-id');
+                    const targetSection = document.getElementById(stepId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            });
+
+            // 한 번에 한 스텝씩만 스크롤되도록 제어
+            let isScrolling = false;
+            let scrollTimeout = null;
+            let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            let currentStepIndex = 0;
+
+            function getCurrentStepIndex() {
+                const scrollPosition = window.scrollY + window.innerHeight / 2;
+                let index = -1; // -1은 Hero Section
+                
+                // Hero Section 체크
+                if (heroSection) {
+                    const heroRect = heroSection.getBoundingClientRect();
+                    const heroTop = heroRect.top + window.scrollY;
+                    const heroBottom = heroTop + heroRect.height;
+                    
+                    if (scrollPosition >= heroTop && scrollPosition < heroBottom) {
+                        return -1; // Hero Section
+                    }
+                }
+                
+                stepSections.forEach((section, i) => {
+                    const rect = section.getBoundingClientRect();
+                    const sectionTop = rect.top + window.scrollY;
+                    const sectionBottom = sectionTop + rect.height;
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                        index = i;
+                    }
+                });
+                
+                return index;
+            }
+
+            function scrollToStep(index, direction) {
+                if (isScrolling) return;
+                
+                let targetIndex;
+                if (index === -1) {
+                    // Hero Section에서 시작
+                    targetIndex = direction === 'down' ? 0 : -1;
+                } else {
+                    // Step 섹션에서 시작
+                    targetIndex = direction === 'down' 
+                        ? Math.min(index + 1, stepSections.length - 1)
+                        : Math.max(index - 1, -1);
+                }
+                
+                if (targetIndex === index) return;
+                
+                isScrolling = true;
+                
+                if (targetIndex === -1 && heroSection) {
+                    // Hero Section으로 스크롤
+                    heroSection.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                    currentStepIndex = -1;
+                } else if (targetIndex >= 0 && stepSections[targetIndex]) {
+                    // Step 섹션으로 스크롤
+                    stepSections[targetIndex].scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                    currentStepIndex = targetIndex;
+                }
+                
+                setTimeout(() => {
+                    isScrolling = false;
+                }, 800);
+            }
+
+            // 마우스 휠 이벤트 제어
+            let wheelTimeout = null;
+            window.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                
+                if (isScrolling) return;
+                
+                clearTimeout(wheelTimeout);
+                wheelTimeout = setTimeout(() => {
+                    const currentIndex = getCurrentStepIndex();
+                    const direction = e.deltaY > 0 ? 'down' : 'up';
+                    scrollToStep(currentIndex, direction);
+                }, 50);
+            }, { passive: false });
+
+            // 터치 스와이프 제어 (모바일)
+            let touchStartY = 0;
+            let touchEndY = 0;
+            
+            document.addEventListener('touchstart', function(e) {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+            
+            document.addEventListener('touchend', function(e) {
+                touchEndY = e.changedTouches[0].clientY;
+                const diff = touchStartY - touchEndY;
+                
+                if (Math.abs(diff) > 50 && !isScrolling) {
+                    const currentIndex = getCurrentStepIndex();
+                    const direction = diff > 0 ? 'down' : 'up';
+                    scrollToStep(currentIndex, direction);
+                }
+            }, { passive: true });
+
+            // 키보드 화살표 키 제어
+            document.addEventListener('keydown', function(e) {
+                if (isScrolling) return;
+                
+                if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+                    e.preventDefault();
+                    const currentIndex = getCurrentStepIndex();
+                    scrollToStep(currentIndex, 'down');
+                } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+                    e.preventDefault();
+                    const currentIndex = getCurrentStepIndex();
+                    scrollToStep(currentIndex, 'up');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
