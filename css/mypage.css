@@ -267,6 +267,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .section-title {
@@ -553,6 +555,7 @@
         .meta-item {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
             color: #6B7280;
         }

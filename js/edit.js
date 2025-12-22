@@ -148,20 +148,29 @@
             try {
                 // localStorage에서 비디오 데이터 로드
                 const savedVideos = JSON.parse(localStorage.getItem('savedVideos') || '[]');
-                currentVideo = savedVideos.find(v => v.id === videoId);
+                const foundVideo = savedVideos.find(v => v.id === videoId);
                 
-                if (!currentVideo) {
+                if (!foundVideo) {
                     logger.error('비디오를 찾을 수 없습니다:', videoId);
                     alert('강의를 찾을 수 없습니다.\n마이페이지로 이동합니다.');
                     window.location.href = 'storage.html';
                     return;
                 }
                 
-                logger.log('비디오 데이터 로드 완료:', currentVideo.title);
+                // 깊은 복사로 currentVideo 생성 (다른 작업에 영향 주지 않도록)
+                currentVideo = JSON.parse(JSON.stringify(foundVideo));
+                
+                logger.log('비디오 데이터 로드 완료 (ID:', videoId, ', 제목:', currentVideo.title, ')');
 
-                // 제목 표시
+                // 제목 표시 (해당 작업의 제목만 표시)
                 if (DOMCache.videoTitleText) {
                     DOMCache.videoTitleText.textContent = currentVideo.title || '강의 제목';
+                }
+                
+                // 헤더 제목도 업데이트
+                const editPageTitle = document.getElementById('edit-page-title');
+                if (editPageTitle) {
+                    editPageTitle.textContent = currentVideo.title || '강의 제목';
                 }
 
                 // 번역 설정 로드 (originalLang, targetLanguages)
@@ -1348,89 +1357,149 @@
         
         // 드래그 앤 드롭 기능 제거됨 (로딩 화면으로 대체)
         
-        // 제목 편집 모달 기능
-        function initializeTitleEditModal() {
-            const editTitleBtn = document.getElementById('edit-title-btn');
-            const titleEditModal = document.getElementById('title-edit-modal');
-            const titleEditInput = document.getElementById('title-edit-input');
-            const titleEditClose = document.getElementById('title-edit-modal-close');
-            const titleEditCancel = document.getElementById('title-edit-cancel-btn');
-            const titleEditSave = document.getElementById('title-edit-save-btn');
-            const titleModalBackdrop = document.getElementById('title-modal-backdrop');
-            const titleCharCount = document.getElementById('title-char-count');
-
-            if (!editTitleBtn || !titleEditModal || !titleEditInput) return;
-
-            // 연필 아이콘 클릭 시 모달 열기
-            editTitleBtn.addEventListener('click', () => {
-                if (currentVideo && currentVideo.title) {
-                    titleEditInput.value = currentVideo.title;
-                } else {
-                    titleEditInput.value = '';
+        // 새로운 제목 편집 기능 (인라인 편집)
+        function initializeTitleEdit() {
+            const editPageTitle = document.getElementById('edit-page-title');
+            const editTitleBtn = document.getElementById('edit-title-btn-header');
+            
+            if (!editPageTitle) return;
+            
+            let originalTitle = '';
+            let isEditing = false;
+            
+            // 제목 저장 함수
+            function saveTitle() {
+                if (!isEditing) return;
+                
+                const newTitle = editPageTitle.textContent.trim();
+                
+                if (!newTitle) {
+                    alert('제목을 입력해주세요.');
+                    editPageTitle.textContent = originalTitle;
+                    editPageTitle.contentEditable = 'false';
+                    isEditing = false;
+                    if (editTitleBtn) editTitleBtn.style.display = 'flex';
+                    return;
                 }
-                updateCharCount();
-                titleEditModal.style.display = 'flex';
-                titleEditInput.focus();
-                titleEditInput.select();
-            });
-
-            // 문자 수 업데이트
-            function updateCharCount() {
-                if (titleCharCount) {
-                    titleCharCount.textContent = titleEditInput.value.length;
+                
+                if (!currentVideo || !videoId) {
+                    alert('영상 정보를 찾을 수 없습니다.');
+                    editPageTitle.textContent = originalTitle;
+                    editPageTitle.contentEditable = 'false';
+                    isEditing = false;
+                    if (editTitleBtn) editTitleBtn.style.display = 'flex';
+                    return;
+                }
+                
+                // localStorage에서 해당 비디오만 찾아서 제목 업데이트
+                const savedVideos = JSON.parse(localStorage.getItem('savedVideos') || '[]');
+                const videoIndex = savedVideos.findIndex(v => v.id === videoId);
+                
+                if (videoIndex === -1) {
+                    logger.warn('비디오를 찾을 수 없습니다:', videoId);
+                    alert('영상을 찾을 수 없습니다.');
+                    editPageTitle.textContent = originalTitle;
+                    editPageTitle.contentEditable = 'false';
+                    isEditing = false;
+                    if (editTitleBtn) editTitleBtn.style.display = 'flex';
+                    return;
+                }
+                
+                // 해당 비디오의 제목만 업데이트 (다른 작업에는 영향 없음)
+                savedVideos[videoIndex].title = newTitle;
+                localStorage.setItem('savedVideos', JSON.stringify(savedVideos));
+                
+                // currentVideo도 업데이트
+                currentVideo.title = newTitle;
+                
+                logger.log('제목 업데이트 완료 (해당 작업만, ID:', videoId, ', 제목:', newTitle, ')');
+                
+                // 편집 모드 종료
+                editPageTitle.contentEditable = 'false';
+                isEditing = false;
+                if (editTitleBtn) editTitleBtn.style.display = 'flex';
+                
+                // 스타일 복원
+                editPageTitle.style.border = '';
+                editPageTitle.style.padding = '';
+                editPageTitle.style.borderRadius = '';
+                editPageTitle.style.outline = '';
+                
+                // videoTitleText도 업데이트 (있는 경우)
+                if (DOMCache.videoTitleText) {
+                    DOMCache.videoTitleText.textContent = newTitle;
                 }
             }
-
-            titleEditInput.addEventListener('input', updateCharCount);
-
-            // 모달 닫기 함수
-            function closeModal() {
-                titleEditModal.style.display = 'none';
+            
+            // 편집 취소 함수
+            function cancelEdit() {
+                if (!isEditing) return;
+                editPageTitle.textContent = originalTitle;
+                editPageTitle.contentEditable = 'false';
+                isEditing = false;
+                if (editTitleBtn) editTitleBtn.style.display = 'flex';
+                
+                // 스타일 복원
+                editPageTitle.style.border = '';
+                editPageTitle.style.padding = '';
+                editPageTitle.style.borderRadius = '';
+                editPageTitle.style.outline = '';
             }
-
-            // 닫기 버튼들
-            if (titleEditClose) {
-                titleEditClose.addEventListener('click', closeModal);
+            
+            // 편집 모드 시작
+            function startEdit() {
+                if (isEditing) return;
+                
+                originalTitle = editPageTitle.textContent;
+                editPageTitle.contentEditable = 'true';
+                isEditing = true;
+                
+                // 편집 버튼 숨기기
+                if (editTitleBtn) editTitleBtn.style.display = 'none';
+                
+                // 편집 스타일 적용
+                editPageTitle.style.border = '2px solid #8B5CF6';
+                editPageTitle.style.padding = '4px 8px';
+                editPageTitle.style.borderRadius = '4px';
+                editPageTitle.style.outline = 'none';
+                
+                // 포커스 및 텍스트 선택
+                editPageTitle.focus();
+                const range = document.createRange();
+                range.selectNodeContents(editPageTitle);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
             }
-            if (titleEditCancel) {
-                titleEditCancel.addEventListener('click', closeModal);
-            }
-            if (titleModalBackdrop) {
-                titleModalBackdrop.addEventListener('click', closeModal);
-            }
-
-            // 저장 버튼
-            if (titleEditSave) {
-                titleEditSave.addEventListener('click', () => {
-                    const newTitle = titleEditInput.value.trim();
-                    if (newTitle && currentVideo) {
-                        currentVideo.title = newTitle;
-                        if (DOMCache.videoTitleText) {
-                            DOMCache.videoTitleText.textContent = newTitle;
-                        }
-                        logger.log('제목 업데이트:', newTitle);
-                        closeModal();
-                    } else if (!newTitle) {
-                        alert('제목을 입력해주세요.');
-                        titleEditInput.focus();
-                    }
+            
+            // 편집 버튼 클릭
+            if (editTitleBtn) {
+                editTitleBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    startEdit();
                 });
             }
-
-            // ESC 키로 모달 닫기
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && titleEditModal.style.display === 'flex') {
-                    closeModal();
+            
+            // 제목 더블클릭으로 편집 시작
+            editPageTitle.addEventListener('dblclick', () => {
+                startEdit();
+            });
+            
+            // Enter 키로 저장
+            editPageTitle.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveTitle();
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cancelEdit();
                 }
             });
-
-            // Enter 키로 저장 (Ctrl+Enter 또는 단독 Enter)
-            titleEditInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-                    e.preventDefault();
-                    if (titleEditSave) {
-                        titleEditSave.click();
-                    }
+            
+            // 포커스 아웃 시 저장
+            editPageTitle.addEventListener('blur', () => {
+                if (isEditing) {
+                    saveTitle();
                 }
             });
         }
@@ -1590,7 +1659,7 @@
         // 초기화 (최적화)
         initializeRemainingTime();
         // 드래그 앤 드롭 기능 제거됨
-        initializeTitleEditModal();
+        initializeTitleEdit();
         
         if (videoId) {
             loadVideoData();

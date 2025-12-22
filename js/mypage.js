@@ -132,11 +132,19 @@
             
             logger.log('영상 렌더링 시작:', videos.length, '개, 필터:', filter);
 
-            // 기본적으로 오래된 순으로 정렬 (savedAt 또는 createdAt 기준 오름차순) - 최신 영상이 하단에 표시되도록
+            // 정렬 옵션 가져오기 (기본값: oldest)
+            const currentSort = localStorage.getItem('currentSort') || 'oldest';
+            
+            // 정렬 적용
             let sortedVideos = videos.slice().sort((a, b) => {
                 const dateA = a.savedAt ? new Date(a.savedAt) : (a.createdAt ? new Date(a.createdAt) : new Date(0));
                 const dateB = b.savedAt ? new Date(b.savedAt) : (b.createdAt ? new Date(b.createdAt) : new Date(0));
-                return dateA - dateB; // 오름차순으로 변경 (오래된 것부터, 최신이 하단)
+                
+                if (currentSort === 'latest') {
+                    return dateB - dateA; // 내림차순 (최신순)
+                } else {
+                    return dateA - dateB; // 오름차순 (오래된순)
+                }
             });
             
             let filteredVideos = sortedVideos;
@@ -235,7 +243,7 @@
                 }
                 
                 return `
-                    <div class="video-card" data-video-id="${video.id}" ${daysUntilExpiry !== null && daysUntilExpiry <= 3 && daysUntilExpiry > 0 ? 'data-expiring="true"' : ''}>
+                    <div class="video-card" data-video-id="${video.id}" onclick="handleVideoCardClick(event, '${video.id}')" ${daysUntilExpiry !== null && daysUntilExpiry <= 3 && daysUntilExpiry > 0 ? 'data-expiring="true"' : ''} style="cursor: pointer;">
                         <div class="video-thumbnail" data-video-id="${video.id}">
                             <video class="thumbnail-video" preload="metadata" muted>
                                 <source src="" type="video/mp4">
@@ -251,7 +259,7 @@
                         </div>
                         <div class="video-info">
                             <div class="video-header">
-                                <h3 class="video-title" onclick="editVideo('${video.id}')">${video.title}</h3>
+                                <h3 class="video-title">${video.title}</h3>
                                 ${expiryInfo}
                             </div>
                             
@@ -267,6 +275,10 @@
                                 <div class="meta-item">
                                     <i class="fas fa-coins"></i>
                                     <span>${usedCredits.toLocaleString()}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>${savedDate.getFullYear()}.${String(savedDate.getMonth() + 1).padStart(2, '0')}.${String(savedDate.getDate()).padStart(2, '0')}</span>
                                 </div>
                                 ${translationCount > 0 ? `
                                 <div class="meta-item">
@@ -910,6 +922,20 @@
             });
         }
         
+        // 영상 카드 클릭 핸들러 (버튼 영역 제외)
+        function handleVideoCardClick(event, videoId) {
+            // 버튼이나 액션 영역을 클릭한 경우 이벤트 전파 중지
+            if (event.target.closest('.video-actions') || 
+                event.target.closest('.btn-download') || 
+                event.target.closest('.btn-share') || 
+                event.target.closest('.btn-delete')) {
+                return;
+            }
+            
+            // 편집 화면으로 이동
+            editVideo(videoId);
+        }
+        
         function editVideo(videoId) {
             if (!videoId) {
                 logger.error('비디오 ID가 없습니다.');
@@ -948,6 +974,7 @@
         
         // 전역 스코프에 함수 등록 (HTML에서 onclick으로 호출하기 위해)
         window.editVideo = editVideo;
+        window.handleVideoCardClick = handleVideoCardClick;
 
         function closeEditModal() {
             document.getElementById('edit-modal').classList.remove('show');
@@ -1462,6 +1489,16 @@
             // 저장공간 확장 옵션 구매 후 업데이트
             loadData();
         });
+        
+        // 정렬 변경 이벤트 리스너
+        document.addEventListener('sortChanged', (e) => {
+            const sortType = e.detail.sortType;
+            const currentFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+            renderVideos(currentFilter);
+        });
+        
+        // renderVideos 함수를 전역으로 노출
+        window.renderVideos = renderVideos;
         
         startIntervals();
     

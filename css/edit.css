@@ -98,6 +98,68 @@
 
 .edit-title-btn-header:hover {
     background: #f5f5f5;
+    color: #8B5CF6;
+}
+
+/* 인라인 제목 편집 */
+.title-edit-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.title-edit-input-inline {
+    flex: 1;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    border: 2px solid #8B5CF6;
+    border-radius: 6px;
+    padding: 6px 12px;
+    outline: none;
+    background: #fff;
+    min-width: 200px;
+}
+
+.title-edit-input-inline:focus {
+    border-color: #7C3AED;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.title-edit-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.title-edit-save-inline,
+.title-edit-cancel-inline {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.title-edit-save-inline:hover {
+    background: #10B981;
+    color: #fff;
+}
+
+.title-edit-cancel-inline:hover {
+    background: #EF4444;
+    color: #fff;
+}
     color: #333;
 }
 

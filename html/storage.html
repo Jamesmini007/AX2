@@ -116,6 +116,122 @@
         .storage-info-text {
             margin-left: auto;
         }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .section-title-above {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 16px;
+        }
+        .section-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sort-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #8B5CF6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .sort-btn:hover {
+            background: #7C3AED;
+            transform: translateY(-1px);
+        }
+        .sort-btn i {
+            font-size: 12px;
+        }
+        .sort-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            min-width: 150px;
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+        }
+        .sort-dropdown.active {
+            display: block;
+        }
+        .sort-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #333;
+            font-size: 14px;
+        }
+        .sort-dropdown-item:hover {
+            background: #F9FAFB;
+        }
+        .sort-dropdown-item i {
+            color: #8B5CF6;
+            font-size: 12px;
+        }
+        .sort-dropdown-divider {
+            height: 1px;
+            background: #E5E7EB;
+            margin: 0;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            min-width: 200px;
+        }
+        .search-bar i {
+            color: #6B7280;
+            font-size: 14px;
+        }
+        .search-bar input {
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: #333;
+            flex: 1;
+            min-width: 0;
+        }
+        .search-bar input::placeholder {
+            color: #9CA3AF;
+        }
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .section-header-right {
+                width: 100%;
+            }
+            .search-bar {
+                flex: 1;
+                min-width: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -221,8 +337,32 @@
 
         <!-- 영상 목록 -->
         <div class="videos-section">
+            <div class="section-title-above">작업 이력</div>
             <div class="section-header">
-                <div class="section-title">작업 이력</div>
+                <div class="section-header-right">
+                    <div style="position: relative;">
+                        <button class="sort-btn" id="sort-btn">
+                            <i class="fas fa-sort"></i>
+                            <span>정렬</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="sort-dropdown" id="sort-dropdown">
+                            <div class="sort-dropdown-item" data-sort="latest">
+                                <i class="fas fa-sort-amount-down"></i>
+                                <span>최신순</span>
+                            </div>
+                            <div class="sort-dropdown-divider"></div>
+                            <div class="sort-dropdown-item" data-sort="oldest">
+                                <i class="fas fa-sort-amount-up"></i>
+                                <span>오래된순</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="검색...">
+                    </div>
+                </div>
                 <div class="filter-controls">
                     <button class="filter-btn active" data-filter="all">전체</button>
                     <button class="filter-btn" data-filter="processing">처리 중</button>
@@ -305,6 +445,93 @@
     <script src="../js/storage.js" defer></script>
     <script src="../js/mypage.js" defer></script>
     <script src="../script.js" defer></script>
+    <script>
+        // 정렬 드롭다운 기능
+        document.addEventListener('DOMContentLoaded', function() {
+            const sortBtn = document.getElementById('sort-btn');
+            const sortDropdown = document.getElementById('sort-dropdown');
+            const sortItems = document.querySelectorAll('.sort-dropdown-item');
+            let currentSort = 'oldest'; // 기본값: 오래된순
+
+            // 정렬 버튼 클릭 시 드롭다운 토글
+            if (sortBtn && sortDropdown) {
+                sortBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    sortDropdown.classList.toggle('active');
+                });
+
+                // 외부 클릭 시 드롭다운 닫기
+                document.addEventListener('click', function(e) {
+                    if (!sortBtn.contains(e.target) && !sortDropdown.contains(e.target)) {
+                        sortDropdown.classList.remove('active');
+                    }
+                });
+
+                // 정렬 옵션 선택
+                sortItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        const sortType = this.dataset.sort;
+                        currentSort = sortType;
+                        
+                        // 선택된 옵션 표시 업데이트
+                        sortItems.forEach(i => {
+                            i.style.background = '';
+                            i.style.color = '#333';
+                        });
+                        this.style.background = '#F3F4F6';
+                        this.style.color = '#8B5CF6';
+
+                        // 정렬 실행
+                        applySort(sortType);
+                        
+                        // 드롭다운 닫기
+                        sortDropdown.classList.remove('active');
+                    });
+                });
+            }
+
+            // 정렬 함수
+            function applySort(sortType) {
+                const savedVideos = JSON.parse(localStorage.getItem('savedVideos') || '[]');
+                
+                if (sortType === 'latest') {
+                    // 최신순: 날짜 내림차순
+                    savedVideos.sort((a, b) => {
+                        const dateA = a.savedAt ? new Date(a.savedAt) : (a.createdAt ? new Date(a.createdAt) : new Date(0));
+                        const dateB = b.savedAt ? new Date(b.savedAt) : (b.createdAt ? new Date(b.createdAt) : new Date(0));
+                        return dateB - dateA; // 내림차순
+                    });
+                } else if (sortType === 'oldest') {
+                    // 오래된순: 날짜 오름차순
+                    savedVideos.sort((a, b) => {
+                        const dateA = a.savedAt ? new Date(a.savedAt) : (a.createdAt ? new Date(a.createdAt) : new Date(0));
+                        const dateB = b.savedAt ? new Date(b.savedAt) : (b.createdAt ? new Date(b.createdAt) : new Date(0));
+                        return dateA - dateB; // 오름차순
+                    });
+                }
+
+                // 정렬 타입만 저장 (데이터는 mypage.js에서 정렬)
+                localStorage.setItem('currentSort', sortType);
+
+                // 영상 목록 다시 렌더링
+                const currentFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+                
+                // 이벤트 발생으로 렌더링 트리거
+                const event = new CustomEvent('sortChanged', { detail: { sortType } });
+                document.dispatchEvent(event);
+                
+                // 직접 호출도 시도
+                setTimeout(() => {
+                    if (typeof window.renderVideos === 'function') {
+                        window.renderVideos(currentFilter);
+                    }
+                }, 100);
+            }
+
+            // 전역 함수로 등록
+            window.applySort = applySort;
+        });
+    </script>
 </body>
 </html>
 

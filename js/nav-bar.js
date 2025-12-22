@@ -78,7 +78,7 @@
                         <!-- 1열: 기타 제품 -->
                         <div class="mega-menu-column">
                             <div class="mega-menu-section-title">기타 제품</div>
-                            <a href="${assetPath}index.html" class="mega-menu-item">
+                            <a href="https://lx2.kr/AX2_Caption/" class="mega-menu-item">
                                 <div class="mega-menu-item-icon"><i class="fas fa-closed-captioning"></i></div>
                                 <div class="mega-menu-item-text">
                                     <div class="mega-menu-item-title">자막 생성</div>
@@ -86,7 +86,7 @@
                                 </div>
                                 <i class="fas fa-arrow-right mega-menu-arrow"></i>
                             </a>
-                            <a href="#" class="mega-menu-item">
+                            <a href="https://lx2.kr/AX2_Speak/" class="mega-menu-item">
                                 <div class="mega-menu-item-icon"><i class="fas fa-chalkboard-teacher"></i></div>
                                 <div class="mega-menu-item-text">
                                     <div class="mega-menu-item-title">실시간 번역</div>

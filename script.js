@@ -737,24 +737,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const duration = video.duration || 0;
             const fileSizeGB = file.size / (1024 * 1024 * 1024);
             
-            // localStorage에서 기존 영상 확인
+            // localStorage에서 저장된 영상 목록 가져오기
             const savedVideos = JSON.parse(localStorage.getItem('savedVideos') || '[]');
-            const existingIndex = savedVideos.findIndex(v => 
-                v.fileName === file.name && v.fileSize === file.size
-            );
             
-            let videoId;
-            if (existingIndex !== -1) {
-                // 기존 영상이 있으면 기존 ID 사용
-                videoId = savedVideos[existingIndex].id;
-                logger.log('기존 영상 ID 사용:', videoId);
-            } else {
-                // 새 비디오 ID 생성
-                videoId = 'video_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            }
+            // 항상 새로운 고유 ID 생성 (같은 영상이라도 매번 새 항목으로 저장)
+            const videoId = 'video_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             
             // 파일 객체에 videoId 저장 (번역 완료 후 사용)
             file.uploadVideoId = videoId;
+            
+            // 보관 만료 시간 계산 (기본 7일)
+            const expiresAt = StorageManager.calculateExpiryDate(false);
             
             // 비디오 데이터 생성 (번역 전 상태)
             const videoData = {
@@ -769,21 +762,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 size: fileSizeGB,
                 createdAt: new Date().toISOString(),
                 savedAt: new Date().toISOString(),
+                expiresAt: expiresAt,
                 translated: false,
                 category: '',
                 tags: []
             };
             
-            // localStorage에 저장
-            if (existingIndex !== -1) {
-                // 기존 영상 업데이트
-                savedVideos[existingIndex] = { ...savedVideos[existingIndex], ...videoData };
-                logger.log('기존 영상 업데이트:', videoId);
-            } else {
-                // 새 영상 추가
-                savedVideos.push(videoData);
-                logger.log('새 영상 추가:', videoId);
-            }
+            // 항상 새 영상으로 추가 (같은 영상이라도 매번 새 항목으로 저장)
+            savedVideos.push(videoData);
+            logger.log('새 영상 추가 (항상 새 항목으로 저장):', videoId);
             
             localStorage.setItem('savedVideos', JSON.stringify(savedVideos));
             
@@ -801,6 +788,11 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('lastSavedVideoId', videoId);
             localStorage.setItem('lastSavedVideoTitle', videoData.title);
             localStorage.setItem('lastSavedVideoTime', new Date().toISOString());
+            
+            // 작업 이력 업데이트를 위한 이벤트 발생
+            document.dispatchEvent(new CustomEvent('videoUploaded', { 
+                detail: { videoId, videoData } 
+            }));
             
             logger.log('업로드된 영상 저장 완료 (작업 이력에 추가됨):', videoId);
             
@@ -1424,20 +1416,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // 업로드 시 저장된 videoId 사용 (없으면 새로 생성)
             let videoId = selectedFile.uploadVideoId;
             const savedVideos = JSON.parse(localStorage.getItem('savedVideos') || '[]');
-            let existingVideoIndex = -1;
             
-            if (videoId) {
-                // 업로드 시 저장된 ID로 기존 영상 찾기
-                existingVideoIndex = savedVideos.findIndex(v => v.id === videoId);
-            } else {
-                // 업로드 시 저장되지 않은 경우 파일명과 크기로 찾기
-                existingVideoIndex = savedVideos.findIndex(v => 
-                    v.fileName === selectedFile.name && v.fileSize === selectedFile.size
-                );
-                if (existingVideoIndex !== -1) {
-                    videoId = savedVideos[existingVideoIndex].id;
-                }
+            // 업로드 시 저장된 videoId가 있으면 해당 영상에 번역 정보 추가
+            // 없으면 새 영상으로 생성
+            if (!videoId) {
+                // 업로드 시 저장되지 않은 경우 새 ID 생성
+                videoId = 'video_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             }
+            
+            // 업로드 시 저장된 영상 찾기 (같은 ID로)
+            const existingVideoIndex = savedVideos.findIndex(v => v.id === videoId);
             
             let videoData;
             
@@ -1445,7 +1433,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const expiresAt = StorageManager.calculateExpiryDate(isFreeTrial);
             
             if (existingVideoIndex !== -1) {
-                // 기존 영상 업데이트
+                // 업로드 시 저장된 영상에 번역 정보 추가
                 videoData = {
                     ...savedVideos[existingVideoIndex],
                     description: `원본 언어: ${originalLang === 'auto' ? '자동 감지' : originalLang}, 번역 언어: ${targetLanguages.map(l => l.name).join(', ')}`,
@@ -1462,10 +1450,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     isFreeTrial: isFreeTrial,
                     downloadable: !isFreeTrial // 무료 크레딧은 다운로드 불가
                 };
-                logger.log('기존 영상 번역 정보 업데이트:', videoId);
+                logger.log('업로드 시 저장된 영상에 번역 정보 추가:', videoId);
             } else {
                 // 새 영상 생성 (업로드 시 저장되지 않은 경우)
-                videoId = 'video_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 videoData = {
                     id: videoId,
                     title: selectedFile.name.replace(/\.[^/.]+$/, '') || '새 강의',
